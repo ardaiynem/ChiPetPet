@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: chipetpet
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  back-end:
+    image: chipetpetbackend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  front-end:
+    image: chipetpetfrontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - back-end
