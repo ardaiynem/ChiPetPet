@@ -4,8 +4,10 @@ services:
   db:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: chipetpet
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: root
     ports:
       - "3307:3306"
     volumes:
@@ -17,6 +19,8 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    volumes:
+      - ./ChiPetPetBackend:/code
 
   front-end:
     image: chipetpetfrontend
@@ -24,3 +28,5 @@ services:
       - "5173:5173"
     depends_on:
       - back-end
+    volumes:
+      - ./ChiPetPetFrontend:/code
