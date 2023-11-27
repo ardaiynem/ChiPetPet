@@ -29,4 +29,5 @@ services:
     depends_on:
       - back-end
     volumes:
-      - ./ChiPetPetFrontend:/code
+      # - ./ChiPetPetFrontend:/code
+      - ./ChiPetPetFrontend/src:/app/src
