@@ -1,16 +1,13 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import LoginPage from './Pages/LoginPage';
+import MainPage from './Pages/MainPage';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <div >
-        <h1>ben furuko</h1>
-      </div>
+      <MainPage />
     </>
   )
 }
