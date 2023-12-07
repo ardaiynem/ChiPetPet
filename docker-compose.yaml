@@ -6,19 +6,22 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: chipetpet
-      # MYSQL_USER: root
-      # MYSQL_PASSWORD: root
     ports:
       - "3307:3306"
     volumes:
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
 
   back-end:
     image: chipetpetbackend
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - ./ChiPetPetBackend:/code
 
@@ -29,5 +32,4 @@ services:
     depends_on:
       - back-end
     volumes:
-      # - ./ChiPetPetFrontend:/code
       - ./ChiPetPetFrontend/src:/app/src
