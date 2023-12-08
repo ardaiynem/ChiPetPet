@@ -144,7 +144,7 @@ def get_users_by_role(request):
         admins_json = [
             {
                 'user_id': user[0],
-                'verification_documents': base64.b64encode(user[1]).decode('utf-8') if user[3] else None,
+                'verification_documents': base64.b64encode(user[1]).decode('utf-8') if user[1] else None,
             }
             for user in admins
         ]
