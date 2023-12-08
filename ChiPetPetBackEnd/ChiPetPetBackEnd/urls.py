@@ -25,5 +25,8 @@ urlpatterns = [
     path('pet_create/', include('pet_create.urls')),
     path('chipetpet/', include('chipetpet.urls')),
     path('message/', include('message.urls')),
-    path('blogpost/', include('blogpost.urls'))
+    path('blogpost/', include('blogpost.urls')),
+    path('appointment/', include('appointment.urls')),
+    path('application/', include('application.urls')),
+    path('notification/', include('notification.urls')),
 ]
