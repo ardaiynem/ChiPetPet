@@ -17,6 +17,20 @@ CREATE TABLE animal_shelter (
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
+CREATE TABLE field_expert (
+   	user_id INT PRIMARY KEY,
+    speciality VARCHAR(100),
+    verification_documents BLOB,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) 
+);
+
+CREATE TABLE admin (
+    user_id INT PRIMARY KEY,
+    verification_documents BLOB,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) 
+);
+
+
 CREATE TABLE pet (
     pet_id INT PRIMARY KEY AUTO_INCREMENT,
     shelter_id INT,
@@ -33,7 +47,7 @@ CREATE TABLE pet (
 );
 
 CREATE TABLE health_record (
-    pet_id INT AUTO_INCREMENT,
+    pet_id INT  ,
     date DATE,
     fertility VARCHAR(20),
     health_report TEXT,
