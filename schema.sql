@@ -57,7 +57,7 @@ CREATE TABLE health_record (
 CREATE TABLE blog_post (
     post_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT,
-    date DATE,
+    date_and_time DATETIME,
     topic VARCHAR(100),
     content TEXT,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
@@ -74,13 +74,13 @@ CREATE TABLE blog_post (
 
 CREATE TABLE comment (
     post_id INT,
-    comment_id INT AUTO_INCREMENT,
-    date DATE,
+    comment_id INT,
+    user_id INT,
+    date_and_time DATETIME,
     content TEXT,
-    PRIMARY KEY (comment_id),
-    UNIQUE KEY unique_comment (post_id, comment_id),
-    FOREIGN KEY (post_id) REFERENCES blog_post(post_id) 
-);
+    PRIMARY KEY (post_id, comment_id),
+    FOREIGN KEY (post_id) REFERENCES blog_post(post_id),
+    FOREIGN KEY (user_id) REFERENCES user(user_id));
 
 CREATE TABLE adopter (
     user_id INT PRIMARY KEY,
@@ -138,7 +138,7 @@ CREATE TABLE appointment (
 );
 
 CREATE TABLE message (
-    date_and_time DATE,
+    date_and_time DATETIME,
     content TEXT,
     sender_id INT,
     receiver_id INT,
@@ -147,7 +147,16 @@ CREATE TABLE message (
 );
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
-VALUES ('John', 'Doe', 'johndoe', 'email@email.com', 'password', 'no', 'admin');
+VALUES ('John', 'Doe', 'johndoe', 'john@email.com', 'password', 'no', 'admin');
+INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
+VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'no', 'admin');
+INSERT INTO message  
+VALUES ("1999-09-29", "Hello", 1, 2);
 
+INSERT INTO message  
+VALUES ("2009-09-29 22:36:19", "Hello", 1, 2);
+
+INSERT INTO message  
+VALUES ("2001-11-11 11:11:11", "Trying", 1, 2);
 
 
