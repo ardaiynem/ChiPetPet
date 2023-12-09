@@ -106,11 +106,10 @@ CREATE TABLE veterinarian (
 
 CREATE TABLE notification (
     user_id INT,
-    date DATE,
+    date_and_time DATETIME,
     topic VARCHAR(255),
-    verification_documents BLOB,
     description TEXT,
-	PRIMARY KEY (user_id, date),
+	PRIMARY KEY (user_id, date_and_time),
     FOREIGN KEY (user_id) REFERENCES user(user_id) 
 );
 
@@ -121,14 +120,14 @@ CREATE TABLE applies(
     adopter_id INT,
     animal_shelter_id INT,
     pet_id INT,
-    FOREIGN KEY (adopter_id) REFERENCES user(user_id),
+    FOREIGN KEY (adopter_id) REFERENCES adopter(user_id),
     FOREIGN KEY (animal_shelter_id) REFERENCES user(user_id),
     FOREIGN KEY (pet_id) REFERENCES pet(pet_id)
 );
 
 CREATE TABLE appointment (
     appointment_id INT PRIMARY KEY AUTO_INCREMENT,
-    date DATE,
+    date_and_time DATETIME,
     location VARCHAR(255),
     appointment_text VARCHAR(255),
     user_id INT,
@@ -147,9 +146,14 @@ CREATE TABLE message (
 );
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
-VALUES ('John', 'Doe', 'johndoe', 'john@email.com', 'password', 'no', 'admin');
+VALUES ('John', 'Doe', 'johndoe', 'john@email.com', 'password', 'yes', 'animal_shelter');
+
 INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
-VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'no', 'admin');
+VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'yes', 'adopter');
+
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('John', 'Smith', 'johnsmith', 'johnsmith@email.com', 'password', 'yes', 'veterinarian');
+
 INSERT INTO message  
 VALUES ("1999-09-29", "Hello", 1, 2);
 
@@ -158,5 +162,36 @@ VALUES ("2009-09-29 22:36:19", "Hello", 1, 2);
 
 INSERT INTO message  
 VALUES ("2001-11-11 11:11:11", "Trying", 1, 2);
+
+INSERT INTO animal_shelter (user_id, address, contact, verification_documents)
+VALUES (1, '123 Shelter St', '123-456-7890', NULL);
+
+INSERT INTO adopter (user_id) 
+VALUES (2);
+
+INSERT INTO veterinarian (user_id, address, contact, verification_documents, expertise)
+VALUES (3, '123 Vet St', '123-456-7890', NULL, 'Dogs');
+
+INSERT INTO pet (shelter_id, name, species, breed, gender, age, health_status, description, photo, adoption_status)
+VALUES (1, 'Buddy', 'Dog', 'Labrador Retriever', 'Male', 2, 'Good', 'Friendly and playful dog', NULL, 'Available');
+
+INSERT INTO applies (application_status, application_text, adopter_id, animal_shelter_id, pet_id)
+VALUES ('Pending', 'I would like to adopt Buddy.', 2, 1, 1);
+
+INSERT INTO appointment (date_and_time, location, appointment_text, user_id, veterinarian_id)
+VALUES ('2020-11-11 11:11:11', '123 Vet St', 'Checkup', 2, 3);
+
+INSERT INTO notification (user_id, date_and_time, topic, description)
+VALUES (2, '2023-01-01 10:00:00', 'Application Status', 'Your adoption application is pending review.');
+
+INSERT INTO notification (user_id, date_and_time, topic, description)
+VALUES (3, '2023-01-02 12:00:00', 'Appointment Scheduled', 'You have a scheduled appointment for a health check.');
+
+
+
+
+
+
+
 
 
