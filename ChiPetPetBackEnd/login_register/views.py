@@ -6,6 +6,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
 import json
 import base64
+from django.core.mail import send_mail
+import random
+import string
 
 # Create your views here.
 
@@ -158,5 +161,43 @@ def get_users_by_role(request):
         }
 
         return JsonResponse(final_response, safe=False)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def reset_password(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            username = data['username']
+
+            # Generate a new random password
+            new_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+            hashed_password = make_password(new_password)
+
+            # Update the password in the database
+            cursor = connection.cursor()
+            cursor.execute('SELECT email FROM user WHERE username = %s', (username, ) )
+            email = cursor.fetchone()
+
+            if not email:
+                return JsonResponse({'error': 'User not found.'}, status=404)
+            
+            cursor.execute('UPDATE user SET password = %s WHERE username = %s', (hashed_password, username))
+
+            # Send an email with the new password
+            send_mail(
+                'Password Reset',
+                f'Your new password is: {new_password}',
+                'chipetpet.app@gmail.com',
+                [email[0]],
+                fail_silently=False,
+            )
+
+            return JsonResponse({'status': 'Password reset successful. Check your email.'}, status=200)
+
+
+        except Exception as e:
+            return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
