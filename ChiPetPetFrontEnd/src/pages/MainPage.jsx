@@ -4,6 +4,14 @@ import SearchPetPanel from "../components/SearchPetPanel";
 import SingleAnimalPanel from "../components/SingleAnimalPanel";
 import SearchVeterinarian from "../components/user/SearchVeterinarian";
 import MyPets from "../components/user/MyPets";
+import SearchAnimalByType from "../components/SearchAnimalByType";
+import AnimalList from "../components/shelter/animalList";
+import AddNewAnimal from "../components/shelter/addNewAnimal";
+import UploadExcell from "../components/shelter/uploadExcellPage";
+import ApplicationsList from "../components/shelter/adoptionApplications";
+import HealthReportList from "../components/veterinerian/HealthReportList";
+import UploadHealthRecord from "../components/veterinerian/uploadPage";
+import AppointmentList from "../components/veterinerian/appointmentApplications";
 import MessagePage from "../components/MessagePage";
 
 
@@ -25,7 +33,8 @@ function MainPage() {
                             {/* <SingleAnimalPanel /> */}
                             {/* <SearchVeterinarian /> */}
                             {/* <MyPets /> */}
-                            <MessagePage />
+                            {/* <MessagePage /> */}
+                            { < AppointmentList /> }
                         </Stack>
                     </div>
                 </Stack>
