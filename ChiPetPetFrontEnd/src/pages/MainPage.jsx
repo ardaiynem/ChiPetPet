@@ -4,6 +4,7 @@ import SearchPetPanel from "../components/SearchPetPanel";
 import SingleAnimalPanel from "../components/SingleAnimalPanel";
 import SearchVeterinarian from "../components/user/SearchVeterinarian";
 import MyPets from "../components/user/MyPets";
+import MessagePage from "../components/MessagePage";
 
 
 function MainPage() {
@@ -23,7 +24,8 @@ function MainPage() {
                             {/* <SearchPetPanel /> */}
                             {/* <SingleAnimalPanel /> */}
                             {/* <SearchVeterinarian /> */}
-                            <MyPets />
+                            {/* <MyPets /> */}
+                            <MessagePage />
                         </Stack>
                     </div>
                 </Stack>

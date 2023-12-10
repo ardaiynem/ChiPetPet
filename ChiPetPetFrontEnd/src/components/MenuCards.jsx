@@ -29,7 +29,6 @@ function MenuCards() {
                         ))}
                 </div>
             </div>
-
         </>
     )
 }
