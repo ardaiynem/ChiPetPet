@@ -13,6 +13,8 @@ import HealthReportList from "../components/veterinerian/HealthReportList";
 import UploadHealthRecord from "../components/veterinerian/uploadPage";
 import AppointmentList from "../components/veterinerian/appointmentApplications";
 import MessagePage from "../components/MessagePage";
+import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsAdmin";
+import VerificationRequests from "../components/admin/verificationRequests";
 
 
 function MainPage() {
@@ -34,7 +36,9 @@ function MainPage() {
                             {/* <SearchVeterinarian /> */}
                             {/* <MyPets /> */}
                             {/* <MessagePage /> */}
-                            { < AppointmentList /> }
+                            {/* { < AppointmentList /> } */}
+                            {/* <AdoptionApplicationsAdmin /> */}
+                            <VerificationRequests />
                         </Stack>
                     </div>
                 </Stack>
