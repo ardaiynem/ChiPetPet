@@ -16,10 +16,11 @@ def index(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_application_by_adopter(request):
-    data = json.loads(request.body)
-    user_id = data.get('user_id')
+    # data = json.loads(request.body)
+    # adopter_id = data.get('adopter_id')
+    adopter_id = request.GET.get('adopter_id')
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM applies WHERE adopter_id = %s", [user_id])
+    cursor.execute("SELECT * FROM applies WHERE adopter_id = %s", [adopter_id])
     applications = cursor.fetchall()
     cursor.close()
 
@@ -41,8 +42,9 @@ def get_application_by_adopter(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_application_by_shelter(request):
-    data = json.loads(request.body)
-    animal_shelter_id = data.get('animal_shelter_id')
+    # data = json.loads(request.body)
+    # animal_shelter_id = data.get('animal_shelter_id')
+    animal_shelter_id = request.GET.get('animal_shelter_id')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM applies WHERE animal_shelter_id = %s", [animal_shelter_id])
     applications = cursor.fetchall()
@@ -66,8 +68,9 @@ def get_application_by_shelter(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_application_by_pet(request):
-    data = json.loads(request.body)
-    pet_id = data.get('pet_id')
+    # data = json.loads(request.body)
+    # pet_id = data.get('pet_id')
+    pet_id = request.GET.get('pet_id')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM applies WHERE pet_id = %s", [pet_id])
     applications = cursor.fetchall()
@@ -91,8 +94,9 @@ def get_application_by_pet(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_application(request):
-    data = json.loads(request.body)
-    application_id = data.get('application_id')
+    # data = json.loads(request.body)
+    # application_id = data.get('application_id')
+    application_id = request.GET.get('application_id')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM applies WHERE application_id = %s", [application_id])
     application = cursor.fetchone()
@@ -197,8 +201,9 @@ def update_application_status(request):
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def delete_application(request):
-    data = json.loads(request.body)
-    application_id = data.get('application_id')
+    # data = json.loads(request.body)
+    # application_id = data.get('application_id')
+    application_id = request.GET.get('application_id')
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM applies WHERE application_id = %s", [application_id])

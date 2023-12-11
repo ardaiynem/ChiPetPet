@@ -16,8 +16,9 @@ def index(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_appointment(request):
-    data = json.loads(request.body)
-    appointment_id = data.get('appointment_id')
+    # data = json.loads(request.body)
+    # appointment_id = data.get('appointment_id')
+    appointment_id = request.GET.get('appointment_id')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM appointment WHERE appointment_id = %s", [appointment_id])
     appointment = cursor.fetchone()
@@ -41,8 +42,9 @@ def get_appointment(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_appointment_by_user(request):
-    data = json.loads(request.body)
-    user_id = data.get('user_id')
+    # data = json.loads(request.body)
+    # user_id = data.get('user_id')
+    user_id = request.GET.get('user_id')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM appointment WHERE user_id = %s", [user_id])
     appointments = cursor.fetchall()
@@ -66,8 +68,9 @@ def get_appointment_by_user(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_appointment_by_veterinarian(request):
-    data = json.loads(request.body)
-    veterinarian_id = data.get('veterinarian_id')
+    # data = json.loads(request.body)
+    # veterinarian_id = data.get('veterinarian_id')
+    veterinarian_id = request.GET.get('veterinarian_id')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM appointment WHERE veterinarian_id = %s", [veterinarian_id])
     appointments = cursor.fetchall()
@@ -147,10 +150,11 @@ def update_appointment(request):
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def delete_appointment(request):
-    data = json.loads(request.body)
-    appointment_id = data.get('appointment_id')
+    # data = json.loads(request.body)
+    # appointment_id = data.get('appointment_id')
+    appointment_id = request.GET.get('appointment_id')
     cursor = connection.cursor()
-
+    
     cursor.execute("SELECT * FROM appointment WHERE appointment_id = %s", [appointment_id])
     appointment = cursor.fetchone()
 

@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.db import connection
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-import json
+# import json
 
 
 @csrf_exempt
@@ -16,8 +16,9 @@ def index(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_notifications(request):
-    data = json.loads(request.body)
-    user_id = data.get('user_id')
+    # data = json.loads(request.body)
+    # user_id = data.get('user_id')
+    user_id = request.GET.get('user_id')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM notification WHERE user_id = %s", [user_id])
     notifications = cursor.fetchall()
@@ -38,9 +39,11 @@ def get_notifications(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_notification(request):
-    data = json.loads(request.body)
-    user_id = data.get('user_id')
-    date_and_time = data.get('date_and_time')
+    # data = json.loads(request.body)
+    # user_id = data.get('user_id')
+    # date_and_time = data.get('date_and_time')
+    user_id = request.GET.get('user_id')
+    date_and_time = request.GET.get('date_and_time')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM notification WHERE user_id = %s AND date_and_time = %s", [user_id, date_and_time])
     notification = cursor.fetchone()
@@ -61,9 +64,11 @@ def get_notification(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def get_recent_notifications(request):
-    data = json.loads(request.body)
-    user_id = data.get('user_id')
-    date_and_time = data.get('date_and_time')
+    # data = json.loads(request.body)
+    # user_id = data.get('user_id')
+    # date_and_time = data.get('date_and_time')
+    user_id = request.GET.get('user_id')
+    date_and_time = request.GET.get('date_and_time')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM notification WHERE user_id = %s AND date_and_time > %s", [user_id, date_and_time])
     notifications = cursor.fetchall()
@@ -84,9 +89,11 @@ def get_recent_notifications(request):
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def delete_notification(request):
-    data = json.loads(request.body)
-    user_id = data.get('user_id')
-    date_and_time = data.get('date_and_time')
+    # data = json.loads(request.body)
+    # user_id = data.get('user_id')
+    # date_and_time = data.get('date_and_time')
+    user_id = request.GET.get('user_id')
+    date_and_time = request.GET.get('date_and_time')
     cursor = connection.cursor()
 
     cursor.execute("SELECT * FROM notification WHERE user_id = %s AND date_and_time = %s", [user_id, date_and_time])
