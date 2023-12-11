@@ -17,9 +17,10 @@ import AppointmentList from "../components/veterinerian/appointmentApplications"
 import MessagePage from "../components/MessagePage";
 import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsAdmin";
 import VerificationRequests from "../components/admin/verificationRequests";
+import Profile from "./Profile";
 
 function MenuCards() {
-    const [role, setRole] = useState("admin");
+    const [role, setRole] = useState("user");
     const [cards, setCards] = useState([]);
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
@@ -32,26 +33,26 @@ function MenuCards() {
         , { name: "My Pet", element: <MyPets /> }
         , { name: "Pet Blog", element: null }
         , { name: "Messages", element: <MessagePage /> }
-        , { name: "Profile", element: null }
+        , { name: "Profile", element: <Profile role={role} /> }
     ]
 
     let cardHeadersShelter = [
         , { name: "Adoption Application", element: <ApplicationsList /> }
         , { name: "Messages", element: <MessagePage /> }
-        , { name: "Profile", element: null }
+        , { name: "Profile", element: <Profile role={role} /> }
     ]
 
     let cardHeadersVeterinarian = [
         , { name: "Upload Health Records", element: <UploadHealthRecord /> }
         , { name: "Adoption Application", element: <AppointmentList /> }
         , { name: "Messages", element: <MessagePage /> }
-        , { name: "Profile", element: null }
+        , { name: "Profile", element: <Profile role={role} /> }
     ]
 
     let cardHeadersAdmin = [
         , { name: "Adoption Application", element: <AdoptionApplicationsAdmin /> }
         , { name: "Verification Operations", element: <VerificationRequests /> }
-        , { name: "Profile", element: null }
+        , { name: "Profile", element: <Profile role={role} /> }
     ]
 
     useEffect(() => {
