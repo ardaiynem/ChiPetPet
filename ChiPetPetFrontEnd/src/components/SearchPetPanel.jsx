@@ -23,7 +23,7 @@ function SearchPetPanel() {
 
     return (
         <>
-            <div className="p-0">
+            <div className="p-0 w-100 h-100">
                 <Button className="position-relative top-2 start-2">
                     Back
                 </Button>

@@ -15,9 +15,11 @@ import AppointmentList from "../components/veterinerian/appointmentApplications"
 import MessagePage from "../components/MessagePage";
 import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsAdmin";
 import VerificationRequests from "../components/admin/verificationRequests";
-
+import { PanelContext } from "../contexts/panelContext";
+import { useState } from "react";
 
 function MainPage() {
+    const [currentPanel, setCurrentPanel] = useState(<MenuCards />);
 
     return (
         <>
@@ -30,6 +32,9 @@ function MainPage() {
                     </Navbar>
                     <div className="p-0 flex-grow-1">
                         <Stack gap={0} direction="horizontal" className="h-100 d-flex justify-content-center">
+                            <PanelContext.Provider value={{ currentPanel, setCurrentPanel }}>
+                                {currentPanel}
+                            </ PanelContext.Provider>
                             {/* <MenuCards /> */}
                             {/* <SearchPetPanel /> */}
                             {/* <SingleAnimalPanel /> */}
@@ -38,7 +43,7 @@ function MainPage() {
                             {/* <MessagePage /> */}
                             {/* { < AppointmentList /> } */}
                             {/* <AdoptionApplicationsAdmin /> */}
-                            <VerificationRequests />
+                            {/* <VerificationRequests /> */}
                         </Stack>
                     </div>
                 </Stack>
