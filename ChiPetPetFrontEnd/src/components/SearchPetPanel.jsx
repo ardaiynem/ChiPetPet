@@ -1,7 +1,10 @@
 import { Card, Button, Row, Col, Pagination, Dropdown, Stack } from "react-bootstrap";
 import catImg from "../assets/cat1.jpeg";
 
-function SearchPetPanel() {
+import { PanelContext } from "../contexts/panelContext";
+import { useState, useEffect, useContext } from "react";
+
+function SearchPetPanel(props) {
     let cardHeaders = [
         "Catto1"
         , "Catto2"
@@ -10,6 +13,9 @@ function SearchPetPanel() {
         , "Catto5"
         , "Catto6"
     ]
+
+    let animalType = props.animalType
+    const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
     let active = 1;
     let items = [];
@@ -24,7 +30,8 @@ function SearchPetPanel() {
     return (
         <>
             <div className="p-0 w-100 h-100">
-                <Button className="position-relative top-2 start-2">
+                <h1>Search {animalType} </h1>
+                <Button className="position-relative top-2 start-2" onClick={() => setCurrentPanel("back")}>
                     Back
                 </Button>
                 <div className="d-flex justify-content-between">

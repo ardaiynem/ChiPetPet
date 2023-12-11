@@ -24,7 +24,7 @@ function MenuCards() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
     let cardHeadersUser = [
-        { name: "Search Pet", element: <SearchPetPanel /> }
+        { name: "Search Pet", element: <SearchAnimalByType /> }
         , { name: "Search Veterinarian", element: <SearchVeterinarian /> }
         , { name: "Search Shelter", element: <SearchPetPanel /> }
         , { name: "Adoption Application", element: <AdoptionApplicationsAdmin /> }

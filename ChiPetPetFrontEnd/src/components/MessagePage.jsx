@@ -3,6 +3,9 @@ import MessageThumbnail from "./MessageThumbnail";
 import MessageBubble from "./MessageBubble";
 import catImg from "../assets/cat1.jpeg";
 
+import { PanelContext } from "../contexts/panelContext";
+import { useState, useEffect, useContext } from "react";
+
 function MessagePage() {
     let animal = [
         "Catto1"
@@ -13,9 +16,11 @@ function MessagePage() {
         , "Catto6"
     ]
 
+    const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+
     return (
         <div className="p-0" style={{ width: "100%" }}>
-            <Button className="position-relative top-2 start-2">
+            <Button className="position-relative top-2 start-2" onClick={() => setCurrentPanel("back")}>
                 Back
             </Button>
 

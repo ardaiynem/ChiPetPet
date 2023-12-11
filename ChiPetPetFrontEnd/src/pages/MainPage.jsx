@@ -19,10 +19,20 @@ import { PanelContext } from "../contexts/panelContext";
 import { useState } from "react";
 
 function MainPage() {
-    const [currentPanel, setCurrentPanel] = useState(<MenuCards />);
+    const [currentPanel, setPanel] = useState(<MenuCards />);
+
+    const setCurrentPanel = (reactElement) => {
+        if (reactElement == "back") {
+            setPanel(<MenuCards />)
+        }
+        else {
+            setPanel(reactElement)
+        }
+    }
 
     return (
         <>
+
             <Container fluid className="h-100 p-0">
                 <Stack gap={0} className="h-100">
                     <Navbar expand="lg" bg="primary" className="flex-grow-0">

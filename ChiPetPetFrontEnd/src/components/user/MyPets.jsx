@@ -1,11 +1,14 @@
 import { Card, Button, Dropdown } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
-
+import { PanelContext } from "../../contexts/panelContext";
+import { useState, useEffect, useContext } from "react";
 
 function MyPets() {
+    const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+
     return (
         <div className="p-0" style={{ width: "100%" }}>
-            <Button className="position-relative top-2 start-2">
+            <Button className="position-relative top-2 start-2" onClick={() => setCurrentPanel("back")}>
                 Back
             </Button>
 
