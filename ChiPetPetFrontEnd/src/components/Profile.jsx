@@ -7,6 +7,8 @@ const Profile = (props) => {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
     const role = props.role
 
+    const verified = props.role != "user"
+
     return (
         <div className="p-2 w-100">
             <Button className="position-relative top-2 start-2" onClick={() => setCurrentPanel("back")}>
@@ -37,14 +39,14 @@ const Profile = (props) => {
                         <button className="btn btn-primary w-100">Edit</button>
                     </div>
                     <div className="d-flex justify-content-center align-items-center flex-column gap-3" style={{ flex: "1 1 0" }}>
-                        <input type="file" class="form-control" id="inputGroupFile02" />
-                        <textarea className="form-control" style={{ flex: "1 1 0" }}></textarea>
+                        <input type="file" class="form-control" id="inputGroupFile02" disabled={verified} />
+                        <textarea className="form-control" style={{ flex: "1 1 0" }} disabled={verified} />
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                            <label className="form-check-label" for="flexCheckDefault">
+                            <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled={verified} />
+                            <label className="form-check-label" for="flexCheckDefault" >
                                 Accept
                             </label>
-                            <button className="btn btn-primary ms-4 d-inline">Submit</button>
+                            <button className="btn btn-primary ms-4 d-inline" disabled={verified}>Submit</button>
                         </div>
                     </div>
                 </div>

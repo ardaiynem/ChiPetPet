@@ -32,7 +32,6 @@ function MainPage() {
 
     return (
         <>
-
             <Container fluid className="h-100 p-0">
                 <Stack gap={0} className="h-100">
                     <Navbar expand="lg" bg="primary" className="flex-grow-0">

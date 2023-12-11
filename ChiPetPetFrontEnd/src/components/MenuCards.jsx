@@ -18,9 +18,10 @@ import MessagePage from "../components/MessagePage";
 import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsAdmin";
 import VerificationRequests from "../components/admin/verificationRequests";
 import Profile from "./Profile";
+import PetBlog from "./PetBlog";
 
 function MenuCards() {
-    const [role, setRole] = useState("user");
+    const [role, setRole] = useState("expert");
     const [cards, setCards] = useState([]);
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
@@ -31,7 +32,7 @@ function MenuCards() {
         , { name: "Adoption Application", element: <AdoptionApplicationsAdmin /> }
         , { name: "Appointments", element: <AppointmentList /> }
         , { name: "My Pet", element: <MyPets /> }
-        , { name: "Pet Blog", element: null }
+        , { name: "Pet Blog", element: <PetBlog /> }
         , { name: "Messages", element: <MessagePage /> }
         , { name: "Profile", element: <Profile role={role} /> }
     ]
@@ -86,8 +87,8 @@ function MenuCards() {
                 <div className="w-50 p-3" style={{ flex: "3 3 auto" }}>
                     <div className="d-flex flex-column flex-wrap" style={{ maxHeight: "90vh" }}>
                         {
-                            cards.map(card => (
-                                <Card className="mb-3 ms-3 flex-shrink-1" style={{ width: "300px" }}>
+                            cards.map((card, i) => (
+                                <Card key={i} className="mb-3 ms-3 flex-shrink-1" style={{ width: "300px" }}>
                                     <Card.Header as="h5">{card.name}</Card.Header>
                                     <Card.Body>
                                         <Button className="w-100" onClick={() => handlePanelChange(card)}>Go</Button>
