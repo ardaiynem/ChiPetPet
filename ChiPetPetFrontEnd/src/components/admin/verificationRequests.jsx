@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
 import { Button, Dropdown, FormControl } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
+import { PanelContext } from "../../contexts/panelContext";
+import { useState, useEffect, useContext } from "react";
 
 function VerificationRequests() {
+    const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
     return (
         <div className="p-0" style={{ width: "100%" }}>
-            <Button className="position-relative top-2 start-2">
+            <Button className="position-relative top-2 start-2" onClick={() => setCurrentPanel("back")}>
                 Back
             </Button>
 
@@ -80,7 +82,7 @@ function VerificationRequests() {
                         </tbody>
                     </table>
                 </div>
-                <div className="d-flex justify-content-center p-3" style={{ flex: "1 1 0", height:"60vh" }}>
+                <div className="d-flex justify-content-center p-3" style={{ flex: "1 1 0", height: "60vh" }}>
                     <div className="card border-primary mb-3 w-100">
                         <div className="d-flex card-header justify-content-start p-3">
                             <img src={catImg} style={{ width: "100px", borderRadius: "50%", flex: "0 0 auto" }} />

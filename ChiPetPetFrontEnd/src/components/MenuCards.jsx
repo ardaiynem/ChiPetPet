@@ -19,7 +19,7 @@ import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsA
 import VerificationRequests from "../components/admin/verificationRequests";
 
 function MenuCards() {
-    const [role, setRole] = useState("user");
+    const [role, setRole] = useState("admin");
     const [cards, setCards] = useState([]);
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
@@ -35,19 +35,24 @@ function MenuCards() {
         , { name: "Profile", element: null }
     ]
 
-    let cardHeadersShelter = ["Animal List"
-        , "Adoption Application"
-        , "Messages"
-        , "Profile"]
+    let cardHeadersShelter = [
+        , { name: "Adoption Application", element: <ApplicationsList /> }
+        , { name: "Messages", element: <MessagePage /> }
+        , { name: "Profile", element: null }
+    ]
 
-    let cardHeadersVeterinarian = ["Upload Health Records"
-        , "Appointments"
-        , "Messages"
-        , "Profile"]
+    let cardHeadersVeterinarian = [
+        , { name: "Upload Health Records", element: <UploadHealthRecord /> }
+        , { name: "Adoption Application", element: <AppointmentList /> }
+        , { name: "Messages", element: <MessagePage /> }
+        , { name: "Profile", element: null }
+    ]
 
-    let cardHeadersAdmin = ["Adoption Application"
-        , "Verification Operations"
-        , "Profile"]
+    let cardHeadersAdmin = [
+        , { name: "Adoption Application", element: <AdoptionApplicationsAdmin /> }
+        , { name: "Verification Operations", element: <VerificationRequests /> }
+        , { name: "Profile", element: null }
+    ]
 
     useEffect(() => {
         switch (role) {

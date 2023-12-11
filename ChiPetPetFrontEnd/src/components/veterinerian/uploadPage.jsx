@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { PanelContext } from "../../contexts/panelContext";
+import { useState, useEffect, useContext } from "react";
 import { Button, Form, Row, Col } from 'react-bootstrap';
 
 function UploadHealthRecord() {
@@ -6,6 +7,8 @@ function UploadHealthRecord() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -15,7 +18,7 @@ function UploadHealthRecord() {
 
   return (
     <div className="p-4">
-        <Button className="position-relative start-2 mt-4">
+        <Button className="position-relative start-2 mt-4" onClick={() => setCurrentPanel("back")}>
             Back
         </Button>
       <h2 className='mt-2'>Upload Health Record</h2>

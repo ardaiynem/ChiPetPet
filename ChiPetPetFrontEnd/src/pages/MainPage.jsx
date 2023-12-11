@@ -45,15 +45,6 @@ function MainPage() {
                             <PanelContext.Provider value={{ currentPanel, setCurrentPanel }}>
                                 {currentPanel}
                             </ PanelContext.Provider>
-                            {/* <MenuCards /> */}
-                            {/* <SearchPetPanel /> */}
-                            {/* <SingleAnimalPanel /> */}
-                            {/* <SearchVeterinarian /> */}
-                            {/* <MyPets /> */}
-                            {/* <MessagePage /> */}
-                            {/* { < AppointmentList /> } */}
-                            {/* <AdoptionApplicationsAdmin /> */}
-                            {/* <VerificationRequests /> */}
                         </Stack>
                     </div>
                 </Stack>

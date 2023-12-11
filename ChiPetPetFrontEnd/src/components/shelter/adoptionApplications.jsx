@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import { PanelContext } from "../../contexts/panelContext";
+import { useState, useEffect, useContext } from "react";
 import { Button, Dropdown, FormControl } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 
 function ApplicationsList() {
   const [selectedRows, setSelectedRows] = useState([]);
+
+  const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
   const toggleRowSelection = (rowNumber) => {
     if (selectedRows.includes(rowNumber)) {
@@ -17,7 +20,7 @@ function ApplicationsList() {
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
-      <Button className="position-relative top-2 start-2 mb-2">
+      <Button className="position-relative top-2 start-2 mb-2" onClick={() => setCurrentPanel("back")}>
         Back
       </Button>
 
