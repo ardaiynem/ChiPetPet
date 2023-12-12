@@ -91,8 +91,7 @@ def upload_verification_document(request):
 @csrf_exempt
 def get_own_verification_documents(request):
     if request.method == 'GET':
-        data = json.loads(request.body)
-        user_id = data.get('user_id')
+        user_id = request.GET.get('user_id')
 
         # Fetch the user's role to determine the type
         cursor = connection.cursor()

@@ -43,8 +43,7 @@ def upload_health_record(request):
 def get_health_records_by_pet(request):
     if request.method == 'GET':
         try:
-            data = json.loads(request.body)
-            pet_id = data.get('pet_id')
+            pet_id = request.GET.get('pet_id')
 
             # Retrieve health records for the specified pet_id
             cursor = connection.cursor()

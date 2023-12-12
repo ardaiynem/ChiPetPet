@@ -82,3 +82,38 @@ export const deleteNotification = async (notificationId, date_and_time) => {
     return await deleteFetcher(url.DELETE_NOTIFICATION_PATH(notificationId, date_and_time));
 }
 
+// health record
+export const uploadHealthRecord = async () => {
+    return await postFetcher(url.UPLOAD_HEALTH_RECORD_PATH());
+}
+
+export const getHealthRecordsByPet = async (pet_id) => {
+    return await getFetcher(url.GET_HEALTH_RECORDS_BY_PET_PATH(pet_id));
+}
+
+// pet create
+export const insertPet = async () => {
+    return await postFetcher(url.INSERT_PET_PATH());
+}
+
+export const getPetsByShelter = async (user_id) => {
+    return await getFetcher(url.GET_PETS_BY_SHELTER_PATH(user_id));
+}
+
+// verification documents
+
+export const getUnverifiedDocuments = async () => {
+    return await getFetcher(url.GET_UNVERIFIED_DOCUMENTS_PATH());
+}
+
+export const uploadVerificationDocument = async () => {
+    return await postFetcher(url.UPLOAD_VERIFICATION_DOCUMENT_PATH());
+}
+
+export const getOwnVerificationDocuments = async (user_id) => {
+    return await getFetcher(url.GET_OWN_VERIFICATION_DOCUMENTS_PATH(user_id));
+}
+
+export const verifyUser = async () => {
+    return await postFetcher(url.VERIFY_USER_PATH());
+}
