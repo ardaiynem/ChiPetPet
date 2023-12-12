@@ -29,10 +29,10 @@ def getTopics(request):
 @require_http_methods(["GET"])
 def getTopicBlogs(request):
     
-    data = json.loads(request.body)
+    topic = request.GET.get('topic')
 
     cursor = connection.cursor()
-    cursor.execute("SELECT post_id, user_id, date_and_time, topic, content, username FROM blog_post NATURAL JOIN user where topic = %s", (data['topic'], ))
+    cursor.execute("SELECT post_id, user_id, date_and_time, topic, content, username FROM blog_post NATURAL JOIN user where topic = %s", (topic, ))
     blogs = cursor.fetchall()
     
     cursor.close()
@@ -52,7 +52,6 @@ def createBlog(request):
     data = json.loads(request.body)
 
     cursor = connection.cursor()
-    
 
     cursor.execute("INSERT INTO blog_post(user_id, date_and_time, topic, content) VALUES(%s, %s, %s, %s)", 
                     (data['user_id'], data['date_and_time'], data['topic'], data['content']))
@@ -84,10 +83,12 @@ def updateBlog(request):
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def deleteBlog(request):
-    data = json.loads(request.body)
+    
+    post_id = request.GET.get('post_id')
+    user_id = request.GET.get('user_id')
 
     cursor = connection.cursor()
-    cursor.execute("DELETE FROM blog_post WHERE post_id = %s AND user_id = %s", (data['post_id'], data['user_id']))
+    cursor.execute("DELETE FROM blog_post WHERE post_id = %s AND user_id = %s", (post_id, user_id))
     
     connection.commit()
 
@@ -98,10 +99,11 @@ def deleteBlog(request):
 @require_http_methods(["GET"])
 def getBlogComments(request):
     
-    data = json.loads(request.body)
     cursor = connection.cursor()
 
-    cursor.execute("SELECT comment_id, date_and_time, content, user_id, username FROM comment NATURAL JOIN user where post_id = %s", (data['post_id'], ))
+    post_id = request.GET.get('post_id')
+
+    cursor.execute("SELECT comment_id, date_and_time, content, user_id, username FROM comment NATURAL JOIN user where post_id = %s", (post_id, ))
 
     comments = cursor.fetchall()
     
@@ -152,11 +154,13 @@ def updateComment(request):
 @require_http_methods(["DELETE"])
 def deleteComment(request):
 
-    data = json.loads(request.body)
+    post_id = request.GET.get('post_id')
+    comment_id = request.GET.get('comment_id')
+    user_id = request.GET.get('user_id')
 
     cursor = connection.cursor()
     cursor.execute("DELETE FROM comment WHERE (post_id, comment_id, user_id) = (%s, %s, %s)", 
-                   (data['post_id'], data['comment_id'], data['user_id']))
+                   (post_id, comment_id, user_id))
     
     connection.commit()
 
