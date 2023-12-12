@@ -49,3 +49,13 @@ export const GET_UNVERIFIED_DOCUMENTS_PATH = () => VERIFICATION_DOCUMENTS_PATH()
 export const UPLOAD_VERIFICATION_DOCUMENT_PATH = () => VERIFICATION_DOCUMENTS_PATH() + 'upload_verification_document/';
 export const GET_OWN_VERIFICATION_DOCUMENTS_PATH = (user_id) => VERIFICATION_DOCUMENTS_PATH() + 'get_own_verification_documents/?user_id=' + user_id;
 export const VERIFY_USER_PATH = () => VERIFICATION_DOCUMENTS_PATH() + 'verify_user/';
+
+// login register
+export const LOGIN_REGISTER_PATH = () => COMMON_PATH + 'login_register/';
+export const REGISTER_PATH = () => LOGIN_REGISTER_PATH() + 'register/';
+export const LOGIN_PATH = () => LOGIN_REGISTER_PATH() + 'login/';
+export const RESET_PASSWORD_PATH = () => LOGIN_REGISTER_PATH() + 'reset_password/';
+export const CHANGE_PASSWORD_PATH = () => LOGIN_REGISTER_PATH() + 'change_password/';
+
+
+

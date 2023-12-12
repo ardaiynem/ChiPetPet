@@ -115,5 +115,22 @@ export const getOwnVerificationDocuments = async (user_id) => {
 }
 
 export const verifyUser = async () => {
-    return await postFetcher(url.VERIFY_USER_PATH());
+    return await putFetcher(url.VERIFY_USER_PATH());
+}
+
+// login register
+export const register = async () => {
+    return await postFetcher(url.REGISTER_PATH());
+}
+
+export const login = async () => {
+    return await postFetcher(url.LOGIN_PATH());
+}
+
+export const resetPassword = async () => {
+    return await putFetcher(url.RESET_PASSWORD_PATH());
+}
+
+export const changePassword = async () => {
+    return await putFetcher(url.CHANGE_PASSWORD_PATH());
 }
