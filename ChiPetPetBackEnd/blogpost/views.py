@@ -150,6 +150,24 @@ def updateComment(request):
 
     return HttpResponse(status=200)
 
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def deleteComment(request):
+
+    post_id = request.GET.get('post_id')
+    user_id = request.GET.get('user_id')
+
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM blog WHERE (post_id, user_id) = (%s, %s)", 
+                   (post_id, user_id))
+    
+    connection.commit()
+
+    cursor.close()
+
+    return HttpResponse(status=200)
+
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def deleteComment(request):

@@ -16,7 +16,7 @@ import MessagePage from "../components/MessagePage";
 import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsAdmin";
 import VerificationRequests from "../components/admin/verificationRequests";
 import { PanelContext } from "../contexts/panelContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import LoginPage from "./LoginPage";
 
@@ -32,6 +32,13 @@ function MainPage() {
     }
   };
 
+  useEffect(() => {
+    if (!isAuthenticated && localStorage.getItem("userDetails") !== null) {
+      console.log(localStorage.getItem("userDetails"));
+      login(JSON.parse(localStorage.getItem("userDetails")));
+    }
+  });
+
   return (
     <>
       {!isAuthenticated ? (
@@ -44,7 +51,15 @@ function MainPage() {
             }}
           >
             {" "}
-            Deneme{" "}
+            UserDetails{" "}
+          </button>
+          <button
+            onClick={() => {
+              logout();
+            }}
+          >
+            {" "}
+            Logout {isAuthenticated}
           </button>
           <Stack gap={0} className="h-100">
             <Navbar expand="lg" bg="primary" className="flex-grow-0">

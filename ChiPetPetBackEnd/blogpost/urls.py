@@ -12,6 +12,7 @@ urlpatterns = [
     path("getBlogComments/", views.getBlogComments, name="getBlogComments"),
     path("createComment", views.createComment, name="createComment"),
     path("updateComment", views.updateComment, name="updateComment"),
+    path("deleteBlog/", views.deleteBlog, name="deleteBlog"),
     path("deleteComment/", views.deleteComment, name="deleteComment"),
 
 ]

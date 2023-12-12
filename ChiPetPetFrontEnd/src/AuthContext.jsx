@@ -11,10 +11,12 @@ export const AuthProvider = ({ children }) => {
   const login = (userDetails) => {
     // Implement your login logic here
     setUserDetails(userDetails);
+    localStorage.setItem("userDetails", JSON.stringify(userDetails));
     setAuthenticated(true);
   };
 
   const logout = () => {
+    localStorage.removeItem("userDetails");
     setUserDetails();
     setAuthenticated(false);
   };
