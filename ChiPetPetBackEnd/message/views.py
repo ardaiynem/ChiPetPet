@@ -32,11 +32,11 @@ def createMessage(request):
 @require_http_methods(["GET"])
 def getAllMessages(request):
     
-    data = json.loads(request.body)
+    user_id = request.GET.get('user_id')
 
     cursor = connection.cursor()
     query = "SELECT * FROM message where sender_id = %s or receiver_id = %s"
-    cursor.execute(query, (data['user_id'], data['user_id']))
+    cursor.execute(query, (user_id, user_id))
     messages = cursor.fetchall()
     
     cursor.close()
@@ -52,11 +52,12 @@ def getAllMessages(request):
 @require_http_methods(["GET"])
 def getAllMessagesAfter(request):
     
-    data = json.loads(request.body)
+    user_id = request.GET.get('user_id')
+    date = request.GET.get('date')
 
     cursor = connection.cursor()
     query = "SELECT * FROM message where date_and_time > %s AND (sender_id = %s or receiver_id = %s)"
-    cursor.execute(query, (data['date'], data['user_id'], data['user_id']))
+    cursor.execute(query, (date, user_id, user_id))
     messages = cursor.fetchall()
     
     cursor.close()
