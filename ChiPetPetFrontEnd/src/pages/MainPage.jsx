@@ -16,40 +16,75 @@ import MessagePage from "../components/MessagePage";
 import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsAdmin";
 import VerificationRequests from "../components/admin/verificationRequests";
 import { PanelContext } from "../contexts/panelContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../AuthContext";
+import LoginPage from "./LoginPage";
 
 function MainPage() {
-    const [currentPanel, setPanel] = useState(<MenuCards />);
+  const { isAuthenticated, login, logout, userDetails } = useAuth();
+  const [currentPanel, setPanel] = useState(<MenuCards />);
 
-    const setCurrentPanel = (reactElement) => {
-        if (reactElement == "back") {
-            setPanel(<MenuCards />)
-        }
-        else {
-            setPanel(reactElement)
-        }
+  const setCurrentPanel = (reactElement) => {
+    if (reactElement == "back") {
+      setPanel(<MenuCards />);
+    } else {
+      setPanel(reactElement);
     }
+  };
 
-    return (
-        <>
-            <Container fluid className="h-100 p-0">
-                <Stack gap={0} className="h-100">
-                    <Navbar expand="lg" bg="primary" className="flex-grow-0">
-                        <Container>
-                            <Navbar.Brand href="#">ChiPetPet</Navbar.Brand>
-                        </Container>
-                    </Navbar>
-                    <div className="p-0 flex-grow-1">
-                        <Stack gap={0} direction="horizontal" className="h-100 d-flex justify-content-center">
-                            <PanelContext.Provider value={{ currentPanel, setCurrentPanel }}>
-                                {currentPanel}
-                            </ PanelContext.Provider>
-                        </Stack>
-                    </div>
-                </Stack>
-            </Container>
-        </>
-    )
+  useEffect(() => {
+    if (!isAuthenticated && localStorage.getItem("userDetails") !== null) {
+      console.log(localStorage.getItem("userDetails"));
+      login(JSON.parse(localStorage.getItem("userDetails")));
+    }
+  });
+
+  return (
+    <>
+      {!isAuthenticated ? (
+        <LoginPage />
+      ) : (
+        <Container fluid className="h-100 p-0">
+          <button
+            onClick={() => {
+              console.log(userDetails);
+            }}
+          >
+            {" "}
+            UserDetails{" "}
+          </button>
+          <button
+            onClick={() => {
+              logout();
+            }}
+          >
+            {" "}
+            Logout {isAuthenticated}
+          </button>
+          <Stack gap={0} className="h-100">
+            <Navbar expand="lg" bg="primary" className="flex-grow-0">
+              <Container>
+                <Navbar.Brand href="#">ChiPetPet</Navbar.Brand>
+              </Container>
+            </Navbar>
+            <div className="p-0 flex-grow-1">
+              <Stack
+                gap={0}
+                direction="horizontal"
+                className="h-100 d-flex justify-content-center"
+              >
+                <PanelContext.Provider
+                  value={{ currentPanel, setCurrentPanel }}
+                >
+                  {currentPanel}
+                </PanelContext.Provider>
+              </Stack>
+            </div>
+          </Stack>
+        </Container>
+      )}
+    </>
+  );
 }
 
 export default MainPage;

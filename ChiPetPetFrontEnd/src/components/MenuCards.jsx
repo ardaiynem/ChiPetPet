@@ -21,7 +21,7 @@ import Profile from "./Profile";
 import PetBlog from "./PetBlog";
 
 function MenuCards() {
-    const [role, setRole] = useState("expert");
+    const [role, setRole] = useState("user");
     const [cards, setCards] = useState([]);
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 

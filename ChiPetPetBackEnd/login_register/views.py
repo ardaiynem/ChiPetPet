@@ -31,12 +31,19 @@ def register(request):
         if user:
             # user already exists error
             return JsonResponse({'status': 'User with this username already exists'}, status=400)
-        else:
-            cursor.execute("""INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
+            
+        cursor.execute("SELECT * FROM user WHERE email = %s", (email, ) )
+        user = cursor.fetchall()
+
+        if user:
+            # user already exists error
+            return JsonResponse({'status': 'User with this email already exists'}, status=400)
+        
+        cursor.execute("""INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
                            VALUES (%s, % s, % s, %s, %s, %s, %s)""", (first_name, last_name, username, email, password, verified, role, ))
-            connection.commit()
-            # register successfull 
-            return JsonResponse({'status': 'Registration successful'}, status=201)
+        connection.commit()
+        # register successfull 
+        return JsonResponse({'status': 'Registration successful'}, status=201)
                 
     return JsonResponse({'status': 'Invalid request method'}, status=405)
 
@@ -199,5 +206,20 @@ def reset_password(request):
 
         except Exception as e:
             return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def change_password(request):
+    if request.method == 'POST':
+        
+        data = json.loads(request.body)
+        username = data['username']
+        new_password = data['password']
+            
+        cursor = connection.cursor()
+        cursor.execute('UPDATE user SET password = %s WHERE username = %s', (make_password(new_password), username))
+
+        return JsonResponse({'status': 'Password change successful.'}, status=200)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)

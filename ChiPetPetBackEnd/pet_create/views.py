@@ -83,3 +83,50 @@ def get_pets(request):
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def get_pets_by_shelter(request):
+    if request.method == 'GET':
+        try:
+            # Get the shelter ID from the request parameters
+            shelter_id = request.GET.get('user_id')
+
+            # Validate shelter_id
+            if shelter_id is None:
+                return JsonResponse({'error': 'shelter_id is required'}, status=400)
+
+            # Retrieve pets from the pet table based on the shelter ID
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT * FROM pet
+                    WHERE shelter_id = %s
+                    """,
+                    [shelter_id],
+                )
+                pets = cursor.fetchall()
+
+            # Convert the results to a list of dictionaries
+            pets_list = [
+                {
+                    'pet_id': pet[0],
+                    'shelter_id': pet[1],
+                    'name': pet[2],
+                    'species': pet[3],
+                    'breed': pet[4],
+                    'gender': pet[5],
+                    'age': pet[6],
+                    'health_status': pet[7],
+                    'description': pet[8],
+                    'photo': pet[9].decode('utf-8') if pet[9] else None,  # Decode photo from bytes to string
+                    'adoption_status': pet[10],
+                }
+                for pet in pets
+            ]
+
+            return JsonResponse(pets_list, safe=False)
+
+        except Exception as e:
+            return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

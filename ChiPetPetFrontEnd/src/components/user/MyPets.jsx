@@ -6,6 +6,36 @@ import { useState, useEffect, useContext } from "react";
 function MyPets() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
+    const [pets, setPets] = useState([
+        {
+            id: 1,
+            name: "catto",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto",
+            species: "street"
+        },
+    ]);
+
+    const [selectedPet, setSelectedPet] = useState(null);
+
     return (
         <div className="p-0" style={{ width: "100%" }}>
             <Button className="position-relative top-2 start-2" onClick={() => setCurrentPanel("back")}>
@@ -52,43 +82,34 @@ function MyPets() {
                         </Dropdown>
                     </div>
 
-                    <table class="table table-striped">
+                    <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Species</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
+                            {
+                                pets.map((pet) => (
+                                    <tr onClick={() => {setSelectedPet(pet)}}>
+                                        <th scope="row">{pet.id}</th>
+                                        <td>{pet.name}</td>
+                                        <td>{pet.species}</td>
+                                    </tr>
+                                ))
+                            }
                         </tbody>
                     </table>
                 </div>
                 <div className="d-flex justify-content-end" style={{ flex: "1 1 0" }}>
-                    <div className="card" style={{ width: "400px" }}>
+                    <div className="card" style={{ width: "400px", visibility: selectedPet ? "visible": "hidden" }}>
                         <div className="d-flex p-3 justify-content-center">
                             <img src={catImg} className="card-img-top" />
                         </div>
                         <div className="card-body">
-                            <h5 className="card-title">Card title</h5>
+                            <h5 className="card-title">{selectedPet?.name}</h5>
                             <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                             <div className="d-grid gap-2">
                                 <button className="btn btn-primary" type="button">Button</button>
