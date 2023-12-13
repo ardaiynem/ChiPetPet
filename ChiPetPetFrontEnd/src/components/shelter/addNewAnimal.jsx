@@ -20,6 +20,7 @@ function AddNewAnimal() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Burada formun gönderilmesi veya işlenmesi işlemleri gerçekleştirilebilir.
+    
     console.log('Form submitted:', formData);
   };
 
