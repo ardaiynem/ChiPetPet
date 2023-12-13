@@ -72,22 +72,30 @@ def get_appointment_by_veterinarian(request):
     # veterinarian_id = data.get('veterinarian_id')
     veterinarian_id = request.GET.get('veterinarian_id')
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM appointment WHERE veterinarian_id = %s", [veterinarian_id])
+
+    cursor.execute("SELECT * FROM appointment, user WHERE veterinarian_id = %s AND appointment.user_id = user.user_id", [veterinarian_id])
     appointments = cursor.fetchall()
     cursor.close()
-    
+
     if appointments is None:
         return JsonResponse({
             'error': 'Appointment does not exist'
         }, status=404)
-
+    
     return JsonResponse({"appointments": [{
         'appointment_id': row[0],
         'date': row[1],
         'location': row[2],
         'appointment_text': row[3],
         'user_id': row[4],
-        'veterinarian_id': row[5]
+        'veterinarian_id': row[5],
+        'first_name': row[7],
+        'last_name': row[8],
+        'username': row[9],
+        'email': row[10],
+        'password': row[11],
+        'verified': row[12],
+        'role': row[13]
     } for row in appointments]}, status=200)
     
 
@@ -102,13 +110,17 @@ def create_appointment(request):
     veterinarian_id = data.get('veterinarian_id')
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM appointment WHERE date = %s AND location = %s AND appointment_text = %s AND user_id = %s AND veterinarian_id = %s", [date, location, appointment_text, user_id, veterinarian_id])
+    cursor.execute("SELECT * FROM appointment WHERE date = %s AND user_id = %s AND veterinarian_id = %s", [date, user_id, veterinarian_id])
     appointment = cursor.fetchone()
 
     if appointment is not None:
         return JsonResponse({
             'error': 'Appointment already exists'
         }, status=404)
+    
+    # check whether the veterinarian is available etc.
+
+    cursor.execute("SELECT * FROM user WHERE user_id = %s", [user_id])
 
     cursor.execute("INSERT INTO appointment (date, location, appointment_text, user_id, veterinarian_id) VALUES (%s, %s, %s, %s, %s)", [date, location, appointment_text, user_id, veterinarian_id])
     connection.commit()

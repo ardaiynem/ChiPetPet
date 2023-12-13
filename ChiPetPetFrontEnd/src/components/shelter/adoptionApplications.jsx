@@ -2,10 +2,21 @@ import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { Button, Dropdown, FormControl } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
+import { UseAuth } from "../../AuthContext";
+import { UseAlert } from "../../AlertContext";
+import { getAllApplications } from '../../apiHelper/backendHelper';
+
+/**
+ * accept, reject applications etc will be added
+ * use applications_by_shelter_id instead of getAllApplications
+ * get necessary data from applications and display them
+ */
 
 function ApplicationsList() {
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [ applications, setApplications ] = useState([]);
+  const { setTimedAlert } = UseAlert();
+  const { logout, userDetails } = UseAuth();
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
   const toggleRowSelection = (rowNumber) => {
@@ -15,6 +26,16 @@ function ApplicationsList() {
       setSelectedRows([...selectedRows, rowNumber]);
     }
   };
+
+  useEffect(() => {
+    getAllApplications()
+      .then((res) => {
+        setApplications(res.data.applications);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting applications", "error", 3000);
+      })
+  }, []);
 
   const isRowSelected = (rowNumber) => selectedRows.includes(rowNumber);
 

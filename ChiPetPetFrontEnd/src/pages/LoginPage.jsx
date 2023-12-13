@@ -1,11 +1,12 @@
 import { Container, Button, Form, Card } from "react-bootstrap";
 import { useAuth } from "../AuthContext";
 import { useState } from "react";
+import { useAlert } from "../AlertContext";
 import axios from "axios";
 
 function LoginPage() {
   const { isAuthenticated, login, logout, userDetails } = useAuth();
-
+  const { setTimedAlert } = useAlert();
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,11 +25,12 @@ function LoginPage() {
       })
       .then((res) => {
         login(res.data.user_info);
+        setTimedAlert("Login successful", "success", 3000);
       })
       .catch((e) => {
         if (e.response.status == 401) {
-          console.log("Invalid credentials");
           setIsInvalid(true);
+          setTimedAlert("Invalid credentials", "error", 3000);
         }
       });
   };

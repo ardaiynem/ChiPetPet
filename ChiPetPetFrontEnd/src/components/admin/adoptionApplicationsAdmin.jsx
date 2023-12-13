@@ -2,9 +2,29 @@ import { Button, Dropdown, FormControl } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
+import { UseAuth } from "../../AuthContext";
+import { UseAlert } from "../../AlertContext";
+import { getAllApplications } from '../../apiHelper/backendHelper';
+
+/**
+ * accept, reject applications etc will be added 
+ */
 
 function AdoptionApplicationsAdmin() {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+  const [ applications, setApplications ] = useState([]);
+  const { setTimedAlert } = UseAlert();
+  const { logout, userDetails } = UseAuth();
+
+  useEffect(() => {
+    getAllApplications()
+      .then((res) => {
+        setApplications(res.data.applications);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting applications", "error", 3000);
+      })
+  }, []);
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
@@ -62,23 +82,14 @@ function AdoptionApplicationsAdmin() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-              </tr>
+              {applications.map((application, index) => (
+                <tr>
+                  <th scope="row">{index}</th>
+                  <td>{application.adopter_first_name}</td>
+                  <td>{application.adopter_last_name}</td>
+                  <td>{application.application_status}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -114,23 +125,14 @@ function AdoptionApplicationsAdmin() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                      </tr>
+                      {applications.map((application, index) => (
+                        <tr>
+                          <th scope="row">{index}</th>
+                          <td>{application.adopter_first_name}</td>
+                          <td>{application.adopter_last_name}</td>
+                          <td>{application.application_status}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -145,23 +147,14 @@ function AdoptionApplicationsAdmin() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">3</th>
-                        <td colspan="2">Larry the Bird</td>
-                        <td>@twitter</td>
-                      </tr>
+                      {applications.map((application, index) => (
+                        <tr>
+                          <th scope="row">{index}</th>
+                          <td>{application.adopter_first_name}</td>
+                          <td>{application.adopter_last_name}</td>
+                          <td>{application.application_status}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

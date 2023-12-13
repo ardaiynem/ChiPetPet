@@ -2,11 +2,20 @@ import { Button, Dropdown, FormControl } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
+import { getAppointmentByVeterinarian } from "../../apiHelper/backendHelper";
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
+
+/**
+ * this page is going to change
+ */
 
 function AppointmentList() {
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const [appointments, setAppointments] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+  const { setTimedAlert } = useAlert();
+  const { isAuthenticated, login, logout, userDetails } = useAuth();
 
   const toggleRowSelection = (rowNumber) => {
     if (selectedRows.includes(rowNumber)) {
@@ -16,7 +25,25 @@ function AppointmentList() {
     }
   };
 
+  useEffect(() => {
+    getAppointmentByVeterinarian(userDetails.user_id).then((res) => {
+      setAppointments(res.data.appointments);
+    });
+  }, []);
+
   const isRowSelected = (rowNumber) => selectedRows.includes(rowNumber);
+
+  const rejectHandler = () => {
+    alert("Rejected");
+  }
+
+  const acceptHandler = () => {
+    alert("Accepted");
+  }
+
+  const contactHandler = () => {
+    alert("Contacted");
+  }
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
@@ -51,44 +78,26 @@ function AppointmentList() {
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Appointment Fot</th>
+                <th scope="col">User</th>
+                <th scope="col">Appointment For</th>
                 <th scope="col">Appointment Status</th>
                 <th scope="col">Date</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                className={isRowSelected(1) ? 'table-primary' : ''}
-                onClick={() => toggleRowSelection(1)}
-              >
-                <th scope="row">1</th>
-                <td>Necdet</td>
-                <td>Köpekcik</td>
-                <td>Pending</td>
-                <td>31.11.2023</td>
-              </tr>
-              <tr
-                className={isRowSelected(2) ? 'table-primary' : ''}
-                onClick={() => toggleRowSelection(2)}
-              >
-                <th scope="row">2</th>
-                <td>Mehmet</td>
-                <td>Pamuk</td>
-                <td>Pending</td>
-                <td>31.11.2023</td>
-              </tr>
-              <tr
-                className={isRowSelected(3) ? 'table-primary' : ''}
-                onClick={() => toggleRowSelection(3)}
-              >
-                <th scope="row">3</th>
-                <td>Ahmet</td>
-                <td>Kedi</td>
-                <td>Rejected</td>
-                <td>31.09.2023</td>
-              </tr>
-              <tr
+              {appointments.map((appointment, index) => (
+                <tr
+                  className={isRowSelected(index) ? "table-primary" : ""}
+                  onClick={() => toggleRowSelection(index)}
+                >
+                  <th scope="row">{index}</th>
+                  <td>{appointment.pet_name}</td>
+                  <td>{appointment.appointment_for}</td>
+                  <td>{appointment.appointment_status}</td>
+                  <td>{appointment.date}</td>
+                </tr>
+              ))}
+              {/* <tr
                 className={isRowSelected(4) ? 'table-primary' : ''}
                 onClick={() => toggleRowSelection(4)}
               >
@@ -97,7 +106,8 @@ function AppointmentList() {
                 <td>Köpük</td>
                 <td>Accepted</td>
                 <td>31.11.2023</td>
-              </tr>
+              </tr> */}
+              
             </tbody>
           </table>
         </div>
@@ -108,13 +118,13 @@ function AppointmentList() {
               <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
               <h5 className="card-title" style={{marginRight:"50px"}}>Kerem Aktürkoğlu</h5>
               <div className="d-flex flex-column align-items-start">
-                <button className="btn btn-danger mb-2" type="button" style={{ backgroundColor: "red", borderColor: "red", color: "white", width: "100px" }}>
+                <button className="btn btn-danger mb-2" onClick={rejectHandler} type="button" style={{ backgroundColor: "red", borderColor: "red", color: "white", width: "100px" }}>
                   Reject
                 </button>
-                <button className="btn btn-success mb-2" type="button" style={{ backgroundColor: "green", borderColor: "green", color: "white", width: "100px" }}>
+                <button className="btn btn-success mb-2" onClick={acceptHandler} type="button" style={{ backgroundColor: "green", borderColor: "green", color: "white", width: "100px" }}>
                   Accept
                 </button>
-                <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
+                <button className="btn btn-primary" onClick={contactHandler} type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
                   Contact
                 </button>
                 <input

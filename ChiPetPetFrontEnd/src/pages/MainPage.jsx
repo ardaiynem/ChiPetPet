@@ -19,6 +19,7 @@ import { PanelContext } from "../contexts/panelContext";
 import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import LoginPage from "./LoginPage";
+import Alert from "../components/UI/Alert";
 
 function MainPage() {
   const { isAuthenticated, login, logout, userDetails } = useAuth();
@@ -41,6 +42,7 @@ function MainPage() {
 
   return (
     <>
+    <Alert />
       {!isAuthenticated ? (
         <LoginPage />
       ) : (

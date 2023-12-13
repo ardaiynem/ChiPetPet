@@ -2,12 +2,40 @@ import { Card, Button, Row, Col, Pagination, Dropdown, Stack } from "react-boots
 import catImg from "../assets/cat1.jpeg";
 import { PanelContext } from "../contexts/panelContext";
 import React, { useContext } from "react";
+import { useState } from "react";
+import { createApplication } from "../apiHelper/backendHelper";
+import { useAuth } from "../AuthContext";
+import { useAlert } from "../AlertContext";
 
+/**
+ * need pet_id and animal_shelter_id to be passed in
+ */
 
 
 function AdoptionApply() {
 
+    const { logout, userDetails } = useAuth();    
+    const { setTimedAlert } = useAlert();
     const { setCurrentPanel } = useContext(PanelContext);
+    const [application_note, setApplicationNote] = useState("");
+
+    const applicationHandler = () => {
+        const data = {
+            adopter_id: userDetails.user_id,
+            pet_id: 1,
+            animal_shelter_id: 1,
+            application_note: application_note
+        }
+
+        createApplication(data)
+            .then((res) => {
+                setTimedAlert("Application created successfully", "success", 3000);
+                setCurrentPanel("back");
+            })
+            .catch((err) => {
+                setTimedAlert("Error creating application", "error", 3000);
+            })
+    }
 
     return (
         <>
@@ -32,7 +60,7 @@ function AdoptionApply() {
                 <form>
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Adoption Note:</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="12" style={{width:"500px"}} ></textarea>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="12" style={{width:"500px"}} value={application_note} onChange={(e) => setApplicationNote(e.target.value)}></textarea>
                     </div>
                 </form>
             </div>
@@ -46,7 +74,7 @@ function AdoptionApply() {
                             <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c" }} onClick={() => setCurrentPanel("back")}>
                                 Cancel
                             </Button>
-                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c"  }}>
+                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c" }} onClick={applicationHandler}>
                                 Apply
                             </Button>
                         </div>
