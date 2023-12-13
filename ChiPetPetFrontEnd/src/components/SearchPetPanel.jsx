@@ -16,12 +16,61 @@ function SearchPetPanel(props) {
 
     let animalType = props.animalType
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+    const [page, setPage] = useState(1)
+    const [pets, setPets] = useState([
+        {
+            id: 1,
+            name: "catto",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto2",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto3",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto4",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto5",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto2",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto3",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto4",
+            species: "street"
+        },
+        {
+            id: 1,
+            name: "catto5",
+            species: "street"
+        },
+    ]);
 
-    let active = 1;
     let items = [];
-    for (let number = 1; number <= 5; number++) {
+    const animalPerPage = 6
+    let pageAmount = Math.floor(pets.length / animalPerPage) + 1
+    for (let number = 1; number <= pageAmount; number++) {
         items.push(
-            <Pagination.Item key={number} active={number === active}>
+            <Pagination.Item key={number} active={number === page} onClick={() => setPage(number)}>
                 {number}
             </Pagination.Item>,
         );
@@ -73,15 +122,15 @@ function SearchPetPanel(props) {
                 </div>
                 <div className="d-flex w-70 ms-3 mt-3 flex-column flex-wrap" style={{ height: "700px" }}>
                     {
-                        cardHeaders.map(name => (
-                            <Card key={name} className="mb-3 me-3" style={{ maxWidth: "576px" }}>
+                        (pets.slice((page - 1) * animalPerPage, (page - 1) * animalPerPage + 6)).map(pet => (
+                            <Card key={pet.id} className="mb-3 me-3" style={{ maxWidth: "576px" }}>
                                 <Row className="no-gutters">
                                     <Col xs={4} className="d-flex">
                                         <Card.Img src={catImg} style={{ objectFit: "cover" }} />
                                     </Col>
                                     <Col xs={8}>
                                         <Card.Body>
-                                            <Card.Title>{name}</Card.Title>
+                                            <Card.Title>{pet.name}</Card.Title>
                                             <Card.Text>
                                                 Some quick example text to build on the card title and make up the
                                                 bulk of the card's content.
