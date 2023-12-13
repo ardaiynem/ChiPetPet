@@ -4,6 +4,8 @@ import catImg from "../assets/cat1.jpeg";
 import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 
+import SingleAnimalPanel from "./SingleAnimalPanel";
+
 function SearchPetPanel(props) {
     let cardHeaders = [
         "Catto1"
@@ -86,7 +88,7 @@ function SearchPetPanel(props) {
                                                 Some quick example text to build on the card title and make up the
                                                 bulk of the card's content.
                                             </Card.Text>
-                                            <Button variant="primary">Go somewhere</Button>
+                                            <Button variant="primary" onClick={()=>setCurrentPanel(<SingleAnimalPanel/>)}>Go somewhere</Button>
                                         </Card.Body>
                                     </Col>
                                 </Row>
