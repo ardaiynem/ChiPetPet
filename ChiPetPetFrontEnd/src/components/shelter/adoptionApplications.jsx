@@ -4,11 +4,9 @@ import { Button, Dropdown, FormControl } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 import { UseAuth } from "../../AuthContext";
 import { UseAlert } from "../../AlertContext";
-import { getAllApplications } from '../../apiHelper/backendHelper';
+import { getApplicationByShelter, updateApplicationStatus } from '../../apiHelper/backendHelper';
 
 /**
- * accept, reject applications etc will be added
- * use applications_by_shelter_id instead of getAllApplications
  * get necessary data from applications and display them
  */
 
@@ -19,16 +17,8 @@ function ApplicationsList() {
   const { logout, userDetails } = UseAuth();
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
-  const toggleRowSelection = (rowNumber) => {
-    if (selectedRows.includes(rowNumber)) {
-      setSelectedRows(selectedRows.filter((row) => row !== rowNumber));
-    } else {
-      setSelectedRows([...selectedRows, rowNumber]);
-    }
-  };
-
   useEffect(() => {
-    getAllApplications()
+    getApplicationByShelter(userDetails.id)
       .then((res) => {
         setApplications(res.data.applications);
       })
@@ -37,7 +27,53 @@ function ApplicationsList() {
       })
   }, []);
 
+  const toggleRowSelection = (rowNumber) => {
+    if (selectedRows.includes(rowNumber)) {
+      setSelectedRows(selectedRows.filter((row) => row !== rowNumber));
+    } else {
+      setSelectedRows([...selectedRows, rowNumber]);
+    }
+  };
+
   const isRowSelected = (rowNumber) => selectedRows.includes(rowNumber);
+
+  const acceptApplicationHandler = () => {
+    if (selectedRows.length === 0) {
+      setTimedAlert("Please select an application", "error", 3000);
+      return;
+    }
+
+    const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+    
+    applicationIds.forEach((id) => {
+      updateApplicationStatus(id, "accepted")
+        .then((res) => {
+          setTimedAlert("Application accepted", "success", 3000);
+        })
+        .catch((err) => {
+          setTimedAlert("Error accepting application", "error", 3000);
+        })
+    });
+  };
+
+  const rejectApplicationHandler = () => {
+    if (selectedRows.length === 0) {
+      setTimedAlert("Please select an application", "error", 3000);
+      return;
+    }
+
+    const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+    
+    applicationIds.forEach((id) => {
+      updateApplicationStatus(id, "rejected")
+        .then((res) => {
+          setTimedAlert("Application rejected", "success", 3000);
+        })
+        .catch((err) => {
+          setTimedAlert("Error rejecting application", "error", 3000);
+        })
+    });
+  };
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
@@ -129,10 +165,10 @@ function ApplicationsList() {
               <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
               <h5 className="card-title" style={{marginRight:"50px"}}>Kerem Aktürkoğlu</h5>
               <div className="d-flex flex-column align-items-start">
-                <button className="btn btn-danger mb-2" type="button" style={{ backgroundColor: "red", borderColor: "red", color: "white", width: "100px" }}>
+                <button onClick={rejectApplicationHandler} className="btn btn-danger mb-2" type="button" style={{ backgroundColor: "red", borderColor: "red", color: "white", width: "100px" }}>
                   Reject
                 </button>
-                <button className="btn btn-success mb-2" type="button" style={{ backgroundColor: "green", borderColor: "green", color: "white", width: "100px" }}>
+                <button onClick={acceptApplicationHandler} className="btn btn-success mb-2" type="button" style={{ backgroundColor: "green", borderColor: "green", color: "white", width: "100px" }}>
                   Accept
                 </button>
                 <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>

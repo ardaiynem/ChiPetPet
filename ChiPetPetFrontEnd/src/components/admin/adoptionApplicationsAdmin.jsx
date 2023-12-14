@@ -7,7 +7,8 @@ import { UseAlert } from "../../AlertContext";
 import { getAllApplications } from '../../apiHelper/backendHelper';
 
 /**
- * accept, reject applications etc will be added 
+ * admins should be able to accept or reject adoption applications
+ * add functionality to select applications
  */
 
 function AdoptionApplicationsAdmin() {
@@ -25,6 +26,44 @@ function AdoptionApplicationsAdmin() {
         setTimedAlert("Error getting applications", "error", 3000);
       })
   }, []);
+
+  // const acceptApplicationHandler = () => {
+  //   if (selectedRows.length === 0) {
+  //     setTimedAlert("Please select an application", "error", 3000);
+  //     return;
+  //   }
+
+  //   const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+    
+  //   applicationIds.forEach((id) => {
+  //     updateApplicationStatus(id, "accepted")
+  //       .then((res) => {
+  //         setTimedAlert("Application accepted", "success", 3000);
+  //       })
+  //       .catch((err) => {
+  //         setTimedAlert("Error accepting application", "error", 3000);
+  //       })
+  //   });
+  // };
+
+  // const rejectApplicationHandler = () => {
+  //   if (selectedRows.length === 0) {
+  //     setTimedAlert("Please select an application", "error", 3000);
+  //     return;
+  //   }
+
+  //   const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+    
+  //   applicationIds.forEach((id) => {
+  //     updateApplicationStatus(id, "rejected")
+  //       .then((res) => {
+  //         setTimedAlert("Application rejected", "success", 3000);
+  //       })
+  //       .catch((err) => {
+  //         setTimedAlert("Error rejecting application", "error", 3000);
+  //       })
+  //   });
+  // };
 
   return (
     <div className="p-0" style={{ width: "100%" }}>

@@ -7,7 +7,7 @@ import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 
 /**
- * this page is going to change
+ * change the way appointments are displayed
  */
 
 function AppointmentList() {
