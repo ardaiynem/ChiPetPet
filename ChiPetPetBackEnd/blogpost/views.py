@@ -19,11 +19,16 @@ def index(request):
 def getTopics(request):
 
     cursor = connection.cursor()
-    cursor.execute("SELECT DISTINCT topic FROM blog_post")
+    cursor.execute("SELECT topic, post_id, username, date_and_time FROM blog_post NATURAL JOIN user")
     topics = cursor.fetchall()
     
     cursor.close()
-    return JsonResponse({'topics': topics}, status=200)
+    return JsonResponse({'topics': [
+        {"topic": topic[0],
+         "post_id": topic[1],
+         "user_name": topic[2],
+         "date": topic[3]} for topic in topics
+    ]}, status=200)
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -103,7 +108,7 @@ def getBlogComments(request):
 
     post_id = request.GET.get('post_id')
 
-    cursor.execute("SELECT comment_id, date_and_time, content, user_id, username FROM comment NATURAL JOIN user where post_id = %s", (post_id, ))
+    cursor.execute("SELECT comment_id, date_and_time, content, user_id, username, role FROM comment NATURAL JOIN user where post_id = %s", (post_id, ))
 
     comments = cursor.fetchall()
     
@@ -114,7 +119,8 @@ def getBlogComments(request):
         "date_and_time": comment[1],
         "content": comment[2],
         "user_id": comment[3],
-        "user_name": comment[4]} for comment in comments]}, status=200)
+        "user_name": comment[4],
+        "role": comment[5]} for comment in comments]}, status=200)
 
 @csrf_exempt
 @require_http_methods(["POST"])

@@ -35,18 +35,41 @@ def getAllMessages(request):
     user_id = request.GET.get('user_id')
 
     cursor = connection.cursor()
-    query = "SELECT * FROM message where sender_id = %s or receiver_id = %s"
+    
+    query = "(SELECT receiver_id, username, role FROM message INNER JOIN user ON receiver_id = user_id WHERE sender_id = %s) UNION (SELECT sender_id, username, role FROM message INNER JOIN user ON sender_id = user_id WHERE receiver_id = %s)"
     cursor.execute(query, (user_id, user_id))
-    messages = cursor.fetchall()
+    chats = cursor.fetchall()
+
+    query = "SELECT * FROM message WHERE (sender_id = %s OR receiver_id = %s) AND (sender_id = %s OR receiver_id = %s) ORDER BY date_and_time"
     
-    cursor.close()
+    messages = []
+
+    for c in chats: 
+        cursor.execute(query, (user_id, user_id, c[0], c[0]))   
+        messages.append(cursor.fetchall())
+
     
-    return JsonResponse({"messages": [{
-        "date": message[0],
-        "content": message[1],
-        "sender_id": message[2],
-        "receiver_id": message[3]
-        } for message in messages]}, status=200)
+    cursor.close()              
+
+    return JsonResponse({
+        "chats": [
+            {
+                "chat_id": chats[i][0],
+                "username": chats[i][1],
+                "role": chats[i][2],
+                "messages": [
+                    {
+                        "date": message[0],
+                        "content": message[1],
+                        "sender_id": message[2],
+                        "receiver_id": message[3]
+                    }
+                    for message in messages[i]
+                ]
+            }
+            for i in range(len(chats))
+        ]
+    }, status=200)
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -56,15 +79,37 @@ def getAllMessagesAfter(request):
     date = request.GET.get('date')
 
     cursor = connection.cursor()
-    query = "SELECT * FROM message where date_and_time > %s AND (sender_id = %s or receiver_id = %s)"
-    cursor.execute(query, (date, user_id, user_id))
-    messages = cursor.fetchall()
+    query = "(SELECT receiver_id, username, role FROM message INNER JOIN user ON receiver_id = user_id WHERE sender_id = %s AND date_and_time > %s) UNION (SELECT receiver_id, username, role FROM message INNER JOIN user ON receiver_id = user_id WHERE receiver_id = %s AND date_and_time > %s)"
+    cursor.execute(query, (user_id, date, user_id, date))
+    chats = cursor.fetchall()
+
+    query = "SELECT * FROM message WHERE date_and_time > %s AND (sender_id = %s OR receiver_id = %s) AND (sender_id = %s OR receiver_id = %s) ORDER BY date_and_time"
     
-    cursor.close()
+    messages = []
+
+    for c in chats: 
+        cursor.execute(query, (date, user_id, user_id, c[0], c[0]))   
+        messages.append(cursor.fetchall())
+
     
-    return JsonResponse({"messages": [{
-        "date": message[0],
-        "content": message[1],
-        "sender_id": message[2],
-        "receiver_id": message[3]
-        } for message in messages]}, status=200)
+    cursor.close()              
+
+    return JsonResponse({
+        "chats": [
+            {
+                "chat_id": chats[i][0],
+                "username": chats[i][1],
+                "role": chats[i][2],
+                "messages": [
+                    {
+                        "date": message[0],
+                        "content": message[1],
+                        "sender_id": message[2],
+                        "receiver_id": message[3]
+                    }
+                    for message in messages[i]
+                ]
+            }
+            for i in range(len(chats))
+        ]
+    }, status=200)

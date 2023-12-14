@@ -47,26 +47,31 @@ function MainPage() {
         <LoginPage />
       ) : (
         <Container fluid className="h-100 p-0">
-          <button
-            onClick={() => {
-              console.log(userDetails);
-            }}
-          >
-            {" "}
-            UserDetails{" "}
-          </button>
-          <button
-            onClick={() => {
-              logout();
-            }}
-          >
-            {" "}
-            Logout {isAuthenticated}
-          </button>
           <Stack gap={0} className="h-100">
             <Navbar expand="lg" bg="primary" className="flex-grow-0">
               <Container>
                 <Navbar.Brand href="#">ChiPetPet</Navbar.Brand>
+                <div className="d-flex justify-content-end mb-2">
+                  <style>
+                    {`
+
+                        .btn-dark:hover {
+                        background-color: black;
+                        color: rgb(240, 8, 124);
+                        }
+                    `}
+                  </style>
+
+                  <button
+                    onClick={() => {
+                      logout();
+                    }}
+                    className="btn btn-dark rounded ml-2"
+                    style={{ fontSize: "18px" }}
+                  >
+                    Logout {isAuthenticated}
+                  </button>
+                </div>
               </Container>
             </Navbar>
             <div className="p-0 flex-grow-1">
