@@ -93,7 +93,7 @@ function MessagePage() {
                 <MessageThumbnail
                   username={c.username}
                   date={chats[i].messages[0].date}
-                  role={c.role}
+                  role={c.role.toUpperCase().replace("_", " ")}
                 />
               </div>
             ))}
