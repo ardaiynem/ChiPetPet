@@ -165,6 +165,10 @@ export const getShelterById = async (user_id) => {
   return await getFetcher(url.GET_SHELTER_BY_ID_PATH(user_id));
 };
 
+export const getAllShelters = async () => {
+  return await getFetcher(url.GET_ALL_SHELTERS_PATH());
+};
+
 // message
 export const getMessages = async () => {
   return await getFetcher(url.GET_MESSAGES_PATH(user_id));
