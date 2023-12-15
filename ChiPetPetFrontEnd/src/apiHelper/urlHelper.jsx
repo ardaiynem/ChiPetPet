@@ -30,9 +30,9 @@ export const DELETE_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + '
 // notification
 export const NOTIFICATION_PATH = () => COMMON_PATH + 'notification/';
 export const GET_NOTIFICATIONS_PATH = (user_id) => NOTIFICATION_PATH() + 'get_notifications/?user_id=' + user_id;
-export const GET_NOTIFICATION_PATH = (notificationId, dateAndTime) => NOTIFICATION_PATH() + 'get_notification/?notification_id=' + notificationId + '&date_and_time=' + dateAndTime;
-export const GET_RECENT_NOTIFICATIONS_PATH = (notificationId, dateAndTime) => NOTIFICATION_PATH() + 'get_recent_notifications/?notification_id=' + notificationId + '&date_and_time=' + dateAndTime;
-export const DELETE_NOTIFICATION_PATH = (notificationId, dateAndTime) => NOTIFICATION_PATH() + 'delete_notification/notification_id=?' + notificationId + '&date_and_time=' + dateAndTime;
+export const GET_NOTIFICATION_PATH = (user_id, date_and_time) => NOTIFICATION_PATH() + 'get_notification/?user_id=' + user_id + '&date_and_time=' + date_and_time;
+export const GET_RECENT_NOTIFICATIONS_PATH = (user_id, date_and_time) => NOTIFICATION_PATH() + 'get_recent_notifications/?user_id=' + user_id + '&date_and_time=' + date_and_time;
+export const DELETE_NOTIFICATION_PATH = (user_id, date_and_time) => NOTIFICATION_PATH() + 'delete_notification/?user_id=' + user_id + '&date_and_time=' + date_and_time;
 
 // health_record
 export const HEALTH_RECORD_PATH = () => COMMON_PATH + "health_record/";
