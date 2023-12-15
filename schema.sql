@@ -209,7 +209,7 @@ INSERT INTO pet (shelter_id, name, species, breed, gender, age, health_status, d
 VALUES (1, 'Buddy', 'Dog', 'Labrador Retriever', 'Male', 2, 'Good', 'Friendly and playful dog', NULL, 'Available');
 
 INSERT INTO applies (application_status, application_text, adopter_id, animal_shelter_id, pet_id)
-VALUES ('Pending', 'I would like to adopt Buddy.', 2, 1, 1);
+VALUES ('PENDING', 'I would like to adopt Buddy.', 2, 1, 1);
 
 INSERT INTO appointment (date_and_time, location, appointment_text, user_id, veterinarian_id)
 VALUES ('2020-11-11 11:11:11', '123 Vet St', 'Checkup', 2, 3);
@@ -220,7 +220,14 @@ VALUES (2, '2023-01-01 10:00:00', 'Application Status', 'Your adoption applicati
 INSERT INTO notification (user_id, date_and_time, topic, description)
 VALUES (3, '2023-01-02 12:00:00', 'Appointment Scheduled', 'You have a scheduled appointment for a health check.');
 
+INSERT INTO notification (user_id, date_and_time, topic, description)
+VALUES (4, '2023-01-03 14:00:00', 'Application Status', 'You have a new adoption application.');
 
+INSERT INTO notification (user_id, date_and_time, topic, description)
+VALUES (5, '2023-01-04 16:00:00', 'Application Status', 'You have a new adoption application.');
+
+INSERT INTO notification (user_id, date_and_time, topic, description)
+VALUES (6, '2023-01-05 18:00:00', 'Application Status', 'You have a new adoption application.');
 
 
 
