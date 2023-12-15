@@ -18,7 +18,7 @@ function LoginPage() {
   const [forgotPassword, setForgotPassword] = useState(false);
 
   const handleForgotPassword = (e) => {
-    console.log("ttt");
+    
     e.preventDefault();
     axios
       .post("http://127.0.0.1:8000/login_register/reset_password/", {
