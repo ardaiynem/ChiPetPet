@@ -63,9 +63,15 @@ def createBlog(request):
     
     connection.commit()
 
+    cursor.execute("SELECT COUNT(*) FROM blog_post")
+    
+    blog_count = cursor.fetchone()[0]
+
     cursor.close()
 
-    return HttpResponse(status=200)
+    return JsonResponse({
+       "post_id": blog_count 
+    }, status=200)
 
 
 
@@ -129,7 +135,7 @@ def createComment(request):
     data = json.loads(request.body)
 
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO comment SELECT %s, COUNT(*) + 1, %s, %s, %s FROM comment WHERE post_id = %s", 
+    cursor.execute("INSERT INTO comment SELECT %s, MAX(comment_id) + 1, %s, %s, %s FROM comment WHERE post_id = %s", 
                    (data['post_id'], data['user_id'], data['date_and_time'], data['content'], data['post_id']))
     
     connection.commit()

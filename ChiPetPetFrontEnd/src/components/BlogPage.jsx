@@ -48,6 +48,10 @@ const BlogPage = ({ post_id }) => {
         user_id: userDetails.user_id,
       },
     });
+    console.log(
+      "filter: ",
+      comments.filter((c) => c.comment_id !== comment_id)
+    );
     setComments((prevState) =>
       prevState.filter((c) => c.comment_id !== comment_id)
     );
@@ -108,7 +112,12 @@ const BlogPage = ({ post_id }) => {
           style={{ flex: "2 2 0", border: "1px solid", overflowY: "scroll" }}
         >
           {comments.map((c, i) => (
-            <BlogPostBubble key={i} handleEdit = {handleEdit} handleRemove = {handleRemove} comment={c} />
+            <BlogPostBubble
+              key={i}
+              handleEdit={handleEdit}
+              handleRemove={handleRemove}
+              comment={c}
+            />
           ))}
         </div>
       </div>
