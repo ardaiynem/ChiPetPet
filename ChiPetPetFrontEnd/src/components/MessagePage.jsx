@@ -15,9 +15,48 @@ import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { useAuth } from "../AuthContext";
 import axios from "axios";
+import { useAlert } from "../AlertContext";
 
 function MessagePage() {
-  let animal = ["Catto1", "Catto2", "Catto3", "Catto4", "Catto5", "Catto6"];
+  const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+
+  const { setTimedAlert } = useAlert();
+
+  const handleChat = () => {
+    console.log(chats);
+    for (let i = 0; i < chats.length; i++) {
+      if (chats[i].username === search) {
+        console.log("find");
+        setSelectedChat(i);
+        setSearch("");
+        return;
+      }
+    }
+    axios
+      .get(`http://127.0.0.1:8000/message/getUser/?username=${search}`)
+      .then((res) => {
+        console.log(res.data);
+        setSelectedChat(0);
+        setChats((chats) => [
+          {
+            chat_id: res.data.user_id,
+            role: res.data.role,
+            username: search,
+            messages: [],
+          },
+          ...chats,
+        ]);
+        setSearch("");
+      })
+      .catch((e) =>
+        setTimedAlert(
+          `There is no user with username \"${search}\"`,
+          "error",
+          3000
+        )
+      );
+  };
 
   const [chats, setChats] = useState([]);
   const { isAuthenticated, login, logout, userDetails } = useAuth();
@@ -70,11 +109,26 @@ function MessagePage() {
   return (
     <div className="p-0" style={{ width: "100%" }}>
       <Button
-        className="position-relative top-2 start-2"
+        className="position-relative mt-1 top-2 start-2"
         onClick={() => setCurrentPanel("back")}
       >
         Back
       </Button>
+
+      <div className="mt-1" style={{ flex: "1 1 0", border: "1px solid" }}>
+        <div className="form-floating mt-2 h-100 mb-3">
+          <input
+            className="form-control mt-1"
+            placeholder="Type your message here"
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          ></input>
+        </div>
+        <Button onClick={() => handleChat()} className="w-100">
+          Create chat
+        </Button>
+      </div>
 
       <div className="d-flex gap-3">
         <div className="" style={{ flex: "1 1 0", border: "1px solid" }}>
@@ -92,7 +146,11 @@ function MessagePage() {
                 {" "}
                 <MessageThumbnail
                   username={c.username}
-                  date={chats[i].messages[0].date}
+                  date={
+                    chats[i].messages[0] === undefined
+                      ? "Now"
+                      : chats[i].messages[0].date
+                  }
                   role={c.role.toUpperCase().replace("_", " ")}
                 />
               </div>
@@ -107,15 +165,28 @@ function MessagePage() {
             className="gap-5 p-3"
             style={{ flex: "2 2 0", border: "1px solid", overflowY: "scroll" }}
           >
-            {selectedChat !== -1 &&
-              chats[selectedChat].messages.map((m, i) => (
-                <MessageBubble
-                  username={chats[selectedChat].username}
-                  side={m.sender_id === userDetails.user_id ? 1 : 0}
-                  date={m.date}
-                  content={m.content}
-                />
-              ))}
+            {selectedChat !== -1 ? (
+              chats[selectedChat].messages.length === 0 ? (
+                <div className="text-center">
+                  You are typing the first message of this chat
+                </div>
+              ) : (
+                chats[selectedChat].messages.map((m, i) => (
+                  <MessageBubble
+                    key={i}
+                    username={chats[selectedChat].username}
+                    side={m.sender_id === userDetails.user_id ? 1 : 0}
+                    date={m.date}
+                    content={m.content}
+                  />
+                ))
+              )
+            ) : (
+              <div className="text-center">
+                Select a chat from the left bar or create a chat by typing the
+                username of the user
+              </div>
+            )}
           </div>
           <div style={{ flex: "1 1 0", border: "1px solid" }}>
             <div className="form-floating h-100 mb-3">

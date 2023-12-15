@@ -113,3 +113,27 @@ def getAllMessagesAfter(request):
             for i in range(len(chats))
         ]
     }, status=200)
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def getUser(request):
+    
+    username = request.GET.get('username')
+    
+    cursor = connection.cursor()
+    
+    query = "SELECT username, user_id, role FROM user where username= %s"
+    
+    cursor.execute(query, (username,))
+    user = cursor.fetchone()
+
+    cursor.close()              
+
+    if user is None: 
+        return HttpResponse(status=404)
+
+    return JsonResponse({
+        "username": user[0],
+        "user_id": user[1],
+        "role": user[2]
+    }, status=200)
