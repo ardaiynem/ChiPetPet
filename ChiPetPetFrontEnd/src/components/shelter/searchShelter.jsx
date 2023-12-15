@@ -3,8 +3,9 @@ import catImg from "../../assets/cat1.jpeg";
 
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import SingleAnimalPanel from "../SingleAnimalPanel";
 import { getAllShelters } from "../../apiHelper/backendHelper";
+import ShelterContact from "./shelterContact";
+import SearchPetPanel from "../SearchPetPanel";
 
 function SearchShelter() {
 
@@ -86,35 +87,21 @@ function SearchShelter() {
                         (shelters.slice((page - 1) * shelterlPerPage, (page - 1) * shelterlPerPage + 6)).map(shelter => (
                             <Card key={shelter.user_id} className="mb-3 me-3" style={{ maxWidth: "576px" }}>
                                 <Row className="no-gutters">
-                                    <Col xs={4} className="d-flex">
-                                        <Card.Img src={shelter.photo} style={{ objectFit: "cover" }} />
-                                    </Col>
                                     <Col xs={8}>
-                                        <Card.Body>
-                                            <Card.Title>{shelter.username}</Card.Title>
-                                            <Card.Text>
-                                                {shelter.description}
-                                            </Card.Text>
-                                            <Button variant="primary" onClick={()=>setCurrentPanel(<SingleAnimalPanel petid = {shelter.pet_id}/>)}>Go somewhere</Button>
-                                        </Card.Body>
+                                    <Card.Body>
+                                        <Card.Title>{shelter.username}</Card.Title>
+                                        <Card.Text>{shelter.address}</Card.Text>
+                                    </Card.Body>
+                                    </Col>
+                                    <Col xs={2} className="d-flex flex-column align-items-center">
+                                        <Button style={{ marginTop:"10px", width:"200px", height: "40px" }} className="mb-2"
+                                                        onClick={() => setCurrentPanel(<ShelterContact shelterid = {shelter.user_id}/>)} >Contact</Button>
+                                        <Button style={{ width:"200px", height: "40px" }} className="mb-2"
+                                                         onClick={() => setCurrentPanel(<SearchPetPanel shelterid={shelter.user_id} />)} >List Animals</Button>
                                     </Col>
                                 </Row>
                             </Card>
                         ))}
-                    {/* <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                            <img src="..." class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Card title</h5>
-                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-                            </div>
-                            </div>
-                        </div>
-                        </div> */}
                 </div>
                 <Pagination size="lg">{items}</Pagination>
             </div>
