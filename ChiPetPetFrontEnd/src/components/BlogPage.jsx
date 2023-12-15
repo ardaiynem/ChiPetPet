@@ -13,30 +13,41 @@ const BlogPage = ({ post_id }) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
 
+  const [blog, setBlog] = useState({
+    date_and_time: "",
+    username: "",
+    topic: "",
+    role: "",
+    content: "",
+  });
+
   const handleCommentSend = () => {
     console.log(comment);
     const formattedDate = new Date()
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
-    axios.post("http://127.0.0.1:8000/blogpost/createComment", {
-      user_id: userDetails.user_id,
-      date_and_time: formattedDate,
-      post_id: post_id,
-      content: comment,
-    });
-    setComments((prevState) => [
-      ...prevState,
-      {
-        comment_id: prevState.length,
-        content: comment,
+    axios
+      .post("http://127.0.0.1:8000/blogpost/createComment", {
         user_id: userDetails.user_id,
-        user_name: userDetails.user_name,
         date_and_time: formattedDate,
-        role: userDetails.role,
-      },
-    ]);
-    setComment("");
+        post_id: post_id,
+        content: comment,
+      })
+      .then((res) => {
+        setComments((prevState) => [
+          ...prevState,
+          {
+            comment_id: res.data.comment_id,
+            content: comment,
+            user_id: userDetails.user_id,
+            user_name: userDetails.user_name,
+            date_and_time: formattedDate,
+            role: userDetails.role,
+          },
+        ]);
+        setComment("");
+      });
   };
 
   const handleEdit = () => {};
@@ -48,6 +59,8 @@ const BlogPage = ({ post_id }) => {
         user_id: userDetails.user_id,
       },
     });
+    console.log("Will delete", comment_id);
+    console.log(comments);
     console.log(
       "filter: ",
       comments.filter((c) => c.comment_id !== comment_id)
@@ -67,6 +80,15 @@ const BlogPage = ({ post_id }) => {
       .then((res) => {
         console.log(res.data.comments);
         setComments(res.data.comments);
+      });
+    console.log("post_id", post_id);
+    axios
+      .get(`http://127.0.0.1:8000/blogpost/getBlog/`, {
+        params: { post_id: post_id },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setBlog(res.data);
       });
   }, []);
 
@@ -89,24 +111,33 @@ const BlogPage = ({ post_id }) => {
                 style={{ width: "50px", borderRadius: "50%", flex: "0 0 auto" }}
               />
               <div className="ms-3" style={{ flex: "4 4 auto" }}>
-                <h>Volkan Konak</h>
-                <span className="ms-3 badge rounded-pill bg-primary">
-                  <h>User</h>
-                </span>
+                <h5>
+                  {blog.username}
+                  <span className="ms-3 badge rounded-pill bg-primary">
+                    {blog.role}
+                  </span>
+                  {blog.topic}
+                </h5>
                 <div style={{ flex: "1 1 auto" }}>
-                  <h>saat&tarih</h>
+                  <h5>{blog.date_and_time.replace("T", " ")}</h5>
                 </div>
-                
               </div>
             </div>
             <hr />
-                <div className="card-body text-primary">
-                <p className="card-text">AMK</p>
+            <div className="card-body text-primary">
+              <p className="card-text">{blog.content}</p>
             </div>
           </div>
         </div>
       </div>
-      <div style={{ marginLeft: "50px",  marginRight: "50px", flex: "2 2 0", overflowY: "scroll" }}>
+      <div
+        style={{
+          marginLeft: "50px",
+          marginRight: "50px",
+          flex: "2 2 0",
+          overflowY: "scroll",
+        }}
+      >
         <div
           className="gap-5 p-3"
           style={{ flex: "2 2 0", border: "1px solid", overflowY: "scroll" }}
@@ -121,7 +152,15 @@ const BlogPage = ({ post_id }) => {
           ))}
         </div>
       </div>
-      <div style={{ marginLeft: "50px",  marginRight: "50px", flex: "1 1 0", border: "1px solid", maxHeight: "80px"}}>
+      <div
+        style={{
+          marginLeft: "50px",
+          marginRight: "50px",
+          flex: "1 1 0",
+          border: "1px solid",
+          maxHeight: "80px",
+        }}
+      >
         <div className="form-floating h-100 mb-3">
           <textarea
             className="form-control"
@@ -133,7 +172,11 @@ const BlogPage = ({ post_id }) => {
           ></textarea>
         </div>
       </div>
-      <Button onClick={handleCommentSend} className="mx-auto" style={{width:"100px"}}>
+      <Button
+        onClick={handleCommentSend}
+        className="mx-auto"
+        style={{ width: "100px" }}
+      >
         Send
       </Button>
     </div>
