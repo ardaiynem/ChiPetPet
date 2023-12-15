@@ -116,16 +116,18 @@ const BlogPage = ({ post_id }) => {
                   <span className="ms-3 badge rounded-pill bg-primary">
                     {blog.role}
                   </span>
-                  {blog.topic}
+                  <h5>
+                    <b>{blog.topic}</b>
+                  </h5>
                 </h5>
-                <div style={{ flex: "1 1 auto" }}>
-                  <h5>{blog.date_and_time.replace("T", " ")}</h5>
-                </div>
+                <h6>{blog.date_and_time.replace("T", " ")}</h6>
               </div>
             </div>
             <hr />
             <div className="card-body text-primary">
-              <p className="card-text">{blog.content}</p>
+              <p style={{ fontSize: "18px" }} className="card-text">
+                {blog.content}
+              </p>
             </div>
           </div>
         </div>

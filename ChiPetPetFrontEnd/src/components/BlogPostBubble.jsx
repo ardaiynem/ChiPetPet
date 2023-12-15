@@ -18,16 +18,10 @@ function BlogPostBubble({ handleRemove, handleEdit, comment }) {
             {user_name}
             <span className="ms-3 badge rounded-pill bg-primary">
               {role.toUpperCase().replace("_", " ")}
-            </span>
-          </div>
-
-          <div style={{ flex: "1 1 auto" }}>
+            </span> 
             {date_and_time.replace("T", " ")}
           </div>
-            className="position-relative"
-          <div
-            style={{ width: "100%", height: "100%" }}
-          >
+          <div style={{ width: "100%", height: "100%" }}>
             {user_id === userDetails.user_id && (
               <div className="position-absolute top-0 end-0">
                 <button className="btn btn-primary">Edit</button>
