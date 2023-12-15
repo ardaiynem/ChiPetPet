@@ -135,6 +135,23 @@ def get_all_shelters(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+@csrf_exempt
+def get_all_veterinarians(request):
+    if request.method == 'GET':
+
+        cursor = connection.cursor()
+        role = 'veterinarian'
+        cursor.execute("""SELECT user_id, first_name, last_name, username, email, verified, role, address, contact, expertise
+                       FROM user NATURAL JOIN veterinarian
+                       WHERE role = %s""", (role, ))
+        veterinarians = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        veterinarian_info = {'veterinarians': [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8], 'expertise': user[9]} for user in veterinarians] }
+
+        return JsonResponse(veterinarian_info, safe=False)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
 def get_users_by_role(request):

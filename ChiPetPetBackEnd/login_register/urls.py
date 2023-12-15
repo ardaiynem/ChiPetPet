@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register, login, get_all_users, get_users_by_role, reset_password, change_password, get_shelter_by_id, get_all_shelters
+from .views import register, login, get_all_users, get_users_by_role, reset_password, change_password, get_shelter_by_id, get_all_shelters, get_all_veterinarians
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -10,5 +10,6 @@ urlpatterns = [
     path('change_password/', change_password, name='change_password'),
     path('get_shelter_by_id/', get_shelter_by_id, name='get_shelter_by_id'),
     path('get_all_shelters/', get_all_shelters, name='get_all_shelters'),
+    path('get_all_veterinarians/', get_all_veterinarians, name='get_all_veterinarians'),
 
 ]

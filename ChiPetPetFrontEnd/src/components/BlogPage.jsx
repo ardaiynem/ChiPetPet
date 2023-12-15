@@ -4,6 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../contexts/panelContext";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
+import catImg from "../assets/cat1.jpeg";
 
 const BlogPage = ({ post_id }) => {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -79,7 +80,33 @@ const BlogPage = ({ post_id }) => {
           Back
         </Button>
       </div>
-      <div style={{ flex: "2 2 0", overflowY: "scroll" }}>
+      <div>
+        <div className="d-flex w-100">
+          <div className="card border-primary mb-2 w-100">
+            <div className="d-flex card-header justify-content-start">
+              <img
+                src={catImg}
+                style={{ width: "50px", borderRadius: "50%", flex: "0 0 auto" }}
+              />
+              <div className="ms-3" style={{ flex: "4 4 auto" }}>
+                <h>Volkan Konak</h>
+                <span className="ms-3 badge rounded-pill bg-primary">
+                  <h>User</h>
+                </span>
+                <div style={{ flex: "1 1 auto" }}>
+                  <h>saat&tarih</h>
+                </div>
+                
+              </div>
+            </div>
+            <hr />
+                <div className="card-body text-primary">
+                <p className="card-text">AMK</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{ marginLeft: "50px",  marginRight: "50px", flex: "2 2 0", overflowY: "scroll" }}>
         <div
           className="gap-5 p-3"
           style={{ flex: "2 2 0", border: "1px solid", overflowY: "scroll" }}
@@ -94,7 +121,7 @@ const BlogPage = ({ post_id }) => {
           ))}
         </div>
       </div>
-      <div style={{ flex: "1 1 0", border: "1px solid" }}>
+      <div style={{ marginLeft: "50px",  marginRight: "50px", flex: "1 1 0", border: "1px solid", maxHeight: "80px"}}>
         <div className="form-floating h-100 mb-3">
           <textarea
             className="form-control"
@@ -106,7 +133,7 @@ const BlogPage = ({ post_id }) => {
           ></textarea>
         </div>
       </div>
-      <Button onClick={handleCommentSend} className="w-100">
+      <Button onClick={handleCommentSend} className="mx-auto" style={{width:"100px"}}>
         Send
       </Button>
     </div>
