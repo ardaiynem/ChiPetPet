@@ -8,7 +8,7 @@ function BlogPostBubble({ handleRemove, handleEdit, comment }) {
 
   return (
     <div className="d-flex w-100">
-      <div className="card border-primary mb-3 w-100">
+      <div className="card border-primary mb-2 w-100">
         <div className="d-flex card-header justify-content-start">
           <img
             src={catImg}
