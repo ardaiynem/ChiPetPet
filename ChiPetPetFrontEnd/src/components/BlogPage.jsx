@@ -97,7 +97,7 @@ const BlogPage = ({ post_id }) => {
             </div>
             <hr />
                 <div className="card-body text-primary">
-                <p className="card-text">AMK</p>
+                <p className="card-text">Post Body</p>
             </div>
           </div>
         </div>
