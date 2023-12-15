@@ -1,21 +1,32 @@
 import { Card, Button, Row, Col, Pagination, Dropdown, Stack } from "react-bootstrap";
 import catImg from "../assets/cat1.jpeg";
 import { PanelContext } from "../contexts/panelContext";
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import AdoptionApply from "./AdoptionApply";
 import ShelterContact from "./shelter/shelterContact";
+import { getPetById } from "../apiHelper/backendHelper";
+import { useAlert } from "../AlertContext";
 
 
 
-function SingleAnimalPanel() {
-    let animal = [
-        "Catto1"
-        , "Catto2"
-        , "Catto3"
-        , "Catto4"
-        , "Catto5"
-        , "Catto6"
-    ]
+function SingleAnimalPanel(crops) {
+    const {setTimedAlert} = useAlert();
+
+    let petid = crops.petid;
+    const [pet, setPet] = useState([]);
+
+    useEffect(() => {
+        // Fetch pets data from the backend when the component mounts
+        getPetById(petid)
+        .then((res) => {
+            setPet(res.data.pet);
+        })
+        .catch((err) => {
+            setTimedAlert("Error retrieving animals", "error", 3000);
+        });
+
+    }, []);
+
     const { setCurrentPanel } = useContext(PanelContext);
 
     return (
@@ -26,21 +37,21 @@ function SingleAnimalPanel() {
                 </Button>
                
                 <div className="d-flex w-70 ms-3 mt-3">
-                    <img src={catImg} style={{ objectFit: "cover", maxWidth: "50%" }} />
+                    <img src={pet.photo} style={{ objectFit: "cover", maxWidth: "50%" }} />
                     <div className="ms-3">
-                        <h1>Hi, I am a cat</h1>
-                        <p>From: </p>
+                        <h1>Hi, I am {pet.name}</h1>
+                        <p>From: {pet.shelter_name}</p>
                         <div className="mt-3 d-flex flex-wrap">
                             <div className="column me-4">
-                                <p>Species:</p>
-                                <p>Breed:</p>
+                                <p>Species: {pet.species}</p>
+                                <p>Breed: {pet.breed}</p>
                             </div>
                             <div className="column" style={{marginLeft: "50px"}}>
-                                <p>Age:</p>
-                                <p>Gender:</p>
+                                <p>Age: {pet.age}</p>
+                                <p>Gender: {pet.gender}</p>
                             </div>
                         </div>
-                        <p>This is some information about the cat.</p>
+                        <p>I am: {pet.description}</p>
                     </div>
                 </div>
                 <div className="mt-3">
@@ -53,7 +64,7 @@ function SingleAnimalPanel() {
                             <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c" }}>
                                 See Health Report
                             </Button>
-                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c"  }} onClick={() => setCurrentPanel(<ShelterContact/>)}>
+                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c"  }} onClick={() => setCurrentPanel(<ShelterContact shelterid = {pet.shelter_id}/>)}>
                                 Contact With Shelter
                             </Button>
                         </div>

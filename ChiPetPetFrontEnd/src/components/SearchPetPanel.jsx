@@ -8,14 +8,6 @@ import { getPetsByType } from "../apiHelper/backendHelper";
 import SingleAnimalPanel from "./SingleAnimalPanel";
 
 function SearchPetPanel(props) {
-    let cardHeaders = [
-        "Catto1"
-        , "Catto2"
-        , "Catto3"
-        , "Catto4"
-        , "Catto5"
-        , "Catto6"
-    ]
 
     let animalType = props.animalType
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -104,7 +96,7 @@ function SearchPetPanel(props) {
                                             <Card.Text>
                                                 {pet.description}
                                             </Card.Text>
-                                            <Button variant="primary" onClick={()=>setCurrentPanel(<SingleAnimalPanel/>)}>Go somewhere</Button>
+                                            <Button variant="primary" onClick={()=>setCurrentPanel(<SingleAnimalPanel petid = {pet.pet_id}/>)}>Go somewhere</Button>
                                         </Card.Body>
                                     </Col>
                                 </Row>
