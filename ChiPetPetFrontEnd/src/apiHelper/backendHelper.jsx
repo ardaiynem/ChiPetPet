@@ -169,6 +169,10 @@ export const getAllShelters = async () => {
   return await getFetcher(url.GET_ALL_SHELTERS_PATH());
 };
 
+export const getAllVeterinarians = async () => {
+  return await getFetcher(url.GET_ALL_VETERINARIANS_PATH());
+};
+
 // message
 export const getMessages = async () => {
   return await getFetcher(url.GET_MESSAGES_PATH(user_id));
