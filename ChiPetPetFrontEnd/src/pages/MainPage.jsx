@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import LoginPage from "./LoginPage";
 import Alert from "../components/UI/Alert";
+import Notifications from "../components/UI/Notifications";
 
 function MainPage() {
   const { isAuthenticated, login, logout, userDetails } = useAuth();
@@ -43,6 +44,7 @@ function MainPage() {
   return (
     <>
     <Alert />
+    {isAuthenticated && <Notifications />}
       {!isAuthenticated ? (
         <LoginPage />
       ) : (
