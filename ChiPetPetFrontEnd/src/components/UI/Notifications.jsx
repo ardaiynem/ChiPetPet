@@ -33,7 +33,7 @@ const Notifications = () => {
 
     const deleteNotificationHandler = (user_id, date_and_time) => {
         setNotifications((prevNotifications) => { 
-            return prevNotifications.filter(notification => notification.user_id !== user_id || notification.date_and_time !== date_and_time);
+            return prevNotifications.filter(notification => notification.user_id !== user_id && notification.date_and_time !== date_and_time);
         });
     };
 

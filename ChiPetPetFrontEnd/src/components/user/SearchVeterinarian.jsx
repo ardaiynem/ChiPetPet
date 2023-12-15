@@ -2,50 +2,26 @@ import { Card, Button, Dropdown } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../../contexts/panelContext";
+import { getAllVeterinarians } from "../../apiHelper/backendHelper";
 
 function SearchVeterinarian() {
 
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+    const [veterinarians, setVeterinairans] = useState([]);
 
+    useEffect(() => {
+        // Fetch pets data from the backend when the component mounts
+        getAllVeterinarians()
+        .then((res) => {
+            setVeterinairans(res.data.veterinarians);
+            console.log(res.data.veterinarians)
+        })
+        .catch((err) => {
+            setTimedAlert("Error retrieving shelters", "error", 3000);
+        });
 
-    const [vets, setVets] = useState([
-        {
-            id: 1,
-            name: "catto",
-            city: "new york",
-            expertise: "dogs"
-        },
-        {
-            id: 1,
-            name: "catto",
-            city: "new york",
-            expertise: "dogs"
-        },
-        {
-            id: 1,
-            name: "catto",
-            city: "new york",
-            expertise: "dogs"
-        },
-        {
-            id: 1,
-            name: "catto",
-            city: "new york",
-            expertise: "dogs"
-        },
-        {
-            id: 1,
-            name: "catto",
-            city: "new york",
-            expertise: "dogs"
-        },
-        {
-            id: 1,
-            name: "catto",
-            city: "new york",
-            expertise: "dogs"
-        },
-    ]);
+    }, []);
+
 
     const [selectedVet, setSelectedVet] = useState(null);
 
@@ -104,10 +80,10 @@ function SearchVeterinarian() {
                         </thead>
                         <tbody>
                             {
-                                vets.map((vet) => (
+                                veterinarians.map((vet) => (
                                     <tr onClick={() => { setSelectedVet(vet) }}>
-                                        <th scope="row">{vet.name}</th>
-                                        <td>{vet.city}</td>
+                                        <th scope="row">{vet.username}</th>
+                                        <td>{vet.address}</td>
                                         <td>{vet.expertise}</td>
                                     </tr>
                                 ))
@@ -121,8 +97,8 @@ function SearchVeterinarian() {
                             <img src={catImg} className="card-img-top" />
                         </div>
                         <div className="card-body">
-                            <h5 className="card-title">{selectedVet?.name}</h5>
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <h5 className="card-title">{selectedVet?.username}</h5>
+                            <p className="card-text">You can contact me via {selectedVet?.contact}.</p>
                             <div className="d-grid gap-2">
                                 <button className="btn btn-primary" type="button">Button</button>
                                 <button className="btn btn-primary" type="button">Button</button>
