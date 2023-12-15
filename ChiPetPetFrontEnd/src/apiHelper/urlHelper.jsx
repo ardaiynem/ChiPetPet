@@ -51,6 +51,7 @@ export const GET_PET_BY_ID_PATH = (petid) => PET_CREATE_PATH() + "get_pet_by_id/
 // login register
 export const LOGIN_REGISTER_PATH = () => COMMON_PATH + "login_register/";
 export const GET_SHELTER_BY_ID_PATH = (shelterid) => LOGIN_REGISTER_PATH() + "get_shelter_by_id/?userid=" + shelterid;
+export const GET_ALL_SHELTERS_PATH = () => LOGIN_REGISTER_PATH() + "get_all_shelters/";
 
 // verification documents
 export const VERIFICATION_DOCUMENTS_PATH = () =>

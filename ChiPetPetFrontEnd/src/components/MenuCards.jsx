@@ -17,6 +17,7 @@ import AppointmentList from "../components/veterinerian/appointmentApplications"
 import MessagePage from "../components/MessagePage";
 import AdoptionApplicationsAdmin from "../components/admin/adoptionApplicationsAdmin";
 import VerificationRequests from "../components/admin/verificationRequests";
+import SearchShelter from "../components/shelter/searchShelter"
 import Profile from "./Profile";
 import PetBlog from "./PetBlog";
 
@@ -28,7 +29,7 @@ function MenuCards() {
     let cardHeadersUser = [
         { name: "Search Pet", element: <SearchAnimalByType /> }
         , { name: "Search Veterinarian", element: <SearchVeterinarian /> }
-        , { name: "Search Shelter", element: <SearchPetPanel /> }
+        , { name: "Search Shelter", element: <SearchShelter /> }
         , { name: "Adoption Application", element: <AdoptionApplicationsAdmin /> }
         , { name: "Appointments", element: <AppointmentList /> }
         , { name: "My Pet", element: <MyPets /> }
