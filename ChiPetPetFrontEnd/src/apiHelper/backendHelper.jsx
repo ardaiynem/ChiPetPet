@@ -118,6 +118,14 @@ export const getPetsByShelter = async (user_id) => {
   return await getFetcher(url.GET_PETS_BY_SHELTER_PATH(user_id));
 };
 
+export const getPetsByType = async (type) => {
+  return await getFetcher(url.GET_PETS_BY_TYPE_PATH(type));
+};
+
+export const getPetById = async (petid) => {
+  return await getFetcher(url.GET_PET_BY_ID_PATH(petid));
+};
+
 // verification documents
 
 export const getUnverifiedDocuments = async () => {
@@ -152,6 +160,10 @@ export const resetPassword = async () => {
 export const changePassword = async () => {
     return await putFetcher(url.CHANGE_PASSWORD_PATH());
 }
+
+export const getShelterById = async (user_id) => {
+  return await getFetcher(url.GET_SHELTER_BY_ID_PATH(user_id));
+};
 
 // message
 export const getMessages = async () => {

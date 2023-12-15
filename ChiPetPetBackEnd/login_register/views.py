@@ -85,6 +85,7 @@ def login(request):
 
     return JsonResponse({'status': 'Invalid request method'}, status=405)
 
+@csrf_exempt
 def get_all_users(request):
     if request.method == 'GET':
         cursor = connection.cursor()
@@ -97,6 +98,25 @@ def get_all_users(request):
         return JsonResponse({'users': users_list}, safe=False)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def get_shelter_by_id(request):
+    if request.method == 'GET':
+        userid = request.GET.get('userid')
+
+        cursor = connection.cursor()
+        cursor.execute("""SELECT user_id, first_name, last_name, username, email, verified, role, address, contact
+                       FROM user NATURAL JOIN animal_shelter
+                       WHERE user_id = %s""", (userid, ))
+        user = cursor.fetchone()
+
+        # Convert the result to a list of dictionaries
+        user_info = {'shelter': {'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8]} }
+
+        return JsonResponse(user_info, safe=False)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 
 @csrf_exempt

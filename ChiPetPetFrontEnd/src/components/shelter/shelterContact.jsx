@@ -1,17 +1,26 @@
 import { Card, Button, Row, Col, Pagination, Dropdown, Stack } from "react-bootstrap";
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { PanelContext } from "../../contexts/panelContext";
+import { getShelterById } from "../../apiHelper/backendHelper";
+import { useAlert } from "../../AlertContext";
 
-function ShelterContact() {
-
+function ShelterContact(props) {
+    const {setTimedAlert} = useAlert();
     const { setCurrentPanel } = useContext(PanelContext);
 
-    const shelterInfo = {
-        name: "Example Shelter",
-        phoneNumber: "123-456-7890",
-        email: "example@shelter.com",
-        address: "123 Shelter St, Cityville, State, 12345",
-      };
+    let shelterid = props.shelterid;
+    const [shelter, setShelter] = useState([]);
+
+    useEffect(() => {
+      // Fetch pets data from the backend when the component mounts
+      getShelterById(shelterid)
+      .then((res) => {
+          setShelter(res.data.shelter);
+      })
+      .catch((err) => {
+          setTimedAlert("Error retrieving animals", "error", 3000);
+      });
+    }, []);
 
     return (
         <>
@@ -22,16 +31,16 @@ function ShelterContact() {
                 <div style={{marginTop: "10px"}}>
       <h2>Contact Shelter</h2>
       <div>
-        <strong>Name:</strong> {shelterInfo.name}
+        <strong>Name:</strong> {shelter.username}
       </div>
       <div>
-        <strong>Phone Number:</strong> {shelterInfo.phoneNumber}
+        <strong>Phone Number:</strong> {shelter.contact}
       </div>
       <div>
-        <strong>Email:</strong> {shelterInfo.email}
+        <strong>Email:</strong> {shelter.email}
       </div>
       <div>
-        <strong>Address:</strong> {shelterInfo.address}
+        <strong>Address:</strong> {shelter.address}
       </div>
       {/* İhtiyaç duyulursa buraya ek bilgiler ekleyebilirsiniz */}
     </div>
