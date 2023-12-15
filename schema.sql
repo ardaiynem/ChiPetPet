@@ -63,15 +63,6 @@ CREATE TABLE blog_post (
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
--- CREATE TABLE comment (
---     post_id INT,
---     comment_id INT AUTO_INCREMENT,
---     date DATE,
---     content TEXT,
---     PRIMARY KEY (post_id, comment_id),
---     FOREIGN KEY (post_id) REFERENCES blog_post(post_id) 
--- );
-
 CREATE TABLE comment (
     post_id INT,
     comment_id INT,
@@ -154,14 +145,56 @@ VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'yes', 'adopter'
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
 VALUES ('John', 'Smith', 'johnsmith', 'johnsmith@email.com', 'password', 'yes', 'veterinarian');
 
-INSERT INTO message  
-VALUES ("1999-09-29", "Hello", 1, 2);
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('b', 'b', 'b', 'b@b.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$Kz4TLHr4Ud6AS4vjk21ze03LaX+7FbUA7aDZCjyLkb0=', 'b', 'user');
+
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$84kXvMQbYxBbbmd1qhDPIQ$Og+wlbG71N5RgBddkRkBihA/pbe1sy9MGDI3EC9NvWo=', 'c', 'user');
+
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$SuoMUQI3vxs03bLVrWHJhe$4osJksIDs7TcFZ8RQr8kRxz2j7ESE8kmRsKcgu2l+HM=', 'd', 'user');
 
 INSERT INTO message  
-VALUES ("2009-09-29 22:36:19", "Hello", 1, 2);
+VALUES ("1999-09-29", "Hello", 4, 5);
 
 INSERT INTO message  
-VALUES ("2001-11-11 11:11:11", "Trying", 1, 2);
+VALUES ("1999-09-29", "Hello", 5, 4);
+
+INSERT INTO message  
+VALUES ("1999-09-29", "Hello", 5, 6);
+
+INSERT INTO message  
+VALUES ("1999-09-29", "Hello", 4, 6);
+
+INSERT INTO blog_post (user_id, date_and_time, topic, content) VALUES (
+    4, "1999-09-29", "Pamuk biraz uzgun", "bugunlerde pamukta bir problem var");
+
+INSERT INTO blog_post (user_id, date_and_time, topic, content) VALUES (
+    5, "1999-09-29", "Boncuk kafayi siyirdi", "bugunlerde boncukta bir problem var");
+
+INSERT INTO blog_post (user_id, date_and_time, topic, content) VALUES (
+    6, "1999-09-29", "Duman delirmek uzere", "bugunlerde dumanda bir problem var");
+
+
+INSERT INTO comment VALUES (
+    1,
+    1,
+    6,
+    "1999-09-29",
+    "pamuk sacmalama");
+INSERT INTO comment VALUES (
+    2,
+    1,
+    4,
+    "1999-09-29",
+    "boncuk sacmalama");
+
+INSERT INTO comment VALUES (
+    3,
+    1,
+    5,
+    "1999-09-29",
+    "duman sacmalama");
 
 INSERT INTO animal_shelter (user_id, address, contact, verification_documents)
 VALUES (1, '123 Shelter St', '123-456-7890', NULL);
