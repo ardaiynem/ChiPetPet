@@ -1,10 +1,10 @@
-import { Button, Dropdown, FormControl } from 'react-bootstrap';
+import { Button, Dropdown, FormControl } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { UseAuth } from "../../AuthContext";
-import { UseAlert } from "../../AlertContext";
-import { getAllApplications } from '../../apiHelper/backendHelper';
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
+import { getAllApplications } from "../../apiHelper/backendHelper";
 
 /**
  * admins should be able to accept or reject adoption applications
@@ -13,9 +13,9 @@ import { getAllApplications } from '../../apiHelper/backendHelper';
 
 function AdoptionApplicationsAdmin() {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
-  const [ applications, setApplications ] = useState([]);
-  const { setTimedAlert } = UseAlert();
-  const { logout, userDetails } = UseAuth();
+  const [applications, setApplications] = useState([]);
+  const { setTimedAlert } = useAlert();
+  const { logout, userDetails } = useAuth();
 
   useEffect(() => {
     getAllApplications()
@@ -24,7 +24,7 @@ function AdoptionApplicationsAdmin() {
       })
       .catch((err) => {
         setTimedAlert("Error getting applications", "error", 3000);
-      })
+      });
   }, []);
 
   // const acceptApplicationHandler = () => {
@@ -34,7 +34,7 @@ function AdoptionApplicationsAdmin() {
   //   }
 
   //   const applicationIds = selectedRows.map((row) => applications[row - 1].id);
-    
+
   //   applicationIds.forEach((id) => {
   //     updateApplicationStatus(id, "accepted")
   //       .then((res) => {
@@ -53,7 +53,7 @@ function AdoptionApplicationsAdmin() {
   //   }
 
   //   const applicationIds = selectedRows.map((row) => applications[row - 1].id);
-    
+
   //   applicationIds.forEach((id) => {
   //     updateApplicationStatus(id, "rejected")
   //       .then((res) => {
@@ -67,7 +67,10 @@ function AdoptionApplicationsAdmin() {
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
-      <Button className="position-relative top-2 start-2" onClick={() => setCurrentPanel("back")}>
+      <Button
+        className="position-relative top-2 start-2"
+        onClick={() => setCurrentPanel("back")}
+      >
         Back
       </Button>
 
@@ -132,23 +135,50 @@ function AdoptionApplicationsAdmin() {
             </tbody>
           </table>
         </div>
-        <div className="d-flex justify-content-center p-3" style={{ flex: "1 1 0" }}>
+        <div
+          className="d-flex justify-content-center p-3"
+          style={{ flex: "1 1 0" }}
+        >
           <div className="card border-primary mb-3 w-100">
             <div className="d-flex card-header justify-content-start p-3">
-              <img src={catImg} style={{ width: "100px", borderRadius: "50%", flex: "0 0 auto" }} />
-              <div className='d-flex flex-column align-items-start justify-content-center ms-3' style={{ flex: "4 4 auto" }}>
+              <img
+                src={catImg}
+                style={{
+                  width: "100px",
+                  borderRadius: "50%",
+                  flex: "0 0 auto",
+                }}
+              />
+              <div
+                className="d-flex flex-column align-items-start justify-content-center ms-3"
+                style={{ flex: "4 4 auto" }}
+              >
                 <p>Username</p>
-                <button className="btn btn-primary" type="button">Contact</button>
+                <button className="btn btn-primary" type="button">
+                  Contact
+                </button>
               </div>
-              <div className='d-flex flex-column gap-2' style={{ flex: "2 2 auto" }}>
-                <button className="btn btn-primary" type="button">Contact</button>
-                <button className="btn btn-primary" type="button">Contact</button>
+              <div
+                className="d-flex flex-column gap-2"
+                style={{ flex: "2 2 auto" }}
+              >
+                <button className="btn btn-primary" type="button">
+                  Contact
+                </button>
+                <button className="btn btn-primary" type="button">
+                  Contact
+                </button>
               </div>
             </div>
             <div className="card-body d-flex flex-column">
               <div style={{ flex: "1 1 100px" }}>
                 <div className="form-floating h-100 mb-3">
-                  <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{ height: "100%" }}></textarea>
+                  <textarea
+                    className="form-control"
+                    placeholder="Leave a comment here"
+                    id="floatingTextarea2"
+                    style={{ height: "100%" }}
+                  ></textarea>
                   <label for="floatingTextarea2">Comments</label>
                 </div>
               </div>
@@ -202,7 +232,8 @@ function AdoptionApplicationsAdmin() {
           </div>
         </div>
       </div>
-    </div >)
+    </div>
+  );
 }
 
 export default AdoptionApplicationsAdmin;

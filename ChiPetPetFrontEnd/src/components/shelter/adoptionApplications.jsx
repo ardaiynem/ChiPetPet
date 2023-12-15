@@ -1,10 +1,13 @@
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { Button, Dropdown, FormControl } from 'react-bootstrap';
+import { Button, Dropdown, FormControl } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
-import { UseAuth } from "../../AuthContext";
-import { UseAlert } from "../../AlertContext";
-import { getApplicationByShelter, updateApplicationStatus } from '../../apiHelper/backendHelper';
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
+import {
+  getApplicationByShelter,
+  updateApplicationStatus,
+} from "../../apiHelper/backendHelper";
 
 /**
  * get necessary data from applications and display them
@@ -12,9 +15,9 @@ import { getApplicationByShelter, updateApplicationStatus } from '../../apiHelpe
 
 function ApplicationsList() {
   const [selectedRows, setSelectedRows] = useState([]);
-  const [ applications, setApplications ] = useState([]);
-  const { setTimedAlert } = UseAlert();
-  const { logout, userDetails } = UseAuth();
+  const [applications, setApplications] = useState([]);
+  const { setTimedAlert } = useAlert();
+  const { logout, userDetails } = useAuth();
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ function ApplicationsList() {
       })
       .catch((err) => {
         setTimedAlert("Error getting applications", "error", 3000);
-      })
+      });
   }, []);
 
   const toggleRowSelection = (rowNumber) => {
@@ -44,7 +47,7 @@ function ApplicationsList() {
     }
 
     const applicationIds = selectedRows.map((row) => applications[row - 1].id);
-    
+
     applicationIds.forEach((id) => {
       updateApplicationStatus(id, "accepted")
         .then((res) => {
@@ -52,7 +55,7 @@ function ApplicationsList() {
         })
         .catch((err) => {
           setTimedAlert("Error accepting application", "error", 3000);
-        })
+        });
     });
   };
 
@@ -63,7 +66,7 @@ function ApplicationsList() {
     }
 
     const applicationIds = selectedRows.map((row) => applications[row - 1].id);
-    
+
     applicationIds.forEach((id) => {
       updateApplicationStatus(id, "rejected")
         .then((res) => {
@@ -71,13 +74,16 @@ function ApplicationsList() {
         })
         .catch((err) => {
           setTimedAlert("Error rejecting application", "error", 3000);
-        })
+        });
     });
   };
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
-      <Button className="position-relative top-2 start-2 mb-2" onClick={() => setCurrentPanel("back")}>
+      <Button
+        className="position-relative top-2 start-2 mb-2"
+        onClick={() => setCurrentPanel("back")}
+      >
         Back
       </Button>
 
@@ -116,7 +122,7 @@ function ApplicationsList() {
             </thead>
             <tbody>
               <tr
-                className={isRowSelected(1) ? 'table-primary' : ''}
+                className={isRowSelected(1) ? "table-primary" : ""}
                 onClick={() => toggleRowSelection(1)}
               >
                 <th scope="row">1</th>
@@ -126,7 +132,7 @@ function ApplicationsList() {
                 <td>31.11.2023</td>
               </tr>
               <tr
-                className={isRowSelected(2) ? 'table-primary' : ''}
+                className={isRowSelected(2) ? "table-primary" : ""}
                 onClick={() => toggleRowSelection(2)}
               >
                 <th scope="row">2</th>
@@ -136,7 +142,7 @@ function ApplicationsList() {
                 <td>31.11.2023</td>
               </tr>
               <tr
-                className={isRowSelected(3) ? 'table-primary' : ''}
+                className={isRowSelected(3) ? "table-primary" : ""}
                 onClick={() => toggleRowSelection(3)}
               >
                 <th scope="row">3</th>
@@ -146,7 +152,7 @@ function ApplicationsList() {
                 <td>31.09.2023</td>
               </tr>
               <tr
-                className={isRowSelected(4) ? 'table-primary' : ''}
+                className={isRowSelected(4) ? "table-primary" : ""}
                 onClick={() => toggleRowSelection(4)}
               >
                 <th scope="row">4</th>
@@ -159,30 +165,75 @@ function ApplicationsList() {
           </table>
         </div>
 
-        <div className="d-flex flex-column align-items-end" style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}>
+        <div
+          className="d-flex flex-column align-items-end"
+          style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}
+        >
           <div className="card mb-3" style={{ width: "100%" }}>
             <div className="d-flex p-3 justify-content-center">
-              <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
-              <h5 className="card-title" style={{marginRight:"50px"}}>Kerem Aktürkoğlu</h5>
+              <img
+                src={catImg}
+                className="card-img-top"
+                alt="Cat"
+                style={{ width: "200px", marginRight: "20px" }}
+              />
+              <h5 className="card-title" style={{ marginRight: "50px" }}>
+                Kerem Aktürkoğlu
+              </h5>
               <div className="d-flex flex-column align-items-start">
-                <button onClick={rejectApplicationHandler} className="btn btn-danger mb-2" type="button" style={{ backgroundColor: "red", borderColor: "red", color: "white", width: "100px" }}>
+                <button
+                  onClick={rejectApplicationHandler}
+                  className="btn btn-danger mb-2"
+                  type="button"
+                  style={{
+                    backgroundColor: "red",
+                    borderColor: "red",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
                   Reject
                 </button>
-                <button onClick={acceptApplicationHandler} className="btn btn-success mb-2" type="button" style={{ backgroundColor: "green", borderColor: "green", color: "white", width: "100px" }}>
+                <button
+                  onClick={acceptApplicationHandler}
+                  className="btn btn-success mb-2"
+                  type="button"
+                  style={{
+                    backgroundColor: "green",
+                    borderColor: "green",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
                   Accept
                 </button>
-                <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  style={{
+                    backgroundColor: "blue",
+                    borderColor: "blue",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
                   Contact
                 </button>
               </div>
             </div>
             <div className="card-body">
               <h5 className="card-title">Application</h5>
-              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <p className="card-text">
+                Some quick example text to build on the card title and make up
+                the bulk of the card's content.
+              </p>
             </div>
             <div className="d-flex flex-row">
               <div className="mr-3">
-                <table className="table table-striped" style={{ width: "300px", marginLeft: "10px" }}>
+                <table
+                  className="table table-striped"
+                  style={{ width: "300px", marginLeft: "10px" }}
+                >
                   <tbody>
                     <tr>
                       <th scope="row">Species</th>
@@ -204,27 +255,30 @@ function ApplicationsList() {
                 </table>
               </div>
               <div>
-                <table className="table table-striped" style={{ width: "300px", marginLeft: "10px" }}>
-                <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Species</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Pamuk</td>
-                <td>Dog</td>
-              </tr>
-              <tr>
-                <td>El Gato</td>
-                <td>Cat</td>
-              </tr>
-              <tr >
-                <td>Splinter</td>
-                <td>Rat</td>
-              </tr>
-            </tbody>
+                <table
+                  className="table table-striped"
+                  style={{ width: "300px", marginLeft: "10px" }}
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Species</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Pamuk</td>
+                      <td>Dog</td>
+                    </tr>
+                    <tr>
+                      <td>El Gato</td>
+                      <td>Cat</td>
+                    </tr>
+                    <tr>
+                      <td>Splinter</td>
+                      <td>Rat</td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </div>

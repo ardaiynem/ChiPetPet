@@ -20,9 +20,7 @@ const PetBlog = () => {
   }
 
   useEffect(() => {
-    console.log("working");
     axios.get("http://127.0.0.1:8000/blogpost/topic").then((res) => {
-      console.log(res.data);
       setBlogs(res.data.topics);
     });
   }, []);
