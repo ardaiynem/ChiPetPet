@@ -3,11 +3,20 @@ import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../contexts/panelContext";
 import BlogPage from "./BlogPage";
 import axios from "axios";
+import { useAuth } from "../AuthContext";
+import { useAlert } from "../AlertContext";
 
 const PetBlog = () => {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const [blogs, setBlogs] = useState([]);
   const [showCreateBlogModal, setShowCreateBlogModal] = useState(false);
+  const { isAuthenticated, login, logout, userDetails } = useAuth();
+  const { setTimedAlert } = useAlert();
+
+  const [createdBlog, setCreatedBlog] = useState({
+    topic: "",
+    content: "",
+  });
 
   let active = 1;
   let items = [];
@@ -26,7 +35,21 @@ const PetBlog = () => {
   }, []);
 
   const handleCreateBlog = () => {
-      //ToDo
+    console.log("working");
+    axios
+      .post("http://127.0.0.1:8000/blogpost/createBlog", {
+        user_id: userDetails.user_id,
+        date_and_time: new Date().toISOString().slice(0, 19).replace("T", " "),
+        topic: createdBlog.topic,
+        content: createdBlog.content,
+      })
+      .then((res) => {
+        console.log(res.data);
+        setBlogs([...blogs, { ...createdBlog, post_id: res.data.post_id }]);
+      });
+    setCreatedBlog({ content: "", topic: "" });
+    setShowCreateBlogModal(false);
+    setTimedAlert("Blog has been successfully posted.", "success", 3000);
   };
 
   const handleClickTableElement = (blog) => {
@@ -44,16 +67,19 @@ const PetBlog = () => {
         </Button>
         <Button
           className="position-relative top-2 start-2"
-          style={{ marginLeft: "1270px", background: "green", color: "white", borderColor: "green" }}
+          style={{
+            marginLeft: "1270px",
+            background: "green",
+            color: "white",
+            borderColor: "green",
+          }}
           onClick={() => setShowCreateBlogModal(true)}
         >
           Create Blog
         </Button>
       </div>
       <h1>Pet Blog</h1>
-      <div className="d-flex w-100 justify-content-between">
-        {/* ... */}
-      </div>
+      <div className="d-flex w-100 justify-content-between">{/* ... */}</div>
       <div className="d-flex" style={{ flex: "1 1 0" }}>
         <div className="w-100">
           <table className="table table-striped">
@@ -90,30 +116,69 @@ const PetBlog = () => {
       </div>
 
       {/* Create Blog Modal */}
-      <Modal show={showCreateBlogModal} onHide={() => setShowCreateBlogModal(false)} size="lg">
+      <Modal
+        show={showCreateBlogModal}
+        onHide={() => setShowCreateBlogModal(false)}
+        size="lg"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Create Blog</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="mb-3">
-            <label htmlFor="topicInput" className="form-label">Enter Topic:</label>
-            <input type="text" className="form-control" id="topicInput" />
+            <label htmlFor="topicInput" className="form-label">
+              Enter Topic:
+            </label>
+            <input
+              type="text"
+              onChange={(e) =>
+                setCreatedBlog({
+                  content: createdBlog.content,
+                  topic: e.target.value,
+                })
+              }
+              value={createdBlog.topic}
+              className="form-control"
+              id="topicInput"
+            />
           </div>
           <div className="mb-3">
-            <label htmlFor="textInput" className="form-label">Enter Text:</label>
-            <textarea className="form-control" id="textInput" rows="6"></textarea>
+            <label htmlFor="textInput" className="form-label">
+              Enter Text:
+            </label>
+            <textarea
+              value={createdBlog.content}
+              onChange={(e) =>
+                setCreatedBlog({
+                  content: e.target.value,
+                  topic: createdBlog.topic,
+                })
+              }
+              className="form-control"
+              id="textInput"
+              rows="6"
+            ></textarea>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button style={{background: "red", color: "white", borderColor: "red"}} onClick={() => setShowCreateBlogModal(false)}>
+          <Button
+            style={{ background: "red", color: "white", borderColor: "red" }}
+            onClick={() => setShowCreateBlogModal(false)}
+          >
             Close
           </Button>
-          <Button style={{background: "green", color: "white", borderColor: "green"}} onClick={handleCreateBlog}>
+          <Button
+            style={{
+              background: "green",
+              color: "white",
+              borderColor: "green",
+            }}
+            onClick={handleCreateBlog}
+          >
             Save Blog
           </Button>
         </Modal.Footer>
       </Modal>
-
     </div>
   );
 };
