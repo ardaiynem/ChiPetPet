@@ -24,7 +24,14 @@ function MessagePage() {
   const { setTimedAlert } = useAlert();
 
   const handleChat = () => {
-    console.log(chats);
+    if (search === userDetails.username) {
+      setTimedAlert(
+        `There is no user with username \"${search}\"`,
+        "error",
+        3000
+      );
+    }
+
     for (let i = 0; i < chats.length; i++) {
       if (chats[i].username === search) {
         console.log("find");
