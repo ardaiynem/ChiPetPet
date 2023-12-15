@@ -190,7 +190,7 @@ def get_pets_by_shelter(request):
                 pets = cursor.fetchall()
 
             # Convert the results to a list of dictionaries
-            pets_list = [
+            pets_list = {"pets": [
                 {
                     'pet_id': pet[0],
                     'shelter_id': pet[1],
@@ -205,7 +205,7 @@ def get_pets_by_shelter(request):
                     'adoption_status': pet[10],
                 }
                 for pet in pets
-            ]
+            ]}
 
             return JsonResponse(pets_list, safe=False)
 

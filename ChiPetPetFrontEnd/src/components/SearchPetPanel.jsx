@@ -3,28 +3,46 @@ import catImg from "../assets/cat1.jpeg";
 
 import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { getPetsByType } from "../apiHelper/backendHelper";
+import { getPetsByType, getPetsByShelter } from "../apiHelper/backendHelper";
 
 import SingleAnimalPanel from "./SingleAnimalPanel";
 
 function SearchPetPanel(props) {
 
     let animalType = props.animalType
+    let shelterid = props.shelterid
+
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
     const [page, setPage] = useState(1)
     const [pets, setPets] = useState([]);
 
-    useEffect(() => {
-        // Fetch pets data from the backend when the component mounts
-        getPetsByType(animalType)
-        .then((res) => {
-            setPets(res.data.pets);
-        })
-        .catch((err) => {
-            setTimedAlert("Error retrieving animals", "error", 3000);
-        });
+    if( animalType){
+        useEffect(() => {
+            // Fetch pets data from the backend when the component mounts
+            getPetsByType(animalType)
+            .then((res) => {
+                setPets(res.data.pets);
+            })
+            .catch((err) => {
+                setTimedAlert("Error retrieving animals", "error", 3000);
+            });
+    
+        }, [animalType]);
+    }
+    else if( shelterid ){
+        useEffect(() => {
+            // Fetch pets data from the backend when the component mounts
+            getPetsByShelter(shelterid)
+            .then((res) => {
+                setPets(res.data.pets);
+            })
+            .catch((err) => {
+                setTimedAlert("Error retrieving animals", "error", 3000);
+            });
+    
+        }, [shelterid]);
+    }
 
-    }, [animalType]);
     
 
     let items = [];
