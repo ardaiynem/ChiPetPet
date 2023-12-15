@@ -30,6 +30,7 @@ function MessagePage() {
         "error",
         3000
       );
+      return;
     }
 
     for (let i = 0; i < chats.length; i++) {
