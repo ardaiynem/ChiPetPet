@@ -3,6 +3,7 @@ import catImg from "../assets/cat1.jpeg";
 
 import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
+import { getPetsByType } from "../apiHelper/backendHelper";
 
 import SingleAnimalPanel from "./SingleAnimalPanel";
 
@@ -19,53 +20,20 @@ function SearchPetPanel(props) {
     let animalType = props.animalType
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
     const [page, setPage] = useState(1)
-    const [pets, setPets] = useState([
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto2",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto3",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto4",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto5",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto2",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto3",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto4",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto5",
-            species: "street"
-        },
-    ]);
+    const [pets, setPets] = useState([]);
+
+    useEffect(() => {
+        // Fetch pets data from the backend when the component mounts
+        getPetsByType(animalType)
+        .then((res) => {
+            setPets(res.data.pets);
+        })
+        .catch((err) => {
+            setTimedAlert("Error retrieving animals", "error", 3000);
+        });
+
+    }, [animalType]);
+    
 
     let items = [];
     const animalPerPage = 6
@@ -128,14 +96,13 @@ function SearchPetPanel(props) {
                             <Card key={pet.id} className="mb-3 me-3" style={{ maxWidth: "576px" }}>
                                 <Row className="no-gutters">
                                     <Col xs={4} className="d-flex">
-                                        <Card.Img src={catImg} style={{ objectFit: "cover" }} />
+                                        <Card.Img src={pet.photo} style={{ objectFit: "cover" }} />
                                     </Col>
                                     <Col xs={8}>
                                         <Card.Body>
                                             <Card.Title>{pet.name}</Card.Title>
                                             <Card.Text>
-                                                Some quick example text to build on the card title and make up the
-                                                bulk of the card's content.
+                                                {pet.description}
                                             </Card.Text>
                                             <Button variant="primary" onClick={()=>setCurrentPanel(<SingleAnimalPanel/>)}>Go somewhere</Button>
                                         </Card.Body>

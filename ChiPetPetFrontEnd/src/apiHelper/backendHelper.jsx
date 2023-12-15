@@ -118,6 +118,11 @@ export const getPetsByShelter = async (user_id) => {
   return await getFetcher(url.GET_PETS_BY_SHELTER_PATH(user_id));
 };
 
+export const getPetsByType = async (type) => {
+  return await getFetcher(url.GET_PETS_BY_TYPE_PATH(type));
+};
+
+
 // verification documents
 
 export const getUnverifiedDocuments = async () => {

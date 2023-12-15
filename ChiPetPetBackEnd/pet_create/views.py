@@ -86,6 +86,46 @@ def get_pets(request):
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
+def get_pets_by_type(request):
+    if request.method == 'GET':
+        try:
+            type = request.GET.get('type')
+
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT * FROM pet
+                    WHERE LOWER(species) = LOWER(%s)
+                    """, (type.lower(), )
+                )
+                pets = cursor.fetchall()
+
+            # Convert the results to a list of dictionaries
+            pets_list = {"pets": [
+                {
+                    'pet_id': pet[0],
+                    'shelter_id': pet[1],
+                    'name': pet[2],
+                    'species': pet[3],
+                    'breed': pet[4],
+                    'gender': pet[5],
+                    'age': pet[6],
+                    'health_status': pet[7],
+                    'description': pet[8],
+                    'photo': pet[9].decode('utf-8') if pet[9] else None,  # Decode photo from bytes to string
+                    'adoption_status': pet[10],
+                }
+                for pet in pets
+            ]}
+
+            return JsonResponse(pets_list, safe=False)
+
+        except Exception as e:
+            return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
 def get_pets_by_shelter(request):
     if request.method == 'GET':
         try:
