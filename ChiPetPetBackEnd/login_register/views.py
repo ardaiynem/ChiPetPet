@@ -188,7 +188,7 @@ def reset_password(request):
             email = cursor.fetchone()
 
             if not email:
-                return JsonResponse({'error': 'User not found.'}, status=404)
+                return JsonResponse(status=200)
             
             cursor.execute('UPDATE user SET password = %s WHERE username = %s', (hashed_password, username))
 

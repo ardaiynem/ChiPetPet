@@ -15,12 +15,38 @@ function LoginPage() {
 
   const [isRegister, setIsRegister] = useState(false);
   const [isInvalid, setIsInvalid] = useState(false);
+  const [forgotPassword, setForgotPassword] = useState(false);
+
+  const handleForgotPassword = (e) => {
+    console.log("ttt");
+    e.preventDefault();
+    axios
+      .post("http://127.0.0.1:8000/login_register/reset_password/", {
+        username: username,
+      })
+      .then((res) => {
+        setUsername("");
+        setTimedAlert(
+          "Check your mailbox to reset your password.",
+          "success",
+          3000
+        );
+        setUsername("");
+        setForgotPassword(false);
+      })
+      .catch((e) => {
+        if (e.response.status == 401) {
+          setIsInvalid(true);
+          setTimedAlert("Invalid credentials", "error", 3000);
+        }
+      });
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
     axios
       .post("http://127.0.0.1:8000/login_register/login/", {
-        username: email,
+        username: username,
         password: password,
       })
       .then((res) => {
@@ -46,11 +72,13 @@ function LoginPage() {
         password: password,
       })
       .then((res) => {
-        console.log(res.data);
+        setTimedAlert("Register successful", "success", 3000);
+        setPassword("");
+        setIsRegister(false);
       })
       .catch((e) => {
         if (e.response.status == 400) {
-          console.log("Invalid credentials");
+          setTimedAlert("Invalid informations", "error", 3000);
         }
       });
   };
@@ -59,13 +87,6 @@ function LoginPage() {
     <>
       {isRegister ? (
         <div className="h-100 d-flex justify-content-center align-items-center">
-          <button
-            onClick={() => {
-              setIsRegister(false);
-            }}
-          >
-            Login
-          </button>
           <Container className="w-auto">
             <Card>
               <Card.Body>
@@ -125,7 +146,15 @@ function LoginPage() {
                     <Form.Check type="checkbox" label="Check me out" />
                   </Form.Group>
                   <Button variant="primary" type="submit" className="w-100">
-                    Submit
+                    Register
+                  </Button>
+                  <Button
+                    className="mt-3"
+                    onClick={() => {
+                      setIsRegister(false);
+                    }}
+                  >
+                    Login
                   </Button>
                 </Form>
               </Card.Body>
@@ -133,50 +162,107 @@ function LoginPage() {
           </Container>
         </div>
       ) : (
-        <div className="h-100 d-flex justify-content-center align-items-center">
-          <button
-            onClick={() => {
-              setIsRegister(true);
-            }}
-          >
-            Register
-          </button>
-          <Container className="w-auto">
-            {isInvalid && <div> Invalid credentials </div>}
-            <Card>
-              <Card.Body>
-                <div className="d-flex justify-content-center mb-3">
-                  <h1 className="d-inline-block">ChiPetPet</h1>
-                </div>
-                <Form onSubmit={handleLogin} style={{ boxShadow: "10px grey" }}>
-                  <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control
-                      type="text"
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter username"
-                    />
-                  </Form.Group>
+        <div>
+          {forgotPassword ? (
+            <div className="h-100 d-flex justify-content-center align-items-center">
+              <Container className="w-auto">
+                <Card>
+                  <Card.Body>
+                    <div className="d-flex justify-content-center mb-3">
+                      <h1 className="d-inline-block">ChiPetPet</h1>
+                    </div>
+                    <Form
+                      onSubmit={handleForgotPassword}
+                      style={{ boxShadow: "10px grey" }}
+                    >
+                      <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                          type="text"
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder="Enter username"
+                        />
+                      </Form.Group>
+                      <Button className="mt-3 w-100" type="submit">
+                        Send password reset link
+                      </Button>
+                      <Button
+                        className="mt-3 w-100"
+                        onClick={() => {
+                          setForgotPassword(false);
+                        }}
+                      >
+                        Login
+                      </Button>
+                    </Form>
+                  </Card.Body>
+                </Card>
+              </Container>
+            </div>
+          ) : (
+            <div className="h-100 d-flex justify-content-center align-items-center">
+              <Container className="w-auto">
+                <Card>
+                  <Card.Body>
+                    <div className="d-flex justify-content-center mb-3">
+                      <h1 className="d-inline-block">ChiPetPet</h1>
+                    </div>
+                    <Form
+                      onSubmit={handleLogin}
+                      style={{ boxShadow: "10px grey" }}
+                    >
+                      <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control
+                          type="text"
+                          onChange={(e) => setUsername(e.target.value)}
+                          placeholder="Enter username"
+                        />
+                      </Form.Group>
 
-                  <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Password"
-                    />
-                  </Form.Group>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicPassword"
+                      >
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                          type="password"
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="Password"
+                        />
+                      </Form.Group>
 
-                  <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
-                  </Form.Group>
-                  <Button variant="primary" type="submit" className="w-100">
-                    Submit
-                  </Button>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Container>
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicCheckbox"
+                      >
+                        <Form.Check type="checkbox" label="Check me out" />
+                      </Form.Group>
+                      <Button variant="primary" type="submit" className="w-100">
+                        Login
+                      </Button>
+                      <Button
+                        className="mt-3 w-100"
+                        onClick={() => {
+                          setIsRegister(true);
+                        }}
+                      >
+                        Don't have an account? Register
+                      </Button>
+                      <Button
+                        className="mt-3 w-100"
+                        onClick={() => {
+                          setForgotPassword(true);
+                        }}
+                      >
+                        Forgot password
+                      </Button>
+                    </Form>
+                  </Card.Body>
+                </Card>
+              </Container>
+            </div>
+          )}
         </div>
       )}
     </>
