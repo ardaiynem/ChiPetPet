@@ -7,25 +7,24 @@ import { createApplication } from "../apiHelper/backendHelper";
 import { useAuth } from "../AuthContext";
 import { useAlert } from "../AlertContext";
 
-/**
- * need pet_id and animal_shelter_id to be passed in
- */
 
+function AdoptionApply(props) {
 
-function AdoptionApply() {
-
-    const { logout, userDetails } = useAuth();    
+    const { userDetails } = useAuth();    
     const { setTimedAlert } = useAlert();
     const { setCurrentPanel } = useContext(PanelContext);
     const [application_note, setApplicationNote] = useState("");
+    const { pet_id, animal_shelter_id, pet_name, animal_shelter_name } = props;
 
     const applicationHandler = () => {
         const data = {
             adopter_id: userDetails.user_id,
-            pet_id: 1,
-            animal_shelter_id: 1,
-            application_note: application_note
+            pet_id: pet_id,
+            animal_shelter_id: animal_shelter_id,
+            application_text: application_note
         }
+
+        console.log(data);
 
         createApplication(data)
             .then((res) => {
@@ -34,6 +33,7 @@ function AdoptionApply() {
             })
             .catch((err) => {
                 setTimedAlert("Error creating application", "error", 3000);
+                setTimedAlert(err, "error", 3000);
             })
     }
 
@@ -47,9 +47,9 @@ function AdoptionApply() {
         <div class="col-md-6">
             <div class="mt3">
                 <div>
-                    <p>Adopter:</p>
-                    <p>Pet:</p>
-                    <p>Shelter</p>
+                    <p>Adopter: {userDetails.username}</p>
+                    <p>Pet: {pet_name}</p>
+                    <p>Shelter: {animal_shelter_name}</p>
                 </div>
             </div>
             <p style={{background: "rgba(255, 182, 193, 0.5)", width:"300px", fontSize:"12px"}}> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</p>

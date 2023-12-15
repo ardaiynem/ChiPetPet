@@ -58,13 +58,18 @@ function SingleAnimalPanel(crops) {
                             </div>
                             <div className="mt-3">
                             {/* Add buttons below */}
-                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", color: "white", borderRadius:"20px" }} onClick={() => setCurrentPanel(<AdoptionApply/>)}>
+                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", color: "white", borderRadius:"20px" }} 
+                            onClick={() => setCurrentPanel(<AdoptionApply pet_id = {petid} animal_shelter_id = {pet.shelter_id} 
+                            pet_name = {pet.name} animal_shelter_name = {pet.shelter_name}/>)}>
                                 Apply For Adoption
                             </Button>
-                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c" }}>
+                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", 
+                            borderRadius:"20px", color:"#f0087c" }}>
                                 See Health Report
                             </Button>
-                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", borderRadius:"20px", color:"#f0087c"  }} onClick={() => setCurrentPanel(<ShelterContact shelterid = {pet.shelter_id}/>)}>
+                            <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", 
+                            borderRadius:"20px", color:"#f0087c"  }} 
+                            onClick={() => setCurrentPanel(<ShelterContact shelterid = {pet.shelter_id}/>)}>
                                 Contact With Shelter
                             </Button>
                         </div>
