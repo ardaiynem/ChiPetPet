@@ -117,6 +117,23 @@ def get_shelter_by_id(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+@csrf_exempt
+def get_all_shelters(request):
+    if request.method == 'GET':
+
+        cursor = connection.cursor()
+        role = 'animal_shelter'
+        cursor.execute("""SELECT user_id, first_name, last_name, username, email, verified, role, address, contact
+                       FROM user NATURAL JOIN animal_shelter
+                       WHERE role = %s""", (role, ))
+        shelters = cursor.fetchall()
+
+        # Convert the result to a list of dictionaries
+        shelter_info = {'shelters': [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8]} for user in shelters] }
+
+        return JsonResponse(shelter_info, safe=False)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 @csrf_exempt
