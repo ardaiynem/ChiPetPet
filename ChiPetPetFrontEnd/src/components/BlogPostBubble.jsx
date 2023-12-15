@@ -24,8 +24,8 @@ function BlogPostBubble({ handleRemove, handleEdit, comment }) {
           <div style={{ flex: "1 1 auto" }}>
             {date_and_time.replace("T", " ")}
           </div>
-          <div
             className="position-relative"
+          <div
             style={{ width: "100%", height: "100%" }}
           >
             {user_id === userDetails.user_id && (

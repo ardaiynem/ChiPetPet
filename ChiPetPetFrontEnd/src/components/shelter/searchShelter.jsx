@@ -3,8 +3,9 @@ import catImg from "../../assets/cat1.jpeg";
 
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import SingleAnimalPanel from "../SingleAnimalPanel";
 import { getAllShelters } from "../../apiHelper/backendHelper";
+import ShelterContact from "./shelterContact";
+import SearchPetPanel from "../SearchPetPanel";
 
 function SearchShelter() {
 
@@ -93,8 +94,10 @@ function SearchShelter() {
                                     </Card.Body>
                                     </Col>
                                     <Col xs={2} className="d-flex flex-column align-items-center">
-                                        <Button style={{ marginTop:"10px", width:"200px", height: "40px" }} className="mb-2">Contact</Button>
-                                        <Button style={{ width:"200px", height: "40px" }} className="mb-2">List Animals</Button>
+                                        <Button style={{ marginTop:"10px", width:"200px", height: "40px" }} className="mb-2"
+                                                        onClick={() => setCurrentPanel(<ShelterContact shelterid = {shelter.user_id}/>)} >Contact</Button>
+                                        <Button style={{ width:"200px", height: "40px" }} className="mb-2"
+                                                         onClick={() => setCurrentPanel(<SearchPetPanel shelterid={shelter.user_id} />)} >List Animals</Button>
                                     </Col>
                                 </Row>
                             </Card>

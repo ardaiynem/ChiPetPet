@@ -13,6 +13,28 @@ from django.views.decorators.csrf import csrf_exempt
 def index(request):
     return HttpResponse("Blog")
 
+@csrf_exempt
+@require_http_methods(["GET"])
+def getBlog(request):
+    
+    cursor = connection.cursor()
+
+    post_id = request.GET.get('post_id')
+
+    cursor.execute("SELECT post_id, date_and_time, content, topic, username, role FROM blog_post NATURAL JOIN user where post_id = %s", (post_id, ))
+
+    blog = cursor.fetchone()
+    
+    cursor.close()
+
+    return JsonResponse({
+        "post_id": blog[0],
+        "date_and_time": blog[1],
+        "content": blog[2],
+        "topic": blog[3],
+        "username": blog[4],
+        "role": blog[5]}, status=200)
+
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -139,10 +161,13 @@ def createComment(request):
                    (data['post_id'], data['user_id'], data['date_and_time'], data['content'], data['post_id']))
     
     connection.commit()
+    cursor.execute("SELECT MAX(comment_id) FROM comment")
+
+    max_index = cursor.fetchone();
 
     cursor.close()
 
-    return HttpResponse(status=200)
+    return JsonResponse({"comment_id": max_index[0]},status=200)
 
 
 
