@@ -22,7 +22,6 @@ const BlogPage = ({ post_id }) => {
   });
 
   const handleCommentSend = () => {
-    console.log(comment);
     const formattedDate = new Date()
       .toISOString()
       .slice(0, 19)
@@ -35,6 +34,7 @@ const BlogPage = ({ post_id }) => {
         content: comment,
       })
       .then((res) => {
+        console.log("response", res.data);
         setComments((prevState) => [
           ...prevState,
           {

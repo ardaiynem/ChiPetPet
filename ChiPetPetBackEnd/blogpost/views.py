@@ -157,7 +157,7 @@ def createComment(request):
     data = json.loads(request.body)
 
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO comment SELECT %s, MAX(comment_id) + 1, %s, %s, %s FROM comment WHERE post_id = %s", 
+    cursor.execute("INSERT INTO comment SELECT %s, COALESCE(MAX(comment_id) + 1, 1), %s, %s, %s FROM comment WHERE post_id = %s", 
                    (data['post_id'], data['user_id'], data['date_and_time'], data['content'], data['post_id']))
     
     connection.commit()

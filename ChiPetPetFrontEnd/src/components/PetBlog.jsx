@@ -35,18 +35,27 @@ const PetBlog = () => {
   }, []);
 
   const handleCreateBlog = () => {
-    console.log("working");
+    const postdate = new Date().toISOString().slice(0, 19).replace("T", " ");
     axios
       .post("http://127.0.0.1:8000/blogpost/createBlog", {
         user_id: userDetails.user_id,
-        date_and_time: new Date().toISOString().slice(0, 19).replace("T", " "),
+        date_and_time: postdate,
         topic: createdBlog.topic,
         content: createdBlog.content,
       })
       .then((res) => {
         console.log(res.data);
-        setBlogs([...blogs, { ...createdBlog, post_id: res.data.post_id }]);
+        setBlogs([
+          ...blogs,
+          {
+            topic: createdBlog.topic,
+            user_name: userDetails.username,
+            date: postdate,
+            post_id: res.data.post_id,
+          },
+        ]);
       });
+    console.log("new blogs", blogs);
     setCreatedBlog({ content: "", topic: "" });
     setShowCreateBlogModal(false);
     setTimedAlert("Blog has been successfully posted.", "success", 3000);
@@ -102,8 +111,8 @@ const PetBlog = () => {
                   }
                 >
                   <th scope="row">{}</th>
-                  <td>{blog.topic}</td>
                   <td>{blog.user_name}</td>
+                  <td>{blog.topic}</td>
                   <td>{blog.date}</td>
                 </tr>
               ))}
