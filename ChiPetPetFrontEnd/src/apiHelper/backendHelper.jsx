@@ -78,25 +78,25 @@ export const deleteAppointment = async (appointmentId) => {
 };
 
 // notification
-export const getNotifications = async () => {
-  return await getFetcher(url.GET_NOTIFICATIONS_PATH());
+export const getNotifications = async (user_id) => {
+  return await getFetcher(url.GET_NOTIFICATIONS_PATH(user_id));
 };
 
-export const getNotification = async (notificationId, date_and_time) => {
+export const getNotification = async (user_id, date_and_time) => {
   return await getFetcher(
-    url.GET_NOTIFICATION_PATH(notificationId, date_and_time)
+    url.GET_NOTIFICATION_PATH(user_id, date_and_time)
   );
 };
 
-export const getRecentNotifications = async (notificationId, date_and_time) => {
+export const getRecentNotifications = async (user_id, date_and_time) => {
   return await getFetcher(
-    url.GET_RECENT_NOTIFICATIONS_PATH(notificationId, date_and_time)
+    url.GET_RECENT_NOTIFICATIONS_PATH(user_id, date_and_time)
   );
 };
 
-export const deleteNotification = async (notificationId, date_and_time) => {
+export const deleteNotification = async (user_id, date_and_time) => {
   return await deleteFetcher(
-    url.DELETE_NOTIFICATION_PATH(notificationId, date_and_time)
+    url.DELETE_NOTIFICATION_PATH(user_id, date_and_time)
   );
 };
 

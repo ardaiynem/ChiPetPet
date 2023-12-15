@@ -21,7 +21,7 @@ const Notification = (props) => {
     };
 
     return (
-        <li className="Notification">
+        <li className="notification">
             <button className="delete-notification" onClick={deleteNotificationHandler}>X</button>
             <h3>{topic}</h3>
             <p>{date_and_time.toString()}</p>

@@ -1,4 +1,4 @@
-import { Dropdown, Pagination, Button } from "react-bootstrap";
+import { Dropdown, Pagination, Button, Modal } from "react-bootstrap";
 import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../contexts/panelContext";
 import BlogPage from "./BlogPage";
@@ -6,8 +6,8 @@ import axios from "axios";
 
 const PetBlog = () => {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
-
   const [blogs, setBlogs] = useState([]);
+  const [showCreateBlogModal, setShowCreateBlogModal] = useState(false);
 
   let active = 1;
   let items = [];
@@ -25,6 +25,10 @@ const PetBlog = () => {
     });
   }, []);
 
+  const handleCreateBlog = () => {
+      //ToDo
+  };
+
   const handleClickTableElement = (blog) => {
     setCurrentPanel(<BlogPage post_id={blog.post_id} />);
   };
@@ -38,43 +42,17 @@ const PetBlog = () => {
         >
           Back
         </Button>
+        <Button
+          className="position-relative top-2 start-2"
+          style={{ marginLeft: "1270px", background: "green", color: "white", borderColor: "green" }}
+          onClick={() => setShowCreateBlogModal(true)}
+        >
+          Create Blog
+        </Button>
       </div>
       <h1>Pet Blog</h1>
       <div className="d-flex w-100 justify-content-between">
-        <Dropdown>
-          <Dropdown.Toggle variant="primary" id="dropdown-basic">
-            Dropdown Button
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-
-        <Dropdown>
-          <Dropdown.Toggle variant="primary" id="dropdown-basic">
-            Dropdown Button
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-
-        <Dropdown>
-          <Dropdown.Toggle variant="primary" id="dropdown-basic">
-            Dropdown Button
-          </Dropdown.Toggle>
-
-          <Dropdown.Menu>
-            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-            <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-            <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        {/* ... */}
       </div>
       <div className="d-flex" style={{ flex: "1 1 0" }}>
         <div className="w-100">
@@ -110,6 +88,32 @@ const PetBlog = () => {
       <div className="d-flex justify-content-center">
         <Pagination size="lg">{items}</Pagination>
       </div>
+
+      {/* Create Blog Modal */}
+      <Modal show={showCreateBlogModal} onHide={() => setShowCreateBlogModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Create Blog</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="mb-3">
+            <label htmlFor="topicInput" className="form-label">Enter Topic:</label>
+            <input type="text" className="form-control" id="topicInput" />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="textInput" className="form-label">Enter Text:</label>
+            <textarea className="form-control" id="textInput" rows="6"></textarea>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button style={{background: "red", color: "white", borderColor: "red"}} onClick={() => setShowCreateBlogModal(false)}>
+            Close
+          </Button>
+          <Button style={{background: "green", color: "white", borderColor: "green"}} onClick={handleCreateBlog}>
+            Save Blog
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   );
 };
