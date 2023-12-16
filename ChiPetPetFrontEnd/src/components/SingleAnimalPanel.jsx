@@ -64,7 +64,7 @@ function SingleAnimalPanel(crops) {
                             </Button>
                             <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", 
                             borderRadius:"20px", color:"#f0087c" }}
-                            onClick={()=> setCurrentPanel(<HealthRecords/>)}>
+                            onClick={()=> setCurrentPanel(<HealthRecords petid = {petid} petname = {pet.name}/>)}>
                                 See Health Report
                             </Button>
                             <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", 

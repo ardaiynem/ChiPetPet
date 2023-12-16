@@ -51,7 +51,7 @@ def get_health_records_by_pet(request):
             health_records = cursor.fetchall()
 
             # Convert the results to a list of dictionaries
-            health_records_list = [
+            health_records_list = {"health_records": [
                 {
                     'pet_id': record[0],
                     'date': record[1].isoformat(),  # Convert date to ISO format for better serialization
@@ -59,12 +59,9 @@ def get_health_records_by_pet(request):
                     'health_report': record[3],
                 }
                 for record in health_records
-            ]
+            ]}
 
             return JsonResponse(health_records_list, safe=False)
-        
-        except json.JSONDecodeError as e:
-            return JsonResponse({'error': 'Invalid JSON format: {}'.format(str(e))}, status=400)
         
         except Exception as e:
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)

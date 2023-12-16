@@ -36,10 +36,8 @@ export const DELETE_NOTIFICATION_PATH = (user_id, date_and_time) => NOTIFICATION
 
 // health_record
 export const HEALTH_RECORD_PATH = () => COMMON_PATH + "health_record/";
-export const UPLOAD_HEALTH_RECORD_PATH = () =>
-  HEALTH_RECORD_PATH() + "upload_health_record/";
-export const GET_HEALTH_RECORDS_BY_PET_PATH = (pet_id) =>
-  HEALTH_RECORD_PATH() + "upload_health_record/?pet_id=" + pet_id;
+export const UPLOAD_HEALTH_RECORD_PATH = () => HEALTH_RECORD_PATH() + "upload_health_record/";
+export const GET_HEALTH_RECORDS_BY_PET_PATH = (pet_id) => HEALTH_RECORD_PATH() + "get_health_records_by_pet/?pet_id=" + pet_id;
 
 // pet_create
 export const PET_CREATE_PATH = () => COMMON_PATH + "pet_create/";
