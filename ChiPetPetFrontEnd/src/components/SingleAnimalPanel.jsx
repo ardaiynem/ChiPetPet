@@ -6,8 +6,7 @@ import AdoptionApply from "./AdoptionApply";
 import ShelterContact from "./shelter/shelterContact";
 import { getPetById } from "../apiHelper/backendHelper";
 import { useAlert } from "../AlertContext";
-
-
+import HealthRecords from "./healthRecords";
 
 function SingleAnimalPanel(crops) {
     const {setTimedAlert} = useAlert();
@@ -64,7 +63,8 @@ function SingleAnimalPanel(crops) {
                                 Apply For Adoption
                             </Button>
                             <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", 
-                            borderRadius:"20px", color:"#f0087c" }}>
+                            borderRadius:"20px", color:"#f0087c" }}
+                            onClick={()=> setCurrentPanel(<HealthRecords/>)}>
                                 See Health Report
                             </Button>
                             <Button variant="primary" className="me-2" style={{ borderWidth:"3px", background: "white", 
