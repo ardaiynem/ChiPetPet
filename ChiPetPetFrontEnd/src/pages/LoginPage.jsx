@@ -18,7 +18,6 @@ function LoginPage() {
   const [forgotPassword, setForgotPassword] = useState(false);
 
   const handleForgotPassword = (e) => {
-    
     e.preventDefault();
     axios
       .post("http://127.0.0.1:8000/login_register/reset_password/", {
@@ -86,7 +85,10 @@ function LoginPage() {
   return (
     <>
       {isRegister ? (
-        <div className="h-100 d-flex justify-content-center align-items-center">
+        <div
+          style={{ marginTop: "40px" }}
+          className="h-100 d-flex justify-content-center align-items-center"
+        >
           <Container className="w-auto">
             <Card>
               <Card.Body>
@@ -164,7 +166,10 @@ function LoginPage() {
       ) : (
         <div>
           {forgotPassword ? (
-            <div className="h-100 d-flex justify-content-center align-items-center">
+            <div
+              style={{ marginTop: "80px" }}
+              className="h-100 d-flex justify-content-center align-items-center"
+            >
               <Container className="w-auto">
                 <Card>
                   <Card.Body>
@@ -184,7 +189,7 @@ function LoginPage() {
                         />
                       </Form.Group>
                       <Button className="mt-3 w-100" type="submit">
-                        Send password reset link
+                        Send email link to login
                       </Button>
                       <Button
                         className="mt-3 w-100"
@@ -200,7 +205,10 @@ function LoginPage() {
               </Container>
             </div>
           ) : (
-            <div className="h-100 d-flex justify-content-center align-items-center">
+            <div
+              style={{ marginTop: "70px" }}
+              className="h-100 d-flex justify-content-center align-items-center"
+            >
               <Container className="w-auto">
                 <Card>
                   <Card.Body>

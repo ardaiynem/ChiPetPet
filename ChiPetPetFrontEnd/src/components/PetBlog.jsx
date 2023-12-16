@@ -10,8 +10,11 @@ const PetBlog = () => {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const [blogs, setBlogs] = useState([]);
   const [showCreateBlogModal, setShowCreateBlogModal] = useState(false);
+  const [showRemoveBlogModal, setShowRemoveBlogModal] = useState(false);
   const { isAuthenticated, login, logout, userDetails } = useAuth();
   const { setTimedAlert } = useAlert();
+  const [editMode, setEditMode] = useState(false);
+  const [editedBlog, setEditedBlog] = useState();
 
   const [createdBlog, setCreatedBlog] = useState({
     topic: "",
@@ -34,31 +37,85 @@ const PetBlog = () => {
     });
   }, []);
 
-  const handleCreateBlog = () => {
-    const postdate = new Date().toISOString().slice(0, 19).replace("T", " ");
+  const handleEditBlog = (post_id) => {
     axios
-      .post("http://127.0.0.1:8000/blogpost/createBlog", {
-        user_id: userDetails.user_id,
-        date_and_time: postdate,
-        topic: createdBlog.topic,
-        content: createdBlog.content,
+      .get(`http://127.0.0.1:8000/blogpost/getBlog/`, {
+        params: { post_id: post_id },
       })
       .then((res) => {
-        console.log(res.data);
-        setBlogs([
-          ...blogs,
-          {
-            topic: createdBlog.topic,
-            user_name: userDetails.username,
-            date: postdate,
-            post_id: res.data.post_id,
-          },
-        ]);
+        setCreatedBlog({ topic: res.data.topic, content: res.data.content });
       });
-    console.log("new blogs", blogs);
+    setEditMode(true);
+    setEditedBlog(post_id);
+    setShowCreateBlogModal(true);
+  };
+
+  const handleRemoveBlog = (post_id) => {
+    axios
+      .delete(`http://127.0.0.1:8000/blogpost/deleteBlog/`, {
+        params: { post_id: post_id, user_id: userDetails.user_id },
+      })
+      .then((res) => {
+        setBlogs(blogs.filter((blog) => blog.post_id !== post_id));
+      });
+    setShowRemoveBlogModal(false);
+  };
+
+  const handleSaveBlog = () => {
+    if (createdBlog.topic == "" || createdBlog.content == "") {
+      setCreatedBlog({ content: "", topic: "" });
+      setShowCreateBlogModal(false);
+      setTimedAlert("Topic or content can't be empty", "error", 3000);
+      return;
+    }
+
+    const postdate = new Date().toISOString().slice(0, 19).replace("T", " ");
+    if (!editMode) {
+      axios
+        .post("http://127.0.0.1:8000/blogpost/createBlog", {
+          user_id: userDetails.user_id,
+          date_and_time: postdate,
+          topic: createdBlog.topic,
+          content: createdBlog.content,
+        })
+        .then((res) => {
+          setBlogs([
+            ...blogs,
+            {
+              topic: createdBlog.topic,
+              user_name: userDetails.username,
+              date: postdate,
+              post_id: res.data.post_id,
+            },
+          ]);
+        });
+    } else {
+      axios
+        .patch("http://127.0.0.1:8000/blogpost/updateBlog", {
+          user_id: userDetails.user_id,
+          post_id: editedBlog,
+          date_and_time: postdate,
+          topic: createdBlog.topic,
+          content: createdBlog.content,
+        })
+        .then((res) => {
+          setBlogs(
+            blogs.map((blog) =>
+              blog.post_id == editedBlog
+                ? {
+                    topic: createdBlog.topic,
+                    user_name: userDetails.username,
+                    date: postdate,
+                    post_id: editedBlog,
+                  }
+                : blog
+            )
+          );
+        });
+    }
     setCreatedBlog({ content: "", topic: "" });
     setShowCreateBlogModal(false);
-    setTimedAlert("Blog has been successfully posted.", "success", 3000);
+    setTimedAlert("Blog has been successfully saved.", "success", 3000);
   };
 
   const handleClickTableElement = (blog) => {
@@ -98,22 +155,75 @@ const PetBlog = () => {
                 <th scope="col">Username</th>
                 <th scope="col">Topic/Subject</th>
                 <th scope="col">Date</th>
+                <th scope="col"></th>
               </tr>
             </thead>
             <tbody>
               {blogs.map((blog, i) => (
-                <tr
-                  key={i}
-                  onClick={() =>
-                    handleClickTableElement({
-                      post_id: blog.post_id,
-                    })
-                  }
-                >
+                <tr key={i}>
                   <th scope="row">{}</th>
-                  <td>{blog.user_name}</td>
-                  <td>{blog.topic}</td>
-                  <td>{blog.date}</td>
+                  <td
+                    onClick={() =>
+                      handleClickTableElement({
+                        post_id: blog.post_id,
+                      })
+                    }
+                  >
+                    {blog.user_name}
+                  </td>
+                  <td
+                    onClick={() =>
+                      handleClickTableElement({
+                        post_id: blog.post_id,
+                      })
+                    }
+                  >
+                    {blog.topic}
+                  </td>
+                  <td
+                    onClick={() =>
+                      handleClickTableElement({
+                        post_id: blog.post_id,
+                      })
+                    }
+                  >
+                    {blog.date}
+                  </td>
+                  <td>
+                    {blog.user_name === userDetails.username && (
+                      <>
+                        <Button
+                          onClick={() => {
+                            handleEditBlog(blog.post_id);
+                          }}
+                          style={{
+                            fontSize: "16px",
+                            height: "35px",
+                            marginRight: "2px",
+                            textAlign: "center",
+                            textJustify: "center",
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setEditedBlog(blog.post_id);
+                            setShowRemoveBlogModal(true);
+                          }}
+                          style={{
+                            fontSize: "16px",
+                            height: "35px",
+                            marginRight: "2px",
+                            textAlign: "center",
+                            textJustify: "center",
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      </>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -172,7 +282,11 @@ const PetBlog = () => {
         <Modal.Footer>
           <Button
             style={{ background: "red", color: "white", borderColor: "red" }}
-            onClick={() => setShowCreateBlogModal(false)}
+            onClick={() => {
+              setEditMode(false);
+              setShowCreateBlogModal(false);
+              setCreatedBlog({ topic: "", content: "" });
+            }}
           >
             Close
           </Button>
@@ -182,9 +296,45 @@ const PetBlog = () => {
               color: "white",
               borderColor: "green",
             }}
-            onClick={handleCreateBlog}
+            onClick={handleSaveBlog}
           >
             Save Blog
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showRemoveBlogModal}
+        onHide={() => setShowRemoveBlogModal(false)}
+        size="lg"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Removing Blog</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="mb-3">
+            <div>Are you sure to remove the selected label?</div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            style={{ background: "red", color: "white", borderColor: "red" }}
+            onClick={() => {
+              setEditMode(false);
+              setShowRemoveBlogModal(false);
+              setCreatedBlog({ topic: "", content: "" });
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            style={{
+              background: "green",
+              color: "white",
+              borderColor: "green",
+            }}
+            onClick={() => handleRemoveBlog(editedBlog)}
+          >
+            Confirm
           </Button>
         </Modal.Footer>
       </Modal>

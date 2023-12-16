@@ -1,7 +1,7 @@
 import { useAuth } from "../AuthContext";
 import catImg from "../assets/cat1.jpeg";
 
-function BlogPostBubble({ handleRemove, handleEdit, comment }) {
+function BlogPostBubble({ handleRemove, comment }) {
   const { isAuthenticated, login, logout, userDetails } = useAuth();
   const { comment_id, content, user_id, user_name, date_and_time, role } =
     comment;
@@ -18,13 +18,12 @@ function BlogPostBubble({ handleRemove, handleEdit, comment }) {
             {user_name}
             <span className="ms-3 badge rounded-pill bg-primary">
               {role.toUpperCase().replace("_", " ")}
-            </span> 
+            </span>
             {date_and_time.replace("T", " ")}
           </div>
           <div style={{ width: "100%", height: "100%" }}>
             {user_id === userDetails.user_id && (
               <div className="position-absolute top-0 end-0">
-                <button className="btn btn-primary">Edit</button>
                 <button
                   onClick={() => handleRemove(comment_id)}
                   className="btn btn-danger"
