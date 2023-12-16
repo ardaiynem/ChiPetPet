@@ -50,7 +50,6 @@ const BlogPage = ({ post_id }) => {
       });
   };
 
-  const handleEdit = () => {};
   const handleRemove = (comment_id) => {
     axios.delete("http://127.0.0.1:8000/blogpost/deleteComment/", {
       params: {
@@ -147,7 +146,6 @@ const BlogPage = ({ post_id }) => {
           {comments.map((c, i) => (
             <BlogPostBubble
               key={i}
-              handleEdit={handleEdit}
               handleRemove={handleRemove}
               comment={c}
             />
