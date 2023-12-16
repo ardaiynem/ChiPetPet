@@ -1,6 +1,6 @@
 import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
 import catImg from "../assets/cat1.jpeg";
 
 const Profile = (props) => {
@@ -39,7 +39,23 @@ const Profile = (props) => {
                         <button className="btn btn-primary w-100">Edit</button>
                     </div>
                     <div className="d-flex justify-content-center align-items-center flex-column gap-3" style={{ flex: "1 1 0" }}>
-                        <input type="file" class="form-control" id="inputGroupFile02" disabled={verified} />
+                        <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    Select Profession
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item href="#/action-1">Shelter</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-2">Veterinerian</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-3">Field Expert</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-4">Admin</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+
+                            <input type="file" className="form-control" id="inputGroupFile02" disabled={verified} />
+                        </div>
+
                         <textarea className="form-control" style={{ flex: "1 1 0" }} disabled={verified} />
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled={verified} />

@@ -175,7 +175,6 @@ INSERT INTO blog_post (user_id, date_and_time, topic, content) VALUES (
 INSERT INTO blog_post (user_id, date_and_time, topic, content) VALUES (
     6, "1999-09-29", "Duman delirmek uzere", "bugunlerde dumanda bir problem var");
 
-
 INSERT INTO comment VALUES (
     1,
     1,
