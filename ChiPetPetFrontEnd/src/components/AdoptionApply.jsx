@@ -17,14 +17,18 @@ function AdoptionApply(props) {
     const { pet_id, animal_shelter_id, pet_name, animal_shelter_name } = props;
 
     const applicationHandler = () => {
+
+        if (application_note === "") {
+            setTimedAlert("Please write an application note", "error", 3000);
+            return;
+        }
+
         const data = {
             adopter_id: userDetails.user_id,
             pet_id: pet_id,
             animal_shelter_id: animal_shelter_id,
             application_text: application_note
         }
-
-        console.log(data);
 
         createApplication(data)
             .then((res) => {
@@ -52,8 +56,8 @@ function AdoptionApply(props) {
                     <p>Shelter: {animal_shelter_name}</p>
                 </div>
             </div>
-            <p style={{background: "rgba(255, 182, 193, 0.5)", width:"300px", fontSize:"12px"}}> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</p>
-            <p style={{background: "rgba(255, 182, 193, 0.5)", width:"300px", fontSize:"12px"}}> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</p>
+            <p style={{background: "rgba(255, 182, 193, 0.5)", width:"300px", fontSize:"12px"}}> Kindly write a short paragraph explaining your incentive to adopt this animal</p>
+            {/* <p style={{background: "rgba(255, 182, 193, 0.5)", width:"300px", fontSize:"12px"}}> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</p> */}
         </div>
         <div class="col-md-6">
             <div class="mt3">

@@ -10,18 +10,19 @@ import {
 } from "../../apiHelper/backendHelper";
 
 /**
- * get necessary data from applications and display them
+ * remove selection when clicked outside
+ * dropdown menu items are empty
  */
 
 function ApplicationsList() {
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [applications, setApplications] = useState([]);
   const { setTimedAlert } = useAlert();
-  const { logout, userDetails } = useAuth();
+  const { userDetails } = useAuth();
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
   useEffect(() => {
-    getApplicationByShelter(userDetails.id)
+    getApplicationByShelter(userDetails.user_id)
       .then((res) => {
         setApplications(res.data.applications);
       })
@@ -31,51 +32,57 @@ function ApplicationsList() {
   }, []);
 
   const toggleRowSelection = (rowNumber) => {
-    if (selectedRows.includes(rowNumber)) {
-      setSelectedRows(selectedRows.filter((row) => row !== rowNumber));
+    console.log(rowNumber);
+    if (selectedRow === rowNumber) {
+      setSelectedRow(null);
     } else {
-      setSelectedRows([...selectedRows, rowNumber]);
+      setSelectedRow(rowNumber);
     }
   };
 
-  const isRowSelected = (rowNumber) => selectedRows.includes(rowNumber);
-
   const acceptApplicationHandler = () => {
-    if (selectedRows.length === 0) {
+    if (selectedRow === null) {
       setTimedAlert("Please select an application", "error", 3000);
       return;
     }
 
-    const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+    const applicationId = [applications[selectedRow].application_id];
 
-    applicationIds.forEach((id) => {
-      updateApplicationStatus(id, "accepted")
-        .then((res) => {
-          setTimedAlert("Application accepted", "success", 3000);
-        })
-        .catch((err) => {
-          setTimedAlert("Error accepting application", "error", 3000);
-        });
-    });
+    const data = {
+      "application_id": applicationId,
+      "application_status": "ACCEPTED"
+    }
+
+    updateApplicationStatus(data)
+      .then((res) => {
+        setTimedAlert("Application accepted", "success", 3000);
+      })
+      .catch((err) => {
+        setTimedAlert("Error accepting application", "error", 3000);
+      });
+
   };
 
   const rejectApplicationHandler = () => {
-    if (selectedRows.length === 0) {
+    if (selectedRow === null) {
       setTimedAlert("Please select an application", "error", 3000);
       return;
     }
 
-    const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+    const applicationId = [applications[selectedRow].application_id];
 
-    applicationIds.forEach((id) => {
-      updateApplicationStatus(id, "rejected")
-        .then((res) => {
-          setTimedAlert("Application rejected", "success", 3000);
-        })
-        .catch((err) => {
-          setTimedAlert("Error rejecting application", "error", 3000);
-        });
-    });
+    const data = {
+      "application_id": applicationId,
+      "application_status": "REJECTED"
+    }
+
+    updateApplicationStatus(data)
+      .then((res) => {
+        setTimedAlert("Application rejected", "success", 3000);
+      })
+      .catch((err) => {
+        setTimedAlert("Error rejecting application", "error", 3000);
+      });
   };
 
   return (
@@ -110,57 +117,29 @@ function ApplicationsList() {
             </Dropdown>
           </div>
 
-          <table className="table table-striped">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Applied For</th>
                 <th scope="col">Application Status</th>
-                <th scope="col">Date</th>
+                <th scope="col">Animal Shelter</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                className={isRowSelected(1) ? "table-primary" : ""}
-                onClick={() => toggleRowSelection(1)}
-              >
-                <th scope="row">1</th>
-                <td>Necdet</td>
-                <td>Köpekcik</td>
-                <td>Pending</td>
-                <td>31.11.2023</td>
-              </tr>
-              <tr
-                className={isRowSelected(2) ? "table-primary" : ""}
-                onClick={() => toggleRowSelection(2)}
-              >
-                <th scope="row">2</th>
-                <td>Mehmet</td>
-                <td>Pamuk</td>
-                <td>Pending</td>
-                <td>31.11.2023</td>
-              </tr>
-              <tr
-                className={isRowSelected(3) ? "table-primary" : ""}
-                onClick={() => toggleRowSelection(3)}
-              >
-                <th scope="row">3</th>
-                <td>Ahmet</td>
-                <td>Kedi</td>
-                <td>Rejected</td>
-                <td>31.09.2023</td>
-              </tr>
-              <tr
-                className={isRowSelected(4) ? "table-primary" : ""}
-                onClick={() => toggleRowSelection(4)}
-              >
-                <th scope="row">4</th>
-                <td>Kerem Aktürkoğlu</td>
-                <td>Köpük</td>
-                <td>Accepted</td>
-                <td>31.11.2023</td>
-              </tr>
+              {applications.map((application, index) => (
+                <tr
+                  className={selectedRow == index ? "table-primary" : ""}
+                  onClick={() => toggleRowSelection(index)}
+                >
+                  <th scope="row">{index}</th>
+                  <td>{application.adopter_username}</td>
+                  <td>{application.pet_name}</td>
+                  <td>{application.application_status}</td>
+                  <td>{application.animal_shelter_username}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -169,6 +148,7 @@ function ApplicationsList() {
           className="d-flex flex-column align-items-end"
           style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}
         >
+        {selectedRow !== null && (
           <div className="card mb-3" style={{ width: "100%" }}>
             <div className="d-flex p-3 justify-content-center">
               <img
@@ -178,13 +158,14 @@ function ApplicationsList() {
                 style={{ width: "200px", marginRight: "20px" }}
               />
               <h5 className="card-title" style={{ marginRight: "50px" }}>
-                Kerem Aktürkoğlu
+                {applications[selectedRow].adopter_username}
               </h5>
               <div className="d-flex flex-column align-items-start">
                 <button
                   onClick={rejectApplicationHandler}
                   className="btn btn-danger mb-2"
                   type="button"
+                  disabled={applications[selectedRow].application_status !== "PENDING"}
                   style={{
                     backgroundColor: "red",
                     borderColor: "red",
@@ -198,6 +179,7 @@ function ApplicationsList() {
                   onClick={acceptApplicationHandler}
                   className="btn btn-success mb-2"
                   type="button"
+                  disabled={applications[selectedRow].application_status !== "PENDING"}
                   style={{
                     backgroundColor: "green",
                     borderColor: "green",
@@ -224,37 +206,31 @@ function ApplicationsList() {
             <div className="card-body">
               <h5 className="card-title">Application</h5>
               <p className="card-text">
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
+                {applications[selectedRow].application_text}
               </p>
             </div>
-            <div className="d-flex flex-row">
-              <div className="mr-3">
-                <table
-                  className="table table-striped"
-                  style={{ width: "300px", marginLeft: "10px" }}
-                >
-                  <tbody>
-                    <tr>
-                      <th scope="row">Species</th>
-                      <td>Cat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Breed</th>
-                      <td>Street Cat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Gender</th>
-                      <td>Male</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Age</th>
-                      <td>2</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div>
+            <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
+                <div style={{ flex: "1 1 0" }}>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th scope="col">Species</th>
+                        <th scope="col">Breed</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Age</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                          <td> {applications[selectedRow].pet_species} </td>
+                          <td> {applications[selectedRow].pet_breed} </td>
+                          <td> {applications[selectedRow].pet_gender} </td>
+                          <td> {applications[selectedRow].pet_age} </td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
+              {/* <div>
                 <table
                   className="table table-striped"
                   style={{ width: "300px", marginLeft: "10px" }}
@@ -280,9 +256,10 @@ function ApplicationsList() {
                     </tr>
                   </tbody>
                 </table>
-              </div>
+              </div> */}
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>

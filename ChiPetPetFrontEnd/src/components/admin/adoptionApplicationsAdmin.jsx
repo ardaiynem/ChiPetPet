@@ -4,18 +4,19 @@ import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
-import { getAllApplications } from "../../apiHelper/backendHelper";
+import { getAllApplications, updateApplicationStatus } from "../../apiHelper/backendHelper";
 
 /**
- * admins should be able to accept or reject adoption applications
- * add functionality to select applications
+ * remove selection when clicked outside
+ * dropdown menu items are empty
  */
 
 function AdoptionApplicationsAdmin() {
+  const [selectedRow, setSelectedRow] = useState(null);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const [applications, setApplications] = useState([]);
   const { setTimedAlert } = useAlert();
-  const { logout, userDetails } = useAuth();
+  const { userDetails } = useAuth();
 
   useEffect(() => {
     getAllApplications()
@@ -27,43 +28,59 @@ function AdoptionApplicationsAdmin() {
       });
   }, []);
 
-  // const acceptApplicationHandler = () => {
-  //   if (selectedRows.length === 0) {
-  //     setTimedAlert("Please select an application", "error", 3000);
-  //     return;
-  //   }
+  const toggleRowSelection = (rowNumber) => {
+    console.log(rowNumber);
+    if (selectedRow === rowNumber) {
+      setSelectedRow(null);
+    } else {
+      setSelectedRow(rowNumber);
+    }
+  };
 
-  //   const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+  const acceptApplicationHandler = () => {
+    if (selectedRow === null) {
+      setTimedAlert("Please select an application", "error", 3000);
+      return;
+    }
 
-  //   applicationIds.forEach((id) => {
-  //     updateApplicationStatus(id, "accepted")
-  //       .then((res) => {
-  //         setTimedAlert("Application accepted", "success", 3000);
-  //       })
-  //       .catch((err) => {
-  //         setTimedAlert("Error accepting application", "error", 3000);
-  //       })
-  //   });
-  // };
+    const applicationId = [applications[selectedRow].application_id];
 
-  // const rejectApplicationHandler = () => {
-  //   if (selectedRows.length === 0) {
-  //     setTimedAlert("Please select an application", "error", 3000);
-  //     return;
-  //   }
+    const data = {
+      "application_id": applicationId,
+      "application_status": "ACCEPTED"
+    }
 
-  //   const applicationIds = selectedRows.map((row) => applications[row - 1].id);
+    updateApplicationStatus(data)
+      .then((res) => {
+        setTimedAlert("Application accepted", "success", 3000);
+      })
+      .catch((err) => {
+        setTimedAlert("Error accepting application", "error", 3000);
+      });
 
-  //   applicationIds.forEach((id) => {
-  //     updateApplicationStatus(id, "rejected")
-  //       .then((res) => {
-  //         setTimedAlert("Application rejected", "success", 3000);
-  //       })
-  //       .catch((err) => {
-  //         setTimedAlert("Error rejecting application", "error", 3000);
-  //       })
-  //   });
-  // };
+  };
+
+  const rejectApplicationHandler = () => {
+    if (selectedRow === null) {
+      setTimedAlert("Please select an application", "error", 3000);
+      return;
+    }
+
+    const applicationId = [applications[selectedRow].application_id];
+
+    const data = {
+      "application_id": applicationId,
+      "application_status": "REJECTED"
+    }
+
+    updateApplicationStatus(data)
+      .then((res) => {
+        setTimedAlert("Application rejected", "success", 3000);
+      })
+      .catch((err) => {
+        setTimedAlert("Error rejecting application", "error", 3000);
+      });
+  };
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
@@ -118,18 +135,23 @@ function AdoptionApplicationsAdmin() {
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
+                <th scope="col">Name</th>
+                <th scope="col">Applied For</th>
+                <th scope="col">Application Status</th>
+                <th scope="col">Animal Shelter</th>
               </tr>
             </thead>
             <tbody>
               {applications.map((application, index) => (
-                <tr>
+                <tr
+                  className={selectedRow == index ? "table-primary" : ""}
+                  onClick={() => toggleRowSelection(index)}
+                >
                   <th scope="row">{index}</th>
-                  <td>{application.adopter_first_name}</td>
-                  <td>{application.adopter_last_name}</td>
+                  <td>{application.adopter_username}</td>
+                  <td>{application.pet_name}</td>
                   <td>{application.application_status}</td>
+                  <td>{application.animal_shelter_username}</td>
                 </tr>
               ))}
             </tbody>
@@ -139,97 +161,118 @@ function AdoptionApplicationsAdmin() {
           className="d-flex justify-content-center p-3"
           style={{ flex: "1 1 0" }}
         >
-          <div className="card border-primary mb-3 w-100">
-            <div className="d-flex card-header justify-content-start p-3">
+        {selectedRow !== null && (
+          <div className="card mb-3" style={{ width: "100%" }}>
+            <div className="d-flex p-3 justify-content-center">
               <img
                 src={catImg}
-                style={{
-                  width: "100px",
-                  borderRadius: "50%",
-                  flex: "0 0 auto",
-                }}
+                className="card-img-top"
+                alt="Cat"
+                style={{ width: "200px", marginRight: "20px" }}
               />
-              <div
-                className="d-flex flex-column align-items-start justify-content-center ms-3"
-                style={{ flex: "4 4 auto" }}
-              >
-                <p>Username</p>
-                <button className="btn btn-primary" type="button">
-                  Contact
+              <h5 className="card-title" style={{ marginRight: "50px" }}>
+                {applications[selectedRow].adopter_username}
+              </h5>
+              <div className="d-flex flex-column align-items-start">
+                <button
+                  onClick={rejectApplicationHandler}
+                  className="btn btn-danger mb-2"
+                  type="button"
+                  disabled={applications[selectedRow].application_status !== "PENDING"}
+                  style={{
+                    backgroundColor: "red",
+                    borderColor: "red",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
+                  Reject
                 </button>
-              </div>
-              <div
-                className="d-flex flex-column gap-2"
-                style={{ flex: "2 2 auto" }}
-              >
-                <button className="btn btn-primary" type="button">
-                  Contact
+                <button
+                  onClick={acceptApplicationHandler}
+                  className="btn btn-success mb-2"
+                  type="button"
+                  disabled={applications[selectedRow].application_status !== "PENDING"}
+                  style={{
+                    backgroundColor: "green",
+                    borderColor: "green",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
+                  Accept
                 </button>
-                <button className="btn btn-primary" type="button">
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  style={{
+                    backgroundColor: "blue",
+                    borderColor: "blue",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
                   Contact
                 </button>
               </div>
             </div>
-            <div className="card-body d-flex flex-column">
-              <div style={{ flex: "1 1 100px" }}>
-                <div className="form-floating h-100 mb-3">
-                  <textarea
-                    className="form-control"
-                    placeholder="Leave a comment here"
-                    id="floatingTextarea2"
-                    style={{ height: "100%" }}
-                  ></textarea>
-                  <label for="floatingTextarea2">Comments</label>
-                </div>
-              </div>
-              <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
+            <div className="card-body">
+              <h5 className="card-title">Application</h5>
+              <p className="card-text">
+                {applications[selectedRow].application_text}
+              </p>
+            </div>
+            <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
                 <div style={{ flex: "1 1 0" }}>
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Species</th>
+                        <th scope="col">Breed</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Age</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {applications.map((application, index) => (
                         <tr>
-                          <th scope="row">{index}</th>
-                          <td>{application.adopter_first_name}</td>
-                          <td>{application.adopter_last_name}</td>
-                          <td>{application.application_status}</td>
+                          <td> {applications[selectedRow].pet_species} </td>
+                          <td> {applications[selectedRow].pet_breed} </td>
+                          <td> {applications[selectedRow].pet_gender} </td>
+                          <td> {applications[selectedRow].pet_age} </td>
                         </tr>
-                      ))}
                     </tbody>
                   </table>
                 </div>
-                <div style={{ flex: "1 1 0" }}>
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {applications.map((application, index) => (
-                        <tr>
-                          <th scope="row">{index}</th>
-                          <td>{application.adopter_first_name}</td>
-                          <td>{application.adopter_last_name}</td>
-                          <td>{application.application_status}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+              {/* <div>
+                <table
+                  className="table table-striped"
+                  style={{ width: "300px", marginLeft: "10px" }}
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Species</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Pamuk</td>
+                      <td>Dog</td>
+                    </tr>
+                    <tr>
+                      <td>El Gato</td>
+                      <td>Cat</td>
+                    </tr>
+                    <tr>
+                      <td>Splinter</td>
+                      <td>Rat</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div> */}
             </div>
           </div>
+          )}
         </div>
       </div>
     </div>
