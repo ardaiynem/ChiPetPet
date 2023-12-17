@@ -8,38 +8,34 @@ import { useAlert } from "../../AlertContext";
 
 /**
  * change the way appointments are displayed
+ * have a look at here
  */
 
 function AppointmentList() {
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRow, setSelectedRow] = useState(null);
   const [appointments, setAppointments] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const { setTimedAlert } = useAlert();
   const { isAuthenticated, login, logout, userDetails } = useAuth();
 
   const toggleRowSelection = (rowNumber) => {
-    if (selectedRows.includes(rowNumber)) {
-      setSelectedRows(selectedRows.filter((row) => row !== rowNumber));
+    if (selectedRow === rowNumber) {
+      setSelectedRow(null);
     } else {
-      setSelectedRows([...selectedRows, rowNumber]);
+      setSelectedRow(rowNumber);
     }
   };
 
   useEffect(() => {
-    getAppointmentByVeterinarian(userDetails.user_id).then((res) => {
-      setAppointments(res.data.appointments);
-    });
+    getAppointmentByVeterinarian(userDetails.user_id)
+      .then((res) => {
+        setAppointments(res.data.appointments);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting appointments", "error", 3000);
+      });
+
   }, []);
-
-  const isRowSelected = (rowNumber) => selectedRows.includes(rowNumber);
-
-  const rejectHandler = () => {
-    alert("Rejected");
-  }
-
-  const acceptHandler = () => {
-    alert("Accepted");
-  }
 
   const contactHandler = () => {
     alert("Contacted");
@@ -78,7 +74,7 @@ function AppointmentList() {
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">User</th>
+                <th scope="col">Name</th>
                 <th scope="col">Appointment For</th>
                 <th scope="col">Appointment Status</th>
                 <th scope="col">Date</th>
@@ -87,7 +83,7 @@ function AppointmentList() {
             <tbody>
               {appointments.map((appointment, index) => (
                 <tr
-                  className={isRowSelected(index) ? "table-primary" : ""}
+                  className={ isRowSelected(index) ? 'table-primary' : '' }
                   onClick={() => toggleRowSelection(index)}
                 >
                   <th scope="row">{index}</th>
@@ -97,17 +93,6 @@ function AppointmentList() {
                   <td>{appointment.date}</td>
                 </tr>
               ))}
-              {/* <tr
-                className={isRowSelected(4) ? 'table-primary' : ''}
-                onClick={() => toggleRowSelection(4)}
-              >
-                <th scope="row">4</th>
-                <td>Kerem Aktürkoğlu</td>
-                <td>Köpük</td>
-                <td>Accepted</td>
-                <td>31.11.2023</td>
-              </tr> */}
-              
             </tbody>
           </table>
         </div>
@@ -118,22 +103,16 @@ function AppointmentList() {
               <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
               <h5 className="card-title" style={{marginRight:"50px"}}>Kerem Aktürkoğlu</h5>
               <div className="d-flex flex-column align-items-start">
-                <button className="btn btn-danger mb-2" onClick={rejectHandler} type="button" style={{ backgroundColor: "red", borderColor: "red", color: "white", width: "100px" }}>
-                  Reject
-                </button>
-                <button className="btn btn-success mb-2" onClick={acceptHandler} type="button" style={{ backgroundColor: "green", borderColor: "green", color: "white", width: "100px" }}>
-                  Accept
-                </button>
                 <button className="btn btn-primary" onClick={contactHandler} type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
                   Contact
                 </button>
                 <input
-  type="datetime-local"
-  id="meeting-time"
-  name="meeting-time"
-  value="2018-06-12T19:30"
-  min="2018-06-07T00:00"
-  max="2018-06-14T00:00" style={{marginTop: "10px"}}/>
+                  type="datetime-local"
+                  id="meeting-time"
+                  name="meeting-time"
+                  value="2018-06-12T19:30"
+                  min="2018-06-07T00:00"
+                  max="2018-06-14T00:00" style={{marginTop: "10px"}}/>
               </div>
             </div>
             
