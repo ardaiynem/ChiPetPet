@@ -154,6 +154,9 @@ VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$84kXvMQbYxBbbmd1qhDPIQ$O
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
 VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$SuoMUQI3vxs03bLVrWHJhe$4osJksIDs7TcFZ8RQr8kRxz2j7ESE8kmRsKcgu2l+HM=', 'd', 'user');
 
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@email.com', 'password', 'yes', 'veterinarian');
+
 INSERT INTO message  
 VALUES ("1999-09-29", "Hello", 4, 5);
 
@@ -228,8 +231,8 @@ VALUES (5, '2023-01-04 16:00:00', 'Application Status', 'You have a new adoption
 INSERT INTO notification (user_id, date_and_time, topic, description)
 VALUES (6, '2023-01-05 18:00:00', 'Application Status', 'You have a new adoption application.');
 
-
-
+INSERT INTO veterinarian (user_id, address, contact, verification_documents, expertise)
+VALUES (7, 'Notthingham Forest', '359034-21309', NULL, 'Birds');
 
 
 
