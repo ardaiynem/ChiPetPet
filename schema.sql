@@ -11,15 +11,15 @@ CREATE TABLE user (
 
 CREATE TABLE animal_shelter (
     user_id INT PRIMARY KEY,
-    address VARCHAR(255),
-    contact VARCHAR(200),
+    address VARCHAR(255) DEFAULT '',
+    contact VARCHAR(200) DEFAULT '',
     verification_documents BLOB,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE field_expert (
    	user_id INT PRIMARY KEY,
-    speciality VARCHAR(100),
+    speciality VARCHAR(100) DEFAULT '',
     verification_documents BLOB,
     FOREIGN KEY (user_id) REFERENCES user(user_id) 
 );
@@ -88,10 +88,10 @@ CREATE TABLE owns (
 
 CREATE TABLE veterinarian (
     user_id INT PRIMARY KEY,
-    address VARCHAR(255),
-    contact VARCHAR(200),
+    address VARCHAR(255) DEFAULT '',
+    contact VARCHAR(200) DEFAULT '',
     verification_documents BLOB,
-	expertise VARCHAR(200),
+	expertise VARCHAR(200) DEFAULT '',
     FOREIGN KEY (user_id) REFERENCES user(user_id) 
 );
 
