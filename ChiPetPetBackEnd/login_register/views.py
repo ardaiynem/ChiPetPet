@@ -9,8 +9,9 @@ import base64
 from django.core.mail import send_mail
 import random
 import string
-
+from django.views.decorators.http import require_http_methods
 # Create your views here.
+
 
 @csrf_exempt
 def register(request):
@@ -21,31 +22,32 @@ def register(request):
         username = data['username']
         email = data['email']
         password = make_password(data['password'])
-        verified = "False"  
+        verified = "False"
         role = "user"  # default
 
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM user WHERE username = %s", (username, ) )
+        cursor.execute("SELECT * FROM user WHERE username = %s", (username, ))
         user = cursor.fetchall()
 
         if user:
             # user already exists error
             return JsonResponse({'status': 'User with this username already exists'}, status=400)
-            
-        cursor.execute("SELECT * FROM user WHERE email = %s", (email, ) )
+
+        cursor.execute("SELECT * FROM user WHERE email = %s", (email, ))
         user = cursor.fetchall()
 
         if user:
             # user already exists error
             return JsonResponse({'status': 'User with this email already exists'}, status=400)
-        
+
         cursor.execute("""INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
                            VALUES (%s, % s, % s, %s, %s, %s, %s)""", (first_name, last_name, username, email, password, verified, role, ))
         connection.commit()
-        # register successfull 
+        # register successfull
         return JsonResponse({'status': 'Registration successful'}, status=201)
-                
+
     return JsonResponse({'status': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def login(request):
@@ -58,7 +60,7 @@ def login(request):
 
         cursor.execute("""SELECT * 
                            FROM user 
-                           WHERE username = %s""", (username, ) )
+                           WHERE username = %s""", (username, ))
         user = cursor.fetchone()
 
         if user:
@@ -82,8 +84,8 @@ def login(request):
             # login failed
             return JsonResponse({'status': 'Invalid credentials'}, status=401)
 
-
     return JsonResponse({'status': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_all_users(request):
@@ -93,11 +95,13 @@ def get_all_users(request):
         users = cursor.fetchall()
 
         # Convert the result to a list of dictionaries
-        users_list = [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4], 'password': user[5], 'verified': user[6], 'role': user[7]} for user in users]
+        users_list = [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3],
+                       'email': user[4], 'password': user[5], 'verified': user[6], 'role': user[7]} for user in users]
 
         return JsonResponse({'users': users_list}, safe=False)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_shelter_by_id(request):
@@ -111,11 +115,13 @@ def get_shelter_by_id(request):
         user = cursor.fetchone()
 
         # Convert the result to a list of dictionaries
-        user_info = {'shelter': {'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8]} }
+        user_info = {'shelter': {'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3],
+                                 'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8]}}
 
         return JsonResponse(user_info, safe=False)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_all_shelters(request):
@@ -129,11 +135,13 @@ def get_all_shelters(request):
         shelters = cursor.fetchall()
 
         # Convert the result to a list of dictionaries
-        shelter_info = {'shelters': [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8]} for user in shelters] }
+        shelter_info = {'shelters': [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3],
+                                      'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8]} for user in shelters]}
 
         return JsonResponse(shelter_info, safe=False)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_all_veterinarians(request):
@@ -147,11 +155,13 @@ def get_all_veterinarians(request):
         veterinarians = cursor.fetchall()
 
         # Convert the result to a list of dictionaries
-        veterinarian_info = {'veterinarians': [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8], 'expertise': user[9]} for user in veterinarians] }
+        veterinarian_info = {'veterinarians': [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3], 'email': user[4],
+                                                'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8], 'expertise': user[9]} for user in veterinarians]}
 
         return JsonResponse(veterinarian_info, safe=False)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_users_by_role(request):
@@ -165,14 +175,12 @@ def get_users_by_role(request):
         cursor.execute("SELECT * FROM veterinarian")
         veterinarians = cursor.fetchall()
 
-        
         cursor.execute("SELECT * FROM field_expert")
         field_experts = cursor.fetchall()
 
         cursor.execute("SELECT * FROM admin")
         admins = cursor.fetchall()
-        
-        
+
         # Convert the results to JSON objects
         animal_shelters_json = [
             {
@@ -195,11 +203,10 @@ def get_users_by_role(request):
             for user in veterinarians
         ]
 
-        
         field_experts_json = [
             {
                 'user_id': user[0],
-                'speciality': user[1],  
+                'speciality': user[1],
                 'verification_documents': base64.b64encode(user[2]).decode('utf-8') if user[3] else None,
             }
             for user in field_experts
@@ -225,6 +232,7 @@ def get_users_by_role(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
 @csrf_exempt
 def reset_password(request):
     if request.method == 'POST':
@@ -233,18 +241,21 @@ def reset_password(request):
             username = data['username']
 
             # Generate a new random password
-            new_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+            new_password = ''.join(random.choices(
+                string.ascii_letters + string.digits, k=12))
             hashed_password = make_password(new_password)
 
             # Update the password in the database
             cursor = connection.cursor()
-            cursor.execute('SELECT email FROM user WHERE username = %s', (username, ) )
+            cursor.execute(
+                'SELECT email FROM user WHERE username = %s', (username, ))
             email = cursor.fetchone()
 
             if not email:
                 return JsonResponse(status=200)
-            
-            cursor.execute('UPDATE user SET password = %s WHERE username = %s', (hashed_password, username))
+
+            cursor.execute(
+                'UPDATE user SET password = %s WHERE username = %s', (hashed_password, username))
 
             # Send an email with the new password
             send_mail(
@@ -257,23 +268,59 @@ def reset_password(request):
 
             return JsonResponse({'status': 'Password reset successful. Check your email.'}, status=200)
 
-
         except Exception as e:
             return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
 @csrf_exempt
 def change_password(request):
     if request.method == 'POST':
-        
+
         data = json.loads(request.body)
         username = data['username']
         new_password = data['password']
-            
+
         cursor = connection.cursor()
-        cursor.execute('UPDATE user SET password = %s WHERE username = %s', (make_password(new_password), username))
+        cursor.execute('UPDATE user SET password = %s WHERE username = %s',
+                       (make_password(new_password), username))
 
         return JsonResponse({'status': 'Password change successful.'}, status=200)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_all_veterinarians_with_attributes(request):
+
+    username = request.GET.get('username')
+    address = request.GET.get('address')
+    expertise = request.GET.get('expertise')
+    sortOption = request.GET.get('sortOption')
+
+    cursor = connection.cursor()
+    role = 'veterinarian'
+    query = """SELECT user_id, first_name, last_name, username, email, verified, role, address, contact, expertise
+           FROM user NATURAL JOIN veterinarian
+           WHERE role = %s AND username LIKE %s AND address LIKE %s AND expertise LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
+
+    cursor.execute(
+        query, (role, f"%{username}%", f"%{address}%", f"%{expertise}%"))
+    veterinarians = cursor.fetchall()
+
+    # Convert the result to a list of dictionaries
+    veterinarian_info = {'veterinarians': [{'user_id': user[0],
+                                            'first_name': user[1],
+                                            'last_name': user[2],
+                                            'username': user[3],
+                                            'email': user[4],
+                                            'verified': user[5],
+                                            'role': user[6],
+                                            'address': user[7],
+                                            'contact': user[8],
+                                            'expertise': user[9]} for user in veterinarians],
+                         'query': query % (role,  f"%{username}%", f"%{address}%", f"%{expertise}%")}
+
+    return JsonResponse(veterinarian_info, status=200)
