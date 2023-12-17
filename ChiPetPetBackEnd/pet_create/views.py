@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 import pandas as pd
+from django.views.decorators.http import require_http_methods
+
 
 @csrf_exempt
 def insert_pet(request):
@@ -28,13 +30,13 @@ def insert_pet(request):
 
             # Insert into the pet table
             cursor = connection.cursor()
-            
+
             cursor.execute("""INSERT INTO pet (
                             shelter_id, name, species, breed, gender, age, health_status,
                             description, photo, adoption_status
                             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                            ( shelter_id, name, species, breed, gender, age, health_status,
-                            description, photo_bytes, adoption_status ) )
+                           (shelter_id, name, species, breed, gender, age, health_status,
+                            description, photo_bytes, adoption_status))
 
             return JsonResponse({'status': 'Pet inserted successfully'}, status=201)
 
@@ -72,7 +74,8 @@ def get_pets(request):
                     'age': pet[6],
                     'health_status': pet[7],
                     'description': pet[8],
-                    'photo': pet[9].decode('utf-8') if pet[9] else None,  # Decode photo from bytes to string
+                    # Decode photo from bytes to string
+                    'photo': pet[9].decode('utf-8') if pet[9] else None,
                     'adoption_status': pet[10],
                 }
                 for pet in pets
@@ -84,6 +87,7 @@ def get_pets(request):
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_pet_by_id(request):
@@ -103,22 +107,23 @@ def get_pet_by_id(request):
                 pet = cursor.fetchone()
 
             # Convert the results to a list of dictionaries
-            pet = {"pet": 
-                {
-                    'pet_id': pet[0],
-                    'shelter_id': pet[1],
-                    'name': pet[2],
-                    'species': pet[3],
-                    'breed': pet[4],
-                    'gender': pet[5],
-                    'age': pet[6],
-                    'health_status': pet[7],
-                    'description': pet[8],
-                    'photo': pet[9].decode('utf-8') if pet[9] else None,  # Decode photo from bytes to string
-                    'adoption_status': pet[10],
-                    'shelter_name': pet[11],
-                }
-                }
+            pet = {"pet":
+                   {
+                       'pet_id': pet[0],
+                       'shelter_id': pet[1],
+                       'name': pet[2],
+                       'species': pet[3],
+                       'breed': pet[4],
+                       'gender': pet[5],
+                       'age': pet[6],
+                       'health_status': pet[7],
+                       'description': pet[8],
+                       # Decode photo from bytes to string
+                       'photo': pet[9].decode('utf-8') if pet[9] else None,
+                       'adoption_status': pet[10],
+                       'shelter_name': pet[11],
+                   }
+                   }
 
             return JsonResponse(pet, safe=False)
 
@@ -126,6 +131,7 @@ def get_pet_by_id(request):
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_pets_by_type(request):
@@ -154,7 +160,8 @@ def get_pets_by_type(request):
                     'age': pet[6],
                     'health_status': pet[7],
                     'description': pet[8],
-                    'photo': pet[9].decode('utf-8') if pet[9] else None,  # Decode photo from bytes to string
+                    # Decode photo from bytes to string
+                    'photo': pet[9].decode('utf-8') if pet[9] else None,
                     'adoption_status': pet[10],
                 }
                 for pet in pets
@@ -166,6 +173,7 @@ def get_pets_by_type(request):
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_pets_by_shelter(request):
@@ -201,7 +209,8 @@ def get_pets_by_shelter(request):
                     'age': pet[6],
                     'health_status': pet[7],
                     'description': pet[8],
-                    'photo': pet[9].decode('utf-8') if pet[9] else None,  # Decode photo from bytes to string
+                    # Decode photo from bytes to string
+                    'photo': pet[9].decode('utf-8') if pet[9] else None,
                     'adoption_status': pet[10],
                 }
                 for pet in pets
@@ -213,6 +222,7 @@ def get_pets_by_shelter(request):
             return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def insert_pets_from_excel(request):
@@ -230,13 +240,14 @@ def insert_pets_from_excel(request):
             df = pd.read_excel(excel_file)
 
             # Validate that the required columns are present in the Excel file
-            required_columns = ['name', 'species', 'breed', 'gender', 'age', 'health_status', 'description', 'photo', 'adoption_status']
+            required_columns = ['name', 'species', 'breed', 'gender', 'age',
+                                'health_status', 'description', 'photo', 'adoption_status']
             if not set(required_columns).issubset(df.columns):
                 return JsonResponse({'error': 'The Excel file is missing required columns'}, status=400)
 
             # Replace NaN values with None
             df = df.where(pd.notna(df), None)
-            
+
             # Convert DataFrame to list of dictionaries
             pets_data = df.to_dict(orient='records')
 
@@ -259,3 +270,87 @@ def insert_pets_from_excel(request):
             return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+@require_http_methods(["GET"])
+@csrf_exempt
+def get_pets_by_type_with_attributes(request):
+
+    type = request.GET.get('type')
+    name = request.GET.get('name')
+    breed = request.GET.get('breed')
+    sortOption = request.GET.get('sortOption')
+
+    cursor = connection.cursor()
+
+    query = """SELECT * FROM pet 
+          WHERE LOWER(species) = LOWER(%s) AND breed LIKE %s AND name LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
+
+    cursor.execute(
+        query, (type.lower(), f"%{breed}%", f"%{name}%")
+    )
+
+    pets = cursor.fetchall()
+
+    pets_list = {"pets": [
+        {
+            'pet_id': pet[0],
+            'shelter_id': pet[1],
+            'name': pet[2],
+            'species': pet[3],
+            'breed': pet[4],
+            'gender': pet[5],
+            'age': pet[6],
+            'health_status': pet[7],
+            'description': pet[8],
+            # Decode photo from bytes to string
+            'photo': pet[9].decode('utf-8') if pet[9] else None,
+            'adoption_status': pet[10],
+        }
+        for pet in pets
+    ]}
+
+    cursor.close()
+
+    return JsonResponse(pets_list, status=200)
+
+@require_http_methods(["GET"])
+@csrf_exempt
+def get_pets_by_shelter_with_attributes(request):
+    
+    shelter_id = request.GET.get('user_id')
+    name = request.GET.get('name')
+    breed = request.GET.get('breed')
+    sortOption = request.GET.get('sortOption')
+
+    cursor = connection.cursor()
+
+    query = """SELECT * FROM pet 
+          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
+
+    cursor.execute(
+        query, (shelter_id, f"%{breed}%", f"%{name}%")
+    )
+
+    pets = cursor.fetchall()
+
+    pets_list = {"pets": [
+        {
+            'pet_id': pet[0],
+            'shelter_id': pet[1],
+            'name': pet[2],
+            'species': pet[3],
+            'breed': pet[4],
+            'gender': pet[5],
+            'age': pet[6],
+            'health_status': pet[7],
+            'description': pet[8],
+            'photo': pet[9].decode('utf-8') if pet[9] else None,
+            'adoption_status': pet[10],
+        }
+        for pet in pets
+    ]}
+
+    cursor.close()
+
+    return JsonResponse(pets_list, status=200)

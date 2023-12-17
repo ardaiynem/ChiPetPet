@@ -144,6 +144,32 @@ def get_all_shelters(request):
 
 
 @csrf_exempt
+@require_http_methods(["GET"])
+def get_all_shelters_with_attributes(request):
+
+    name = request.GET.get('name')
+    address = request.GET.get('address')
+    sortOption = request.GET.get('sortOption')
+    role = 'animal_shelter'
+
+    cursor = connection.cursor()
+
+    query = """SELECT user_id, first_name, last_name, username, email, verified, role, address, contact
+                    FROM user NATURAL JOIN animal_shelter
+                    WHERE role = %s AND username LIKE %s AND address LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
+
+    cursor.execute(query, (role, f"%{name}%", f"%{address}%"))
+    shelters = cursor.fetchall()
+
+    shelter_info = {'shelters': [{'user_id': user[0], 'first_name': user[1], 'last_name': user[2], 'username': user[3],
+                                  'email': user[4], 'verified': user[5], 'role': user[6], 'address': user[7], 'contact': user[8]} for user in shelters]}
+
+    cursor.close()
+
+    return JsonResponse(shelter_info, status=200)
+
+
+@csrf_exempt
 def get_all_veterinarians(request):
     if request.method == 'GET':
 
@@ -309,6 +335,8 @@ def get_all_veterinarians_with_attributes(request):
     cursor.execute(
         query, (role, f"%{username}%", f"%{address}%", f"%{expertise}%"))
     veterinarians = cursor.fetchall()
+
+    cursor.close()
 
     # Convert the result to a list of dictionaries
     veterinarian_info = {'veterinarians': [{'user_id': user[0],

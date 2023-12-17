@@ -85,7 +85,7 @@ function SearchVeterinarian() {
               <input
                 style={{ marginLeft: "5px" }}
                 className="form-control"
-                placeholder={expertise === "" ? "Address" : ""}
+                placeholder={address === "" ? "Address" : ""}
                 type="text"
                 value={address}
                 onChange={(e) => {
