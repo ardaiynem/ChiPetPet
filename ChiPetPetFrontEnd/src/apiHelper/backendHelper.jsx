@@ -132,8 +132,8 @@ export const getUnverifiedDocuments = async () => {
   return await getFetcher(url.GET_UNVERIFIED_DOCUMENTS_PATH());
 };
 
-export const uploadVerificationDocument = async () => {
-  return await postFetcher(url.UPLOAD_VERIFICATION_DOCUMENT_PATH());
+export const uploadVerificationDocument = async (formData) => {
+  return await postFetcher(url.UPLOAD_VERIFICATION_DOCUMENT_PATH(), formData);
 };
 
 export const getOwnVerificationDocuments = async (user_id) => {
