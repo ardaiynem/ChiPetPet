@@ -54,18 +54,11 @@ export const GET_ALL_VETERINARIANS_PATH = () => LOGIN_REGISTER_PATH() + "get_all
 
 
 // verification documents
-export const VERIFICATION_DOCUMENTS_PATH = () =>
-  COMMON_PATH + "verification_documents/";
-export const GET_UNVERIFIED_DOCUMENTS_PATH = () =>
-  VERIFICATION_DOCUMENTS_PATH() + "get_unverified_documents/";
-export const UPLOAD_VERIFICATION_DOCUMENT_PATH = () =>
-  VERIFICATION_DOCUMENTS_PATH() + "upload_verification_document/";
-export const GET_OWN_VERIFICATION_DOCUMENTS_PATH = (user_id) =>
-  VERIFICATION_DOCUMENTS_PATH() +
-  "get_own_verification_documents/?user_id=" +
-  user_id;
-export const VERIFY_USER_PATH = () =>
-  VERIFICATION_DOCUMENTS_PATH() + "verify_user/";
+export const VERIFICATION_DOCUMENTS_PATH = () => COMMON_PATH + "verification_documents/";
+export const GET_UNVERIFIED_DOCUMENTS_PATH = () => VERIFICATION_DOCUMENTS_PATH() + "get_unverified_documents/";
+export const UPLOAD_VERIFICATION_DOCUMENT_PATH = () => VERIFICATION_DOCUMENTS_PATH() + "upload_verification_document/";
+export const GET_OWN_VERIFICATION_DOCUMENTS_PATH = (user_id) => VERIFICATION_DOCUMENTS_PATH() + "get_own_verification_documents/?user_id=" + user_id;
+export const VERIFY_USER_PATH = () => VERIFICATION_DOCUMENTS_PATH() + "verify_user/";
 
 // message paths
 export const MESSAGE_PATH = () => COMMON_PATH + 'message/';
