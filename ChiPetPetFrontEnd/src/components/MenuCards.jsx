@@ -27,7 +27,6 @@ function MenuCards() {
   const [cards, setCards] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
-
   let cardHeadersUser = [
     { name: "Search Pet", element: <SearchAnimalByType /> },
     { name: "Search Veterinarian", element: <SearchVeterinarian /> },
@@ -125,10 +124,6 @@ function MenuCards() {
             {role.toUpperCase()}
           </span>
         </div>
-      </div>
-
-      <div>
-        <button> View </button>
       </div>
     </>
   );
