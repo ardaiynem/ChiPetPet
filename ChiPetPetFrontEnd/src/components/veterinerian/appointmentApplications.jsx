@@ -8,10 +8,26 @@ import { useAlert } from "../../AlertContext";
 
 function AppointmentList() {
   const [selectedRow, setSelectedRow] = useState(null);
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState([
+    {
+      'appointment_id': "1",
+      'date': "2021-05-05",
+      'location': "Istanbul",
+      'appointment_text': "I need help",
+      'user_id': "1",
+      'veterinarian_id': "1", 
+      'first_name': "Köpük",
+      'last_name': "Köpük",
+      'username': "Köpük",
+      'email': "Köpük",
+      'password': "Köpük",
+      'verified': "Köpük",
+      'role': "Köpük",
+    }
+  ]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const { setTimedAlert } = useAlert();
-  const { userDetails } = useAuth();
+  const { userDetails } = useAuth(); 
 
   const toggleRowSelection = (rowNumber) => {
     if (selectedRow === rowNumber) {
@@ -22,14 +38,13 @@ function AppointmentList() {
   };
 
   useEffect(() => {
-    getAppointmentByVeterinarian(userDetails.user_id)
-      .then((res) => {
-        setAppointments(res.data.appointments);
-      })
-      .catch((err) => {
-        setTimedAlert("Error getting appointments", "error", 3000);
-      });
-
+    // getAppointmentByVeterinarian(userDetails.user_id)
+    //   .then((res) => {
+    //     setAppointments(res.data.appointments);
+    //   })
+    //   .catch((err) => {
+    //     setTimedAlert("Error getting appointments", "error", 3000);
+    //   });
   }, []);
 
   const contactHandler = () => {
@@ -78,7 +93,7 @@ function AppointmentList() {
             <tbody>
               {appointments.map((appointment, index) => (
                 <tr
-                  className={ isRowSelected(index) ? 'table-primary' : '' }
+                  className={selectedRow == index ? "table-primary" : ""}
                   onClick={() => toggleRowSelection(index)}
                 >
                   <th scope="row">{index}</th>
@@ -92,28 +107,51 @@ function AppointmentList() {
           </table>
         </div>
 
+        {selectedRow !== null && (
         <div className="d-flex flex-column align-items-end" style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}>
           <div className="card mb-3" style={{ width: "100%" }}>
             <div className="d-flex p-3 justify-content-center">
               <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
-              <h5 className="card-title" style={{marginRight:"50px"}}>Kerem Aktürkoğlu</h5>
+              <h5 className="card-title" style={{marginRight:"50px"}}>{appointments[selectedRow].pet_name}</h5>
               <div className="d-flex flex-column align-items-start">
                 <button className="btn btn-primary" onClick={contactHandler} type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
                   Contact
                 </button>
-                <input
-                  type="datetime-local"
-                  id="meeting-time"
-                  name="meeting-time"
-                  value="2018-06-12T19:30"
-                  min="2018-06-07T00:00"
-                  max="2018-06-14T00:00" style={{marginTop: "10px"}}/>
+                <button
+                  onClick={rejectApplicationHandler}
+                  className="btn btn-danger mb-2"
+                  type="button"
+                  // disabled={appointments[selectedRow].application_status !== "PENDING"}
+                  style={{
+                    backgroundColor: "red",
+                    borderColor: "red",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
+                  Reschedule
+                </button>
+                <button
+                  onClick={acceptApplicationHandler}
+                  className="btn btn-success mb-2"
+                  type="button"
+                  // disabled={appointments[selectedRow].application_status !== "PENDING"}
+                  style={{
+                    backgroundColor: "green",
+                    borderColor: "green",
+                    color: "white",
+                    width: "100px",
+                  }}
+                >
+                  Accept
+                </button>
               </div>
             </div>
             
             <div className="card-body">
-              <h5 className="card-title">Application</h5>
-              <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <h5 className="card-title">Appointment</h5>
+              <p className="card-text">note: {appointments[selectedRow].appointment_text}</p>
+
             </div>
             <div className="d-flex flex-row">
               <div className="d-flex p-3 justify-content-center">
@@ -129,24 +167,14 @@ function AppointmentList() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Pamuk</td>
-                <td>Dog</td>
-              </tr>
-              <tr>
-                <td>El Gato</td>
-                <td>Cat</td>
-              </tr>
-              <tr >
-                <td>Splinter</td>
-                <td>Rat</td>
-              </tr>
+              
             </tbody>
                 </table>
               </div>
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

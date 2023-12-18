@@ -127,10 +127,6 @@ function MenuCards() {
           </span>
         </div>
       </div>
-
-      <div>
-        <button> View </button>
-      </div>
     </>
   );
 }
