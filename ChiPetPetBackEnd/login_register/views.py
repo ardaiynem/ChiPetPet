@@ -154,8 +154,7 @@ def get_all_shelters_with_attributes(request):
 
     cursor = connection.cursor()
 
-    query = """SELECT user_id, first_name, last_name, username, email, verified, role, address, contact
-                    FROM user NATURAL JOIN animal_shelter
+    query = """SELECT * FROM animal_shelter_info
                     WHERE role = %s AND username LIKE %s AND address LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
 
     cursor.execute(query, (role, f"%{name}%", f"%{address}%"))
@@ -406,8 +405,7 @@ def get_all_veterinarians_with_attributes(request):
 
     cursor = connection.cursor()
     role = 'veterinarian'
-    query = """SELECT user_id, first_name, last_name, username, email, verified, role, address, contact, expertise
-           FROM user NATURAL JOIN veterinarian
+    query = """SELECT * FROM veterinarian_info
            WHERE role = %s AND username LIKE %s AND address LIKE %s AND expertise LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
 
     cursor.execute(
