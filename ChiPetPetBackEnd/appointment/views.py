@@ -73,9 +73,15 @@ def get_appointment_by_veterinarian(request):
     veterinarian_id = request.GET.get('veterinarian_id')
     cursor = connection.cursor()
 
-    cursor.execute("SELECT * FROM appointment, user WHERE veterinarian_id = %s AND appointment.user_id = user.user_id", [veterinarian_id])
+    cursor.execute("""SELECT * FROM appointment, user, pet 
+                    WHERE veterinarian_id = %s 
+                    AND appointment.user_id = user.user_id
+                    AND appointment.pet_id = pet.pet_id
+                    """, [veterinarian_id])
     appointments = cursor.fetchall()
     cursor.close()
+
+    return HttpResponse(appointments)
 
     if appointments is None:
         return JsonResponse({

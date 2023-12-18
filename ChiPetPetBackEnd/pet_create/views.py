@@ -5,7 +5,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 import pandas as pd
 from django.views.decorators.http import require_http_methods
-from django.core.files.base import ContentFile
 import base64
 
 @csrf_exempt
@@ -30,7 +29,6 @@ def insert_pet(request):
                 photo_content = base64.b64encode(photo.read()).decode('utf-8')
             else:
                 photo_content = None
-
 
             # Insert into the pet table
             cursor = connection.cursor()
@@ -318,10 +316,11 @@ def get_pets_by_type_with_attributes(request):
 
     return JsonResponse(pets_list, status=200)
 
+
 @require_http_methods(["GET"])
 @csrf_exempt
 def get_pets_by_shelter_with_attributes(request):
-    
+
     shelter_id = request.GET.get('user_id')
     name = request.GET.get('name')
     breed = request.GET.get('breed')
