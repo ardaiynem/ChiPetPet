@@ -283,6 +283,8 @@ def reset_password(request):
             cursor.execute(
                 'UPDATE user SET password = %s WHERE username = %s', (hashed_password, username))
 
+            connection.commit()
+
             # Send an email with the new password
             send_mail(
                 'Password Reset',
@@ -298,6 +300,82 @@ def reset_password(request):
             return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+@csrf_exempt
+def change_user_info(request):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            userid = data['user_id']
+            firstName = data['first_name']
+            lastName = data['last_name']
+            username = data['username']
+
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM user WHERE username = %s", (username, ))
+            user = cursor.fetchone()
+
+            if user:
+                return JsonResponse({'user': user, 'status': 'A user with given username already exists.'}, status=200)
+
+
+            # update user info
+            cursor.execute("""UPDATE user 
+                           SET first_name = %s, last_name = %s, username = %s 
+                           WHERE user_id = %s""", (firstName, lastName, username, userid, ))
+            connection.commit()
+
+            return JsonResponse({'status': 'User info changed successfully'}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def get_address_and_contact(request):
+    if request.method == 'GET':
+        role = request.GET.get('role')
+        userid = request.GET.get('user_id')
+
+        cursor = connection.cursor()
+
+        cursor.execute("""SELECT address, contact
+                       FROM {table}
+                       WHERE user_id = %s""".format(table = role.lower()), (userid, ))
+        addressAndContact = cursor.fetchone()
+
+        result = {'address': addressAndContact[0], 'contact': addressAndContact[1]}
+
+        return JsonResponse(result, status = 200)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def change_address_and_contact(request):
+    if request.method == 'PUT':
+        try:
+            data = json.loads(request.body)
+            userid = data['user_id']
+            address = data['address']
+            contact = data['contact']
+            role = data['role']
+
+            # update user info
+            cursor = connection.cursor()
+            cursor.execute("""UPDATE {table} 
+                           SET address = %s, contact = %s
+                           WHERE user_id = %s""".format(table = role.lower()), (address, contact, userid, ))
+            connection.commit()
+
+            return JsonResponse({'status': 'User address and contact changed successfully'}, status=200)
+
+        except Exception as e:
+            return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 
 @csrf_exempt

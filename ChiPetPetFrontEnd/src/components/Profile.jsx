@@ -2,7 +2,7 @@ import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { Button, Dropdown } from "react-bootstrap";
 import catImg from "../assets/cat1.jpeg";
-import { uploadVerificationDocument, getOwnVerificationDocuments } from "../apiHelper/backendHelper";
+import { uploadVerificationDocument, getOwnVerificationDocuments, changeUserInfo, getAddressAndContact, changeAddressAndContact } from "../apiHelper/backendHelper";
 import { useAuth } from "../AuthContext";
 import { useAlert } from "../AlertContext";
 
@@ -30,15 +30,100 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
 
 const Profile = (props) => {
     const {setTimedAlert} = useAlert();
-
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
-    const role = props.role
-
-    const verified = props.role != "user"
-
-    const { userDetails } = useAuth();
 
 
+    const { userDetails, changeUserDetails } = useAuth();
+
+
+
+
+    const [verified, setVerified] = useState(userDetails.verified);
+    const [role, setRole] = useState(verified.toUpperCase() === "TRUE"? userDetails.role: "user");
+
+
+    // for editing user info
+    const [firstName, setFirstName] = useState(userDetails.first_name);
+    const [lastName, setLastName] = useState(userDetails.last_name);
+    const [userName, setUserName] = useState(userDetails.username);
+
+    const handleEditUserInfo =  () => {
+        const data = {
+            'user_id': userDetails.user_id,
+            'first_name': firstName,
+            'last_name': lastName,
+            'username': userName
+        }
+
+        userDetails.first_name = firstName;
+        userDetails.last_name = lastName;
+        userDetails.username = userName;
+        changeUserDetails(userDetails);
+        
+        changeUserInfo(data)
+        .then((res) => {
+            console.log(res); 
+        })
+        .catch((err) => {
+            console.log(err);
+            setTimedAlert("Error uploading verification document", "error", 3000);
+        });
+
+    };
+
+    // for veterinarian and animal_shelter, retrieve address and conact info
+    const [city, setCity] = useState("City");
+    const [state, setState] = useState("State");
+    const [zip, setZip] = useState("Zip");
+    const [contact, setContact] = useState("Contact");
+
+    if( role.toUpperCase() === "VETERINARIAN" || role.toUpperCase() === "ANIMAL_SHELTER"){
+
+        useEffect(() => {
+        
+            getAddressAndContact(userDetails.user_id, role)
+            .then((res) => {
+                console.log(res.data);
+                if( res.data.address !== null && res.data.address.length != 0){
+                    let split = res.data.address.split(" ");
+                    setCity(split[0]);
+                    setState(split[1]);
+                    setZip(split[2]);
+                }
+                if( res.data.contact !== null && res.data.contact.length != 0){
+                    setContact(res.data.contact);
+                }
+
+            })
+            .catch((err) => {
+                console.log(err);
+                setTimedAlert("Error retrieving address and contact", "error", 3000);
+            });
+    
+        }, []);
+
+    }
+
+    const handleEditAddress =  () => {
+        const data = {
+            'user_id': userDetails.user_id,
+            'role': role,
+            'address': city + " " + state + " " + zip,
+            'contact': contact
+        }
+
+        changeAddressAndContact(data)
+        .then((res) => {
+            console.log(res); 
+        })
+        .catch((err) => {
+            console.log(err);
+            setTimedAlert("Error changing address and contact", "error", 3000);
+        });
+        
+    };
+
+    // if there are previously uploaded verification documents
     const [submitStatus, setSubmitStatus] = useState(0);
     const [previousVerificationDocument, setPreviousVerificationDocument] = useState([]);
     const [downloadLink, setDownloadLink] = useState('');  
@@ -81,21 +166,14 @@ const Profile = (props) => {
     };
 
     // Function to handle form submission
-    const handleSubmit =  () => {
+    const handleVerificationDocumentSubmit =  () => {
         // Create a FormData object to send the file
         const formData = new FormData();
         formData.append('user_id', userDetails.user_id);
         formData.append('verification_document', verificationDocument);
         formData.append('role', selectedProfession);
 
-        const data = {
-            'user_id': userDetails.user_id,
-            'role': selectedProfession,
-            'verification_docment': verificationDocument
-        }
-
         // Call the API to upload the verification document
-        
         uploadVerificationDocument(formData)
         .then((res) => {
             console.log(res.data); // Handle the response as needed
@@ -122,19 +200,26 @@ const Profile = (props) => {
                 <div className="d-flex p-3 gap-3" style={{ flex: "2 2 0" }}>
                     <div className="d-flex justify-content-center align-items-center flex-column" style={{ flex: "1 1 0" }}>
                         <div className="input-group mb-3 gap-2">
-                            <input type="text" className="form-control" placeholder="Name" />
-                            <input type="text" className="form-control" placeholder="Last Name" />
+                            <input type="text" className="form-control" placeholder={firstName} onChange={(e) => {setFirstName(e.target.value)}}/>
+                            <input type="text" className="form-control" placeholder={lastName} onChange={(e) => {setLastName(e.target.value)}}/>
                             <div className="input-group">
                                 <span className="input-group-text" id="basic-addon1">@</span>
-                                <input type="text" className="form-control" placeholder="Username" />
+                                <input type="text" className="form-control" placeholder={userName} onChange={(e) => {setUserName(e.target.value)}}/>
                             </div>
                         </div>
+                        <button className="btn btn-primary w-100" onClick={handleEditUserInfo}>Edit User Info</button>
+
+                        {
+                        (verified.toUpperCase() == "TRUE" && (role.toUpperCase() === "VETERINARIAN" || role.toUpperCase() === "ANIMAL_SHELTER")) &&
                         <div className="input-group mb-3 gap-2">
-                            <input type="text" className="form-control" placeholder="City" />
-                            <input type="text" className="form-control" placeholder="State" />
-                            <input type="text" className="form-control" placeholder="Zip" />
+                            <input type="text" className="form-control" placeholder={city} onChange={(e) => {setCity(e.target.value)}} />
+                            <input type="text" className="form-control" placeholder={state} onChange={(e) => {setState(e.target.value)}} />
+                            <input type="text" className="form-control" placeholder={zip} onChange={(e) => {setZip(e.target.value)}} />
+                            <input type="text" className="form-control" placeholder={contact} onChange={(e) => {setContact(e.target.value)}} />
+                            <button className="btn btn-primary w-100" onClick={handleEditAddress}>Edit Address & Contact</button>
                         </div>
-                        <button className="btn btn-primary w-100">Edit</button>
+                        }
+
                     </div>
                     {
                         previousVerificationDocument.length === 0? 
@@ -162,7 +247,7 @@ const Profile = (props) => {
                             <label className="form-check-label" for="flexCheckDefault" >
                                 Accept
                             </label>
-                            <button className="btn btn-primary ms-4 d-inline" onClick={handleSubmit} disabled={verified}>Submit</button>
+                            <button className="btn btn-primary ms-4 d-inline" onClick={handleVerificationDocumentSubmit} disabled={verified}>Submit</button>
                         </div>
                     </div>:
                     <div>

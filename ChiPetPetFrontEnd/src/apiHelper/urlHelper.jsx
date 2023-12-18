@@ -51,6 +51,10 @@ export const LOGIN_REGISTER_PATH = () => COMMON_PATH + "login_register/";
 export const GET_SHELTER_BY_ID_PATH = (shelterid) => LOGIN_REGISTER_PATH() + "get_shelter_by_id/?userid=" + shelterid;
 export const GET_ALL_SHELTERS_PATH = () => LOGIN_REGISTER_PATH() + "get_all_shelters/";
 export const GET_ALL_VETERINARIANS_PATH = () => LOGIN_REGISTER_PATH() + "get_all_veterinarians/";
+export const CHANGE_USER_INFO_PATH = () => LOGIN_REGISTER_PATH() + "change_user_info/";
+export const GET_ADDRESS_AND_CONTACT_PATH = (userid, role) => LOGIN_REGISTER_PATH() + "get_address_and_contact/?user_id=" + userid + "&role=" + role;
+export const CHANGE_ADDRESS_AND_CONTACT_PATH = () => LOGIN_REGISTER_PATH() + "change_address_and_contact/";
+
 
 
 // verification documents

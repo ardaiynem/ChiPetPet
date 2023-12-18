@@ -173,6 +173,18 @@ export const getAllVeterinarians = async () => {
   return await getFetcher(url.GET_ALL_VETERINARIANS_PATH());
 };
 
+export const changeUserInfo = async (data) => {
+  return await putFetcher(url.CHANGE_USER_INFO_PATH(), data);
+}
+
+export const getAddressAndContact = async (userid, role) => {
+  return await getFetcher(url.GET_ADDRESS_AND_CONTACT_PATH(userid, role));
+};
+
+export const changeAddressAndContact = async (data) => {
+  return await putFetcher(url.CHANGE_ADDRESS_AND_CONTACT_PATH(), data);
+}
+
 // message
 export const getMessages = async () => {
   return await getFetcher(url.GET_MESSAGES_PATH(user_id));
