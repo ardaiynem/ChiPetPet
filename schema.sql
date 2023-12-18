@@ -136,6 +136,57 @@ CREATE TABLE message (
     FOREIGN KEY (receiver_id) REFERENCES user(user_id) 
 );
 
+CREATE VIEW veterinarian_info AS 
+SELECT user_id, first_name, last_name, username, email, verified, role, address, contact, expertise
+           FROM user NATURAL JOIN veterinarian;
+
+CREATE VIEW animal_shelter_info AS 
+SELECT user_id, first_name, last_name, username, email, verified, role, address, contact
+                    FROM user NATURAL JOIN animal_shelter;
+
+/* 
+///////////////////////////////////////
+TODO TODO TODO TODOT TODO TODOT 
+////////////////////////////////////////
+CREATE VIEW pet_search_info AS 
+SELECT pet_id, name, species, breed, gender, age, health_status, photo 
+FROM pet 
+WHERE adoption_status = 'WAITING';
+
+
+
+///////////////////////////////////////
+TODO TODO TODO TODOT TODO TODOT 
+////////////////////////////////////////
+CREATE TRIGGER delete_health_records
+AFTER DELETE ON pet
+FOR EACH ROW
+BEGIN
+DELETE FROM health_record
+WHERE pet_id = OLD.pet_id;
+END;
+
+///////////////////////////////////////
+TODO TODO TODO TODOT TODO TODOT 
+////////////////////////////////////////
+CREATE TRIGGER delete_notifications AFTER DELETE ON user
+FOR EACH ROW
+BEGIN
+DELETE FROM notification WHERE user_id = OLD.user_id;
+END;
+
+///////////////////////////////////////
+TODO TODO TODO TODOT TODO TODOT 
+////////////////////////////////////////
+CREATE TRIGGER delete_health_records
+AFTER DELETE ON pet
+FOR EACH ROW
+BEGIN
+DELETE FROM health_record
+WHERE pet_id = OLD.pet_id;
+END;
+*/
+
 INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
 VALUES ('John', 'Doe', 'johndoe', 'john@email.com', 'password', 'yes', 'animal_shelter');
 
