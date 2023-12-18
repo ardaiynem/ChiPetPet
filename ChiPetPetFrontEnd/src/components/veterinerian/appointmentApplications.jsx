@@ -6,11 +6,6 @@ import { getAppointmentByVeterinarian } from "../../apiHelper/backendHelper";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 
-/**
- * change the way appointments are displayed
- * have a look at here
- */ 
-
 function AppointmentList() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [appointments, setAppointments] = useState([
