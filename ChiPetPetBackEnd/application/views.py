@@ -15,13 +15,13 @@ def index(request):
 
 @csrf_exempt
 @require_http_methods(["GET"])
-def get_all_applications(request):
+def get_applications_admin(request):
     cursor = connection.cursor()
     cursor.execute("""SELECT * 
                     FROM applies, user as u1, user as u2, animal_shelter, pet 
                     WHERE applies.adopter_id = u1.user_id AND 
                     applies.animal_shelter_id = animal_shelter.user_id AND u2.user_id = animal_shelter.user_id AND 
-                    applies.pet_id = pet.pet_id""")
+                    applies.pet_id = pet.pet_id AND applies.application_status = 'SHELTER_APPROVED'""")
     applications = cursor.fetchall()
     cursor.close()
 
@@ -124,7 +124,8 @@ def get_application_by_shelter(request):
                     FROM applies, user as u1, user as u2, animal_shelter, pet
                     WHERE applies.adopter_id = u1.user_id AND
                     applies.animal_shelter_id = animal_shelter.user_id AND u2.user_id = animal_shelter.user_id AND
-                    applies.pet_id = pet.pet_id AND applies.animal_shelter_id = %s""", [animal_shelter_id])
+                    applies.pet_id = pet.pet_id AND applies.animal_shelter_id = %s AND
+                    applies.application_status = 'PENDING'""", [animal_shelter_id])
     applications = cursor.fetchall()
     cursor.close()
 

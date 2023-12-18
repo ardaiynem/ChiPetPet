@@ -4,7 +4,7 @@ import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
-import { getAllApplications, updateApplicationStatus } from "../../apiHelper/backendHelper";
+import { getApplicationsAdmin, updateApplicationStatus } from "../../apiHelper/backendHelper";
 
 /**
  * remove selection when clicked outside
@@ -19,7 +19,7 @@ function AdoptionApplicationsAdmin() {
   const { userDetails } = useAuth();
 
   useEffect(() => {
-    getAllApplications()
+    getApplicationsAdmin()
       .then((res) => {
         setApplications(res.data.applications);
       })

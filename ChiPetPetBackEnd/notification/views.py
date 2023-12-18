@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.db import connection
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-# import json
+import json
 
 
 @csrf_exempt
@@ -85,6 +85,30 @@ def get_recent_notifications(request):
         'description': row[3]
     } for row in notifications]}, status=200)
     
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def create_notification(request):
+    data = json.loads(request.body)
+    user_id = data.get('user_id')
+    date_and_time = data.get('date_and_time')
+    topic = data.get('topic')
+    description = data.get('description')
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM notification WHERE user_id = %s AND date_and_time = %s", [user_id, date_and_time])
+    notification = cursor.fetchone()
+
+    if notification is not None:
+        return JsonResponse({
+            'error': 'notification already exists'
+        }, status=400)
+
+    cursor.execute("INSERT INTO notification VALUES (%s, %s, %s, %s)", [user_id, date_and_time, topic, description])
+    return JsonResponse({
+        'message': 'notification created'
+    }, status=200)
+
 
 @csrf_exempt
 @require_http_methods(["DELETE"])
