@@ -1,40 +1,92 @@
-import React, { useState } from 'react';
-import { Button, Form, Row, Col } from 'react-bootstrap';
+import {
+  Card,
+  Button,
+  Row,
+  Col,
+  Form,
+  Pagination,
+  Dropdown,
+  Stack,
+} from "react-bootstrap";
+
+import { useState, useEffect, useContext } from "react";
+import { useAuth } from "../../AuthContext";
+import axios from "axios";
+import { PanelContext } from "../../contexts/panelContext";
 
 function AddNewAnimal() {
   const [formData, setFormData] = useState({
-    photo: '',
-    name: '',
-    species: '',
-    breed: '',
-    gender: '',
-    age: '',
-    description: '',
+    name: "",
+    species: "Cat",
+    breed: "",
+    gender: "",
+    age: 1,
+    healthStatus: "Healthy",
+    adoptionStatus: "WAITING",
+    description: "",
+    photo: "",
   });
+
+  const { isAuthenticated, login, logout, userDetails } = useAuth();
+  const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === "photo") {
+      setFormData({ ...formData, photo: e.target.files[0] });
+      return;
+    }
+
+    /* reader.readAsText(e.target.files[0]); */
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Burada formun gönderilmesi veya işlenmesi işlemleri gerçekleştirilebilir.
-    
-    console.log('Form submitted:', formData);
+
+    const data = new FormData();
+    data.append("photo", formData.photo);
+    data.append("shelter_id", userDetails.user_id);
+
+    Object.keys(formData).forEach((key) => {
+      if (key !== "photo") {
+        data.append(key, formData[key]);
+      }
+    });
+
+    console.log(data.get("shelter_id"));
+
+    axios
+      .post("http://127.0.0.1:8000/pet_create/insert_pet/", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => console.log(res.data));
   };
 
   return (
     <div className="p-4">
-        <Button className="position-relative top-2 start-2">
-            Back
-        </Button>
+      <Button
+        onClick={() => setCurrentPanel("back")}
+        className="position-relative top-2 start-2"
+      >
+        Back
+      </Button>
       <h1>Add Animal</h1>
       <Form onSubmit={handleSubmit}>
         <Row className="mb-3">
           <Col>
-            <label class="form-label" for="customFile">Upload Image</label>
-            <input type="file" class="form-control" id="customFile" />
+            <label className="form-label" for="customFile">
+              Upload Image
+            </label>
+            <input
+              type="file"
+              name="photo"
+              onChange={handleInputChange}
+              className="form-control"
+              id="customFile"
+            />
           </Col>
 
           <Col>
@@ -55,16 +107,63 @@ function AddNewAnimal() {
           <Col>
             <Form.Group controlId="formSpecies">
               <Form.Label>Species</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter species"
-                name="species"
-                value={formData.species}
-                onChange={handleInputChange}
-              />
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="border border-primary"
+                  variant="success"
+                  id="dropdown-basic"
+                >
+                  {formData.species}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, species: "Cat" });
+                    }}
+                  >
+                    Cat
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, species: "Dog" });
+                    }}
+                  >
+                    Dog
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, species: "Bird" });
+                    }}
+                  >
+                    Bird
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, species: "Rabbits" });
+                    }}
+                  >
+                    Rabbit
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, species: "Small & Furry" });
+                    }}
+                  >
+                    Small & Furry
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, species: "Others" });
+                    }}
+                  >
+                    Others
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Form.Group>
           </Col>
-          
+
           <Col>
             <Form.Group controlId="formBreed">
               <Form.Label>Breed</Form.Label>
@@ -95,9 +194,11 @@ function AddNewAnimal() {
 
           <Col>
             <Form.Group controlId="formAge">
-              <Form.Label>Age</Form.Label>
+              <Form.Label>Age in months</Form.Label>
               <Form.Control
-                type="text"
+                type="number"
+                min="1"
+                step="1"
                 placeholder="Enter age"
                 name="age"
                 value={formData.age}
@@ -119,6 +220,70 @@ function AddNewAnimal() {
                 value={formData.description}
                 onChange={handleInputChange}
               />
+            </Form.Group>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
+            <Form.Group controlId="formDescription">
+              <Form.Label>Health Status</Form.Label>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="border border-primary"
+                  variant="success"
+                  id="dropdown-basic"
+                >
+                  {formData.healthStatus}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, healthStatus: "HEALTHY" });
+                    }}
+                  >
+                    Healthy
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, healthStatus: "ILL" });
+                    }}
+                  >
+                    ILL
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Group controlId="formDescription">
+              <Form.Label>Adoption Status</Form.Label>
+              <Dropdown>
+                <Dropdown.Toggle
+                  className="border border-primary"
+                  variant="success"
+                  id="dropdown-basic"
+                >
+                  {formData.adoptionStatus}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, adoptionStatus: "WAITING" });
+                    }}
+                  >
+                    WAITING
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => {
+                      setFormData({ ...formData, adoptionStatus: "ADOPTED" });
+                    }}
+                  >
+                    ADOPTED
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </Form.Group>
           </Col>
         </Row>
