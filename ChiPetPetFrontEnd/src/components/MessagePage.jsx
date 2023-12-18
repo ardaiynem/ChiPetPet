@@ -123,19 +123,29 @@ function MessagePage() {
         Back
       </Button>
 
-      <div className="mt-1" style={{ flex: "1 1 0", border: "1px solid" }}>
-        <div className="form-floating mt-2 h-100 mb-3">
+      <div
+        style={{ marginTop: "5px" }}
+        className="d-flex align-items-center mb-5"
+      >
+        <div className="d-flex justify-content-center mt-1">
           <input
-            className="form-control mt-1"
-            placeholder="Type your message here"
+            style={{ marginLeft: "5px", width: "600px" }}
+            className="form-control"
             type="text"
+            placeholder={search === "" ? "Enter username" : ""}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          ></input>
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+          />
+          <Button
+            onClick={() => handleChat()}
+            style={{ marginLeft: "5px" }}
+            className="w-80"
+          >
+            Create chat
+          </Button>
         </div>
-        <Button onClick={() => handleChat()} className="w-100">
-          Create chat
-        </Button>
       </div>
 
       <div className="d-flex gap-3">
