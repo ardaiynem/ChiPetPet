@@ -38,6 +38,7 @@ function MenuCards() {
     { name: "Messages", element: <MessagePage /> },
     { name: "Profile", element: <Profile role={role} /> },
     { name: "Add New Animal", element: <AddNewAnimal /> },
+    { name: "Verification Operations", element: <VerificationRequests /> },
   ];
 
   let cardHeadersShelter = [
