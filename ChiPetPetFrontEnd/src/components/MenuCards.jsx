@@ -21,12 +21,12 @@ import SearchShelter from "../components/shelter/searchShelter";
 import Profile from "./Profile";
 import PetBlog from "./PetBlog";
 import MyApplications from "../components/user/MyApplications";
+import GuidePage from "./GuidePage";
 
 function MenuCards() {
   const [role, setRole] = useState("user");
   const [cards, setCards] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
-
 
   let cardHeadersUser = [
     { name: "Search Pet", element: <SearchAnimalByType /> },
@@ -39,6 +39,7 @@ function MenuCards() {
     { name: "Messages", element: <MessagePage /> },
     { name: "Profile", element: <Profile role={role} /> },
     { name: "Add New Animal", element: <AddNewAnimal /> },
+    { name: "Guide", element: <GuidePage /> }
   ];
 
   let cardHeadersShelter = [
