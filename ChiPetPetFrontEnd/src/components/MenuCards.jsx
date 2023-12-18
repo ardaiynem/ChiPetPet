@@ -20,6 +20,7 @@ import VerificationRequests from "../components/admin/verificationRequests";
 import SearchShelter from "../components/shelter/searchShelter"
 import Profile from "./Profile";
 import PetBlog from "./PetBlog";
+import MyApplications from "../components/user/MyApplications";
 
 function MenuCards() {
     const [role, setRole] = useState("user");
@@ -30,7 +31,7 @@ function MenuCards() {
         { name: "Search Pet", element: <SearchAnimalByType /> }
         , { name: "Search Veterinarian", element: <SearchVeterinarian /> }
         , { name: "Search Shelter", element: <SearchShelter /> }
-        , { name: "Adoption Application", element: <AdoptionApplicationsAdmin /> }
+        , { name: "My Applications", element: <MyApplications /> }
         , { name: "Appointments", element: <AppointmentList /> }
         , { name: "My Pet", element: <MyPets /> }
         , { name: "Pet Blog", element: <PetBlog /> }

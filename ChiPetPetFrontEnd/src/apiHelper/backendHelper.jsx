@@ -14,8 +14,8 @@ import * as url from "./urlHelper";
  */
 
 // application
-export const getAllApplications = async () => {
-  return await getFetcher(url.GET_ALL_APPLICATIONS_PATH());
+export const getApplicationsAdmin = async () => {
+  return await getFetcher(url.GET_APPLICATIONS_ADMIN_PATH());
 };
 
 export const getApplicationByAdopter = async (adopterId) => {

@@ -8,7 +8,7 @@ export const COMMON_PATH = 'http://127.0.0.1:8000/'
 
 // application 
 export const APPLICATION_PATH = () => COMMON_PATH + 'application/';
-export const GET_ALL_APPLICATIONS_PATH = () => APPLICATION_PATH() + 'get_all_applications';
+export const GET_APPLICATIONS_ADMIN_PATH = () => APPLICATION_PATH() + 'get_applications_admin';
 export const GET_APPLICATION_BY_ADOPTER_PATH = (adopterId) => APPLICATION_PATH() + 'get_application_by_adopter/?adopter_id=' + adopterId;
 export const GET_APPLICATION_BY_SHELTER_PATH = (shelterId) => APPLICATION_PATH() + 'get_application_by_shelter/?animal_shelter_id=' + shelterId;
 export const GET_APPLICATION_BY_PET_PATH = (petId) => APPLICATION_PATH() + 'get_application_by_pet/?pet_id=' + petId;

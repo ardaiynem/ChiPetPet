@@ -16,7 +16,7 @@ function AppointmentList() {
   const [appointments, setAppointments] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const { setTimedAlert } = useAlert();
-  const { isAuthenticated, login, logout, userDetails } = useAuth();
+  const { userDetails } = useAuth();
 
   const toggleRowSelection = (rowNumber) => {
     if (selectedRow === rowNumber) {

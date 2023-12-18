@@ -5,8 +5,8 @@ import catImg from "../../assets/cat1.jpeg";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 import {
-  getApplicationByShelter,
-  updateApplicationStatus,
+  getApplicationByAdopter,
+  deleteApplication,
 } from "../../apiHelper/backendHelper";
 
 /**
@@ -22,7 +22,7 @@ function ApplicationsList() {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
   useEffect(() => {
-    getApplicationByShelter(userDetails.user_id)
+    getApplicationByAdopter(userDetails.user_id)
       .then((res) => {
         setApplications(res.data.applications);
       })
@@ -40,7 +40,7 @@ function ApplicationsList() {
     }
   };
 
-  const acceptApplicationHandler = () => {
+  const cancelApplicationHandler = () => {
     if (selectedRow === null) {
       setTimedAlert("Please select an application", "error", 3000);
       return;
@@ -48,40 +48,12 @@ function ApplicationsList() {
 
     const applicationId = [applications[selectedRow].application_id];
 
-    const data = {
-      "application_id": applicationId,
-      "application_status": "SHELTER_APPROVED"
-    }
-
-    updateApplicationStatus(data)
+    deleteApplication(applicationId)
       .then((res) => {
-        setTimedAlert("Application approved", "success", 3000);
+        setTimedAlert("Application cancelled", "success", 3000);
       })
       .catch((err) => {
-        setTimedAlert("Error accepting application", "error", 3000);
-      });
-
-  };
-
-  const rejectApplicationHandler = () => {
-    if (selectedRow === null) {
-      setTimedAlert("Please select an application", "error", 3000);
-      return;
-    }
-
-    const applicationId = [applications[selectedRow].application_id];
-
-    const data = {
-      "application_id": applicationId,
-      "application_status": "REJECTED"
-    }
-
-    updateApplicationStatus(data)
-      .then((res) => {
-        setTimedAlert("Application rejected", "success", 3000);
-      })
-      .catch((err) => {
-        setTimedAlert("Error rejecting application", "error", 3000);
+        setTimedAlert("Error cancelling application", "error", 3000);
       });
   };
 
@@ -162,7 +134,7 @@ function ApplicationsList() {
               </h5>
               <div className="d-flex flex-column align-items-start">
                 <button
-                  onClick={rejectApplicationHandler}
+                  onClick={cancelApplicationHandler}
                   className="btn btn-danger mb-2"
                   type="button"
                   disabled={applications[selectedRow].application_status !== "PENDING"}
@@ -173,22 +145,9 @@ function ApplicationsList() {
                     width: "100px",
                   }}
                 >
-                  Reject
+                  Cancel
                 </button>
-                <button
-                  onClick={acceptApplicationHandler}
-                  className="btn btn-success mb-2"
-                  type="button"
-                  disabled={applications[selectedRow].application_status !== "PENDING"}
-                  style={{
-                    backgroundColor: "green",
-                    borderColor: "green",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Accept
-                </button>
+                
                 <button
                   className="btn btn-primary"
                   type="button"
