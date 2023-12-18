@@ -38,20 +38,39 @@ function SearchVeterinarian() {
   }, [name, address, expertise, sortOption]);
 
   const handleMakeAppointment = () => {
-    // Handle the logic for making an appointment here
-    // For now, just close the modal
+
+
+
     setShowModal(false);
   };
 
   const renderTimeOptions = () => {
     const timeOptions = [];
+    const existingAppointments = [
+      { date: "2024-01-01", time: "10:00" },
+      { date: "2024-01-01", time: "14:00" },
+      { date: "2024-01-02", time: "10:00" },
+    ]; 
+  
     for (let hour = 9; hour <= 17; hour++) {
       for (let minute = 0; minute < 60; minute += 60) {
         const formattedTime = `${hour.toString().padStart(2, "0")}:${minute
           .toString()
           .padStart(2, "0")}`;
+  
+        // Assuming selectedDate is the current selected date
+        const isUnavailable = existingAppointments.some(
+          (appointment) =>
+            appointment.date === selectedDate && appointment.time === formattedTime
+        );
+  
         timeOptions.push(
-          <option key={formattedTime} value={formattedTime}>
+          <option
+            key={formattedTime}
+            value={formattedTime}
+            disabled={isUnavailable}
+            style={{ color: isUnavailable ? 'red' : 'black' }}
+          >
             {formattedTime}
           </option>
         );
@@ -59,7 +78,8 @@ function SearchVeterinarian() {
     }
     return timeOptions;
   };
-
+  
+  
   return (
     <div className="p-0" style={{ width: "100%" }}>
       <Button
