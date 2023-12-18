@@ -2,9 +2,92 @@ import { Button, Dropdown, FormControl } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
+import { getUnverifiedDocuments, verifyUser, rejectVerificationRequest } from '../../apiHelper/backendHelper';
+
+// converts base64 string into blob
+const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+  
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+  
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+  
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+      
+    const blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+}
+
 
 function VerificationRequests() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+
+    const [verificationRequests, setVerificationRequests] = useState([]);
+    useEffect(() => {
+        
+        getUnverifiedDocuments()
+        .then((res) => {
+            console.log(res)
+            const documentsWithDownloadLink = res.data.unverified_documents.map(obj => {
+                const blob = b64toBlob(obj.verification_documents, 'application/pdf');
+                const blobUrl = URL.createObjectURL(blob);
+              
+                // Add the blobUrl as a new attribute to the object
+                return { ...obj, 'downloadLink': blobUrl };
+            });
+            setVerificationRequests(documentsWithDownloadLink);
+
+
+        })
+        .catch((err) => {
+            console.log(err);
+            setTimedAlert("Error retrieving unverified verification documents", "error", 3000);
+        });
+
+    }, []);
+
+    const [selectedRow, setSelectedRow] = useState(null);
+
+    const handleVerifyButton =  (id) => {
+        const data = {
+            'user_id': id,
+        }
+        console.log(data)
+        verifyUser(data)
+        .then((res) => {
+            console.log(res); 
+        })
+        .catch((err) => {
+            console.log(err);
+            setTimedAlert("Error verifiying the user", "error", 3000);
+        });
+        
+    };
+
+    const handleRejectButton = (id) => {
+        const data = {
+            'user_id': id,
+        }
+        console.log(data)
+
+        rejectVerificationRequest(data)
+        .then((res) => {
+            console.log(res); 
+        })
+        .catch((err) => {
+            console.log(err);
+            setTimedAlert("Error verifiying the user", "error", 3000);
+        });
+        
+    }
+
 
     return (
         <div className="p-0" style={{ width: "100%" }}>
@@ -56,65 +139,55 @@ function VerificationRequests() {
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">First</th>
-                                <th scope="col">Last</th>
-                                <th scope="col">Handle</th>
+                                <th scope="col">User id</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Applied role</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td colspan="2">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
+                            {verificationRequests.map((verificationReq, index) =>
+                                <tr onClick={() => setSelectedRow(verificationReq)}>
+                                    <th scope="row">{index+1}</th>
+                                    <td>{verificationReq.user_id}</td>
+                                    <td>{verificationReq.username}</td>
+                                    <td>{verificationReq.role}</td>
+                                </tr>
+                            )
+                            
+                            }
+                            
                         </tbody>
                     </table>
                 </div>
-                <div className="d-flex justify-content-center p-3" style={{ flex: "1 1 0", height: "60vh" }}>
-                    <div className="card border-primary mb-3 w-100">
+                
+
+
+
+
+                <div className="d-flex justify-content-center p-3" style={{ flex: "1 1 0", height: "40vh" }}>
+                    <div className="card border-primary mb-3 w-100" style={{visibility: selectedRow ? "visible" : "hidden"}}>
                         <div className="d-flex card-header justify-content-start p-3">
-                            <img src={catImg} style={{ width: "100px", borderRadius: "50%", flex: "0 0 auto" }} />
+                            
                             <div className='d-flex flex-column align-items-start justify-content-center ms-3' style={{ flex: "4 4 auto" }}>
-                                <p>Username</p>
-                                <button className="btn btn-primary" type="button">Contact</button>
+                                <h1>{selectedRow?.username}</h1>
                             </div>
-                            <div className='d-flex flex-column gap-2' style={{ flex: "2 2 auto" }}>
-                                <button className="btn btn-primary" type="button">Contact</button>
-                                <button className="btn btn-primary" type="button">Contact</button>
-                            </div>
+
                         </div>
                         <div className="card-body d-flex flex-column gap-3">
-                            <div style={{ flex: "1 1 100px" }}>
-                                <div className="form-floating h-100 mb-3">
-                                    <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{ height: "100%" }}></textarea>
-                                    <label for="floatingTextarea2">Comments</label>
-                                </div>
-                            </div>
-                            <button className="btn btn-primary w-100" type="button">Download</button>
-                            <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
-                                <div style={{ flex: "3 3 0" }}>
-                                    <div className="form-floating h-100 mb-3">
-                                        <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{ height: "100%" }}></textarea>
-                                        <label for="floatingTextarea2">Comments</label>
-                                    </div>
-                                </div>
-                                <div className='d-flex flex-column gap-2' style={{ flex: "1 1 0" }}>
-                                    <button className="btn btn-primary" type="button">Contact</button>
-                                    <button className="btn btn-primary" type="button">Contact</button>
-                                </div>
-                            </div>
+
+                            
+                                <a href={selectedRow?.downloadLink} download="verification_document.pdf">
+                                    Download Verification Document
+                                </a>
+
+
+                            <button className="btn btn-primary w-100" type="button" onClick={() => handleVerifyButton(selectedRow?.user_id)}>
+                                Verify
+                            </button>
+                            <button className="btn btn-primary w-100" type="button" onClick={() => handleRejectButton(selectedRow?.user_id)}>
+                                Reject
+                            </button>
+
                         </div>
                     </div>
                 </div>

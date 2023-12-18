@@ -140,8 +140,12 @@ export const getOwnVerificationDocuments = async (user_id) => {
   return await getFetcher(url.GET_OWN_VERIFICATION_DOCUMENTS_PATH(user_id));
 };
 
-export const verifyUser = async () => {
-    return await postFetcher(url.VERIFY_USER_PATH());
+export const verifyUser = async (data) => {
+    return await putFetcher(url.VERIFY_USER_PATH(), data);
+}
+
+export const rejectVerificationRequest = async (data) => {
+  return await putFetcher(url.REJECT_VERIFICATION_REQUEST_PATH(), data);
 }
 
 // login register

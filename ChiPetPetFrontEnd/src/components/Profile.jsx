@@ -145,7 +145,7 @@ const Profile = (props) => {
         })
         .catch((err) => {
             console.log(err);
-            setTimedAlert("Error retrieving previous verification document", "error", 3000);
+            //setTimedAlert("Error retrieving previous verification document", "error", 3000);
         });
 
     }, [submitStatus]);
@@ -173,6 +173,9 @@ const Profile = (props) => {
         formData.append('verification_document', verificationDocument);
         formData.append('role', selectedProfession);
 
+        userDetails.verified = "False";
+        changeUserDetails(userDetails);
+
         // Call the API to upload the verification document
         uploadVerificationDocument(formData)
         .then((res) => {
@@ -180,6 +183,7 @@ const Profile = (props) => {
             setSubmitStatus(1);
         })
         .catch((err) => {
+            console.log(err);
             setTimedAlert("Error uploading verification document", "error", 3000);
         });
 
@@ -221,8 +225,8 @@ const Profile = (props) => {
                         }
 
                     </div>
-                    {
-                        previousVerificationDocument.length === 0? 
+                    { verified.toUpperCase() !== "TRUE" && (
+                        ((previousVerificationDocument.length === 0 && verified.toUpperCase() === "FALSE") || verified.toUpperCase() === "REJECTED") &&
                         <div className="d-flex justify-content-center align-items-center flex-column gap-3" style={{ flex: "1 1 0" }}>
                         <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
                             <Dropdown>
@@ -238,28 +242,24 @@ const Profile = (props) => {
                                 </Dropdown.Menu>
                             </Dropdown>
 
-                            <input type="file" className="form-control" id="inputGroupFile02" onChange={handleFileChange} disabled={verified} />
+                            <input type="file" className="form-control" id="inputGroupFile02" onChange={handleFileChange}  />
                         </div>
 
-                        <textarea className="form-control" style={{ flex: "1 1 0" }} disabled={verified} />
                         <div className="form-check">
-                            <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled={verified} />
-                            <label className="form-check-label" for="flexCheckDefault" >
-                                Accept
-                            </label>
-                            <button className="btn btn-primary ms-4 d-inline" onClick={handleVerificationDocumentSubmit} disabled={verified}>Submit</button>
+
+                            <button className="btn btn-primary ms-4 d-inline" onClick={handleVerificationDocumentSubmit} >Submit</button>
                         </div>
-                    </div>:
+                        </div>
+
+                    )
+                    }
                     <div>
-                    {downloadLink && (
+                        {verified.toUpperCase() !== "TRUE" && downloadLink && (
                         <a href={downloadLink} download="verification_document.pdf">
                             Download Verification Document
                         </a>
-                    )}
-                    
-                    
+                        )}
                     </div>
-                    }
                     
                 </div>
             </div>
