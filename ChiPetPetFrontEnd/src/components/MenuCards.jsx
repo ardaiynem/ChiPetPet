@@ -37,6 +37,8 @@ function MenuCards() {
         , { name: "Pet Blog", element: <PetBlog /> }
         , { name: "Messages", element: <MessagePage /> }
         , { name: "Profile", element: <Profile role={role} /> }
+        , { name: "Verification Operations", element: <VerificationRequests /> }
+
     ]
 
     let cardHeadersShelter = [

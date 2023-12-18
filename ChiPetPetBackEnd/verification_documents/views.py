@@ -20,7 +20,7 @@ def get_unverified_documents(request):
         for user_type in user_types:
             # Fetch verification documents for each user type where 'verified' is false
             cursor.execute("""
-                SELECT user.user_id, user.username, {user_type}.verification_documents
+                SELECT user.user_id, user.username, {user_type}.verification_documents, user.role
                 FROM user
                 INNER JOIN {user_type} ON user.user_id = {user_type}.user_id
                 WHERE user.verified = %s
@@ -32,6 +32,7 @@ def get_unverified_documents(request):
                 user_id = document[0]
                 username = document[1]
                 verification_documents = document[2]
+                role = document[3]
 
                 response = base64.b64encode(verification_documents).decode('utf-8')
 
@@ -39,6 +40,7 @@ def get_unverified_documents(request):
                     'user_id': user_id,
                     'username': username,
                     'verification_documents': response,
+                    'role': role
                 }
                 unverified_documents.append(user_info)
 
@@ -69,6 +71,8 @@ def upload_verification_document(request):
                         WHERE user_id = %s
                         """, (user_role, user_id, ))
 
+            connection.commit()
+            cursor.execute("""UPDATE user SET verified = %s WHERE user_id = %s""", ("False", user_id,))
             connection.commit()
             
             if not user:
@@ -146,7 +150,7 @@ def get_own_verification_documents(request):
 
 @csrf_exempt
 def verify_user(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         data = json.loads(request.body)
         user_id = data.get('user_id')
 
@@ -159,3 +163,17 @@ def verify_user(request):
 
     return JsonResponse({'status': 'Invalid request method'}, status=405)
 
+@csrf_exempt
+def reject_verification_request(request):
+    if request.method == 'PUT':
+        data = json.loads(request.body)
+        user_id = data.get('user_id')
+
+        # Update the 'verified' field to True for the specified user ID
+        cursor = connection.cursor()
+        cursor.execute("UPDATE user SET verified = %s WHERE user_id = %s", ("Rejected", user_id))
+        connection.commit()
+
+        return JsonResponse({'status': 'User rejected successfully'}, status=200)
+
+    return JsonResponse({'status': 'Invalid request method'}, status=405)
