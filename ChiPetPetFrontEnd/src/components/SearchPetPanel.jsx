@@ -29,6 +29,7 @@ function SearchPetPanel(props) {
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
 
+
   const { setTimedAlert } = useAlert();
 
   if (animalType) {
@@ -71,6 +72,7 @@ function SearchPetPanel(props) {
         .then((res) => {
           console.log("With shelter", res.data);
           setPets(res.data.pets);
+
         })
         .catch((err) => {
           setTimedAlert("Error retrieving animals", "error", 3000);
@@ -160,7 +162,6 @@ function SearchPetPanel(props) {
           style={{ height: "700px" }}
         >
           {pets
-            .slice((page - 1) * animalPerPage, (page - 1) * animalPerPage + 6)
             .map((pet) => (
               <Card
                 key={pet.id}
@@ -169,7 +170,7 @@ function SearchPetPanel(props) {
               >
                 <Row className="no-gutters">
                   <Col xs={4} className="d-flex">
-                    <Card.Img src={pet.photo} style={{ objectFit: "cover" }} />
+                    <Card.Img src={`data:image/png;base64, ${pet.photo}`} style={{ objectFit: "cover" }} />
                   </Col>
                   <Col xs={8}>
                     <Card.Body>

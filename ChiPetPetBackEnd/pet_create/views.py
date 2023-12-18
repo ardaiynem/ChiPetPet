@@ -5,28 +5,32 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 import pandas as pd
 from django.views.decorators.http import require_http_methods
-
+from django.core.files.base import ContentFile
+import base64
 
 @csrf_exempt
 def insert_pet(request):
     if request.method == 'POST':
         try:
-            # Assuming the data is sent as JSON in the request body
-            data = json.loads(request.body)
 
-            shelter_id = data.get('shelter_id')
-            name = data.get('name')
-            species = data.get('species')
-            breed = data.get('breed')
-            gender = data.get('gender')
-            age = data.get('age')
-            health_status = data.get('health_status')
-            description = data.get('description')
-            photo = data.get('photo')
-            adoption_status = data.get('adoption_status')
+            shelter_id = request.POST.get('shelter_id')
+            name = request.POST.get('name')
+            species = request.POST.get('species')
+            breed = request.POST.get('breed')
+            gender = request.POST.get('gender')
+            age = request.POST.get('age')
+            health_status = request.POST.get('health_status')
+            description = request.POST.get('description')
+            photo = request.FILES.get('photo')
+            adoption_status = request.POST.get('adoption_status')
 
             # Convert base64-encoded photo to bytes
-            photo_bytes = photo.encode('utf-8') if photo is not None else None
+            if photo:
+                # Read the photo file content and convert it to base64
+                photo_content = base64.b64encode(photo.read()).decode('utf-8')
+            else:
+                photo_content = None
+
 
             # Insert into the pet table
             cursor = connection.cursor()
@@ -36,7 +40,7 @@ def insert_pet(request):
                             description, photo, adoption_status
                             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                            (shelter_id, name, species, breed, gender, age, health_status,
-                            description, photo_bytes, adoption_status))
+                            description, photo_content, adoption_status))
 
             return JsonResponse({'status': 'Pet inserted successfully'}, status=201)
 
