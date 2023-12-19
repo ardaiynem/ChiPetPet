@@ -101,8 +101,8 @@ export const deleteNotification = async (user_id, date_and_time) => {
 };
 
 // health record
-export const uploadHealthRecord = async () => {
-  return await postFetcher(url.UPLOAD_HEALTH_RECORD_PATH());
+export const uploadHealthRecord = async (data) => {
+  return await postFetcher(url.UPLOAD_HEALTH_RECORD_PATH(), data);
 };
 
 export const getHealthRecordsByPet = async (pet_id) => {
