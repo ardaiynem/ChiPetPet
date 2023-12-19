@@ -1,8 +1,9 @@
 import { useAuth } from "../AuthContext";
-import catImg from "../assets/cat1.jpeg";
+import { useProfiles } from "../ProfilesContext";
 
 function BlogPostBubble({ handleRemove, comment }) {
-  const { isAuthenticated, login, logout, userDetails } = useAuth();
+  const { userDetails } = useAuth();
+  const { getProfile } = useProfiles();
   const { comment_id, content, user_id, user_name, date_and_time, role } =
     comment;
 
@@ -11,7 +12,7 @@ function BlogPostBubble({ handleRemove, comment }) {
       <div className="card border-primary mb-2 w-100">
         <div className="d-flex card-header justify-content-start">
           <img
-            src={catImg}
+            src={getProfile(user_id)}
             style={{ width: "50px", borderRadius: "50%", flex: "0 0 auto" }}
           />
           <div className="ms-3" style={{ flex: "4 4 auto" }}>

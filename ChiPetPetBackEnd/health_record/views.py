@@ -10,7 +10,9 @@ import base64
 
 @csrf_exempt
 def upload_health_record(request):
+    
     if request.method == 'POST':
+
         try:
             data = json.loads(request.body)
             pet_id = data.get('pet_id')
@@ -27,8 +29,9 @@ def upload_health_record(request):
             
             cursor.execute("INSERT INTO health_record (pet_id, date, fertility, health_report) VALUES (%s, %s, %s, %s)",
                             (pet_id, date, fertility, health_report))
+            connection.commit()
 
-            return JsonResponse({'status': 'Health record inserted successfully'}, status=201)
+            return JsonResponse({'date': date, 'status': 'Health record inserted successfully'}, status=200)
 
         except json.JSONDecodeError as e:
             return JsonResponse({'error': 'Invalid JSON format: {}'.format(str(e))}, status=400)

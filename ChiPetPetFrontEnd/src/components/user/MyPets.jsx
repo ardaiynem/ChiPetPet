@@ -2,37 +2,27 @@ import { Card, Button, Dropdown } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
+import { getPetsByAdopterId } from "../../apiHelper/backendHelper";
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
 
 function MyPets() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+    const [ pets, setPets ] = useState([]);
 
-    const [pets, setPets] = useState([
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-    ]);
+    const { userDetails } = useAuth();
+    const { setTimedAlert } = useAlert();
+
+    useEffect(() => {
+        getPetsByAdopterId(userDetails.user_id)
+          .then((res) => {
+            console.log(res.data.pets);
+            setPets(res.data.pets);
+          })
+          .catch((err) => {
+            setTimedAlert("Error getting pets", "error", 3000);
+          });
+      }, []);
 
     const [selectedPet, setSelectedPet] = useState(null);
 
@@ -90,7 +80,7 @@ function MyPets() {
                                 <th scope="col">Species</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        {/* <tbody>
                             {
                                 pets.map((pet) => (
                                     <tr onClick={() => {setSelectedPet(pet)}}>
@@ -100,7 +90,7 @@ function MyPets() {
                                     </tr>
                                 ))
                             }
-                        </tbody>
+                        </tbody> */}
                     </table>
                 </div>
                 <div className="d-flex justify-content-end" style={{ flex: "1 1 0" }}>

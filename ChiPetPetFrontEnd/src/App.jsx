@@ -4,13 +4,16 @@ import MainPage from "./pages/MainPage";
 import axios from "axios";
 import { AuthProvider } from "./AuthContext";
 import { AlertProvider } from "./AlertContext";
+import { ProfilesContextProvider } from "./ProfilesContext";
 
 function App() {
   return (
     <>
       <AlertProvider>
         <AuthProvider>
-          <MainPage />
+          <ProfilesContextProvider>
+            <MainPage />
+          </ProfilesContextProvider>
         </AuthProvider>
       </AlertProvider>
     </>
