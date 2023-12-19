@@ -52,6 +52,11 @@ function ApplicationsList() {
     deleteApplication(applicationId)
       .then((res) => {
         setTimedAlert("Application cancelled", "success", 3000);
+        setApplications(
+          applications.filter((application) => {
+            return application.application_id !== applicationId[0];
+          })
+        );
       })
       .catch((err) => {
         setTimedAlert("Error cancelling application", "error", 3000);
