@@ -9,7 +9,6 @@ import {
 } from "react-bootstrap";
 import MessageThumbnail from "./MessageThumbnail";
 import MessageBubble from "./MessageBubble";
-import catImg from "../assets/cat1.jpeg";
 
 import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
@@ -192,10 +191,15 @@ function MessagePage() {
                 chats[selectedChat].messages.map((m, i) => (
                   <MessageBubble
                     key={i}
-                    username={chats[selectedChat].username}
+                    username={
+                      m.sender_id === userDetails.user_id
+                        ? userDetails.username
+                        : chats[selectedChat].username
+                    }
                     side={m.sender_id === userDetails.user_id ? 1 : 0}
                     date={m.date}
                     content={m.content}
+                    user_id={m.sender_id}
                   />
                 ))
               )

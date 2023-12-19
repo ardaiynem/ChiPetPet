@@ -2,17 +2,6 @@ import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { Dropdown, Pagination, Button, Modal } from "react-bootstrap";
 
-import redFox from "../assets/profile_pictures/red_fox.jpg"
-import whiteFox from "../assets/profile_pictures/arctic_fox.jpg"
-import bird1 from "../assets/profile_pictures/bird1.jpeg"
-import bird2 from "../assets/profile_pictures/bird2.jpg"
-import blackCat from "../assets/profile_pictures/black_cat.jpg"
-import butterfly from "../assets/profile_pictures/butterfly.jpg"
-import dog1 from "../assets/profile_pictures/dog1.jpg"
-import dog2 from "../assets/profile_pictures/dog2.jpg"
-import turtle from "../assets/profile_pictures/turtle.jpg"
-import whiteCat from "../assets/profile_pictures/white_cat.jpg"
-
 import {
   uploadVerificationDocument,
   getOwnVerificationDocuments,
@@ -23,6 +12,7 @@ import {
 import { useAuth } from "../AuthContext";
 import { useAlert } from "../AlertContext";
 import axios from "axios";
+import { useProfiles } from "../ProfilesContext";
 
 // converts base64 string into blob
 const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
@@ -97,10 +87,7 @@ const Profile = (props) => {
 
   const { userDetails, changeUserDetails } = useAuth();
 
-  // profile picture
-  const profilePictures = [redFox, whiteFox, bird1, bird2, blackCat, butterfly, dog1, dog2, turtle, whiteCat];
-  const profilePictureIndex = userDetails.user_id % profilePictures.length;
-
+  const { getProfile } = useProfiles();
 
   const [verified, setVerified] = useState(userDetails.verified);
   const [role, setRole] = useState(
@@ -212,21 +199,23 @@ const Profile = (props) => {
       });
   }, [submitStatus]);
 
-    // for uploading verification documents
-    const [selectedProfession, setSelectedProfession] = useState('');
-    const [verificationDocument, setVerificationDocument] = useState(null);
-    const [expertiseForVeterinarian, setExpertiseForVeterinarian] = useState("Enter expertise");
-    const [specialityForFieldExpert, setSpecialityForFieldExpert] = useState("Enter speciality");
+  // for uploading verification documents
+  const [selectedProfession, setSelectedProfession] = useState("");
+  const [verificationDocument, setVerificationDocument] = useState(null);
+  const [expertiseForVeterinarian, setExpertiseForVeterinarian] =
+    useState("Enter expertise");
+  const [specialityForFieldExpert, setSpecialityForFieldExpert] =
+    useState("Enter speciality");
 
-    // Function to handle expertise change
-    const handleExpertiseChange = (e) => {
-        setExpertiseForVeterinarian(e.target.value);
-    };
+  // Function to handle expertise change
+  const handleExpertiseChange = (e) => {
+    setExpertiseForVeterinarian(e.target.value);
+  };
 
-    // Function to handle speciality change
-    const handleSpecialityChange = (e) => {
-        setSpecialityForFieldExpert(e.target.value);
-    };
+  // Function to handle speciality change
+  const handleSpecialityChange = (e) => {
+    setSpecialityForFieldExpert(e.target.value);
+  };
 
   // Function to handle file input change
   const handleFileChange = (e) => {
@@ -238,32 +227,31 @@ const Profile = (props) => {
     setSelectedProfession(profession);
   };
 
-    // Function to handle form submission
-    const handleVerificationDocumentSubmit =  () => {
-        // Create a FormData object to send the file
-        const formData = new FormData();
-        formData.append('user_id', userDetails.user_id);
-        formData.append('verification_document', verificationDocument);
-        formData.append('role', selectedProfession);
-        formData.append('expertise', expertiseForVeterinarian);
-        formData.append('speciality', specialityForFieldExpert);
+  // Function to handle form submission
+  const handleVerificationDocumentSubmit = () => {
+    // Create a FormData object to send the file
+    const formData = new FormData();
+    formData.append("user_id", userDetails.user_id);
+    formData.append("verification_document", verificationDocument);
+    formData.append("role", selectedProfession);
+    formData.append("expertise", expertiseForVeterinarian);
+    formData.append("speciality", specialityForFieldExpert);
 
-        userDetails.verified = "False";
-        changeUserDetails(userDetails);
-        
-        console.log(formData);
-        // Call the API to upload the verification document
-        uploadVerificationDocument(formData)
-        .then((res) => {
-            console.log(res.data); // Handle the response as needed
-            setSubmitStatus(1);
-        })
-        .catch((err) => {
-            console.log(err);
-            setTimedAlert("Error uploading verification document", "error", 3000);
-        });
+    userDetails.verified = "False";
+    changeUserDetails(userDetails);
 
-    };
+    console.log(formData);
+    // Call the API to upload the verification document
+    uploadVerificationDocument(formData)
+      .then((res) => {
+        console.log(res.data); // Handle the response as needed
+        setSubmitStatus(1);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTimedAlert("Error uploading verification document", "error", 3000);
+      });
+  };
 
   return (
     <div className="p-2 w-100">
@@ -279,7 +267,10 @@ const Profile = (props) => {
           style={{ flex: "1 1 0" }}
         >
           <div className="d-flex flex-column gap-3">
-            <img src={profilePictures[profilePictureIndex]} style={{ width: "300px", borderRadius: "50%" }} />
+            <img
+              src={getProfile(userDetails.user_id)}
+              style={{ width: "300px", borderRadius: "50%" }}
+            />
             <span className="badge rounded-pill bg-primary">
               {role.toUpperCase()}
             </span>
@@ -428,19 +419,35 @@ const Profile = (props) => {
                     </Dropdown.Menu>
                   </Dropdown>
 
-                            <input type="file" className="form-control" id="inputGroupFile02" onChange={handleFileChange}  />
-                        </div>
-                        {   (selectedProfession === "Veterinarian") &&
-                        <div>
-                            <input type="text" className="form-control" id="inputGroupText03" onChange={handleExpertiseChange}  placeholder={expertiseForVeterinarian}/>
-                        </div>
-                        }
-                        {   (selectedProfession === "Field_Expert") &&
-                        <div>
-                            <input type="text" className="form-control" id="inputGroupText03" onChange={handleSpecialityChange}  placeholder={specialityForFieldExpert}/>
-                        </div>
-                        }
-
+                  <input
+                    type="file"
+                    className="form-control"
+                    id="inputGroupFile02"
+                    onChange={handleFileChange}
+                  />
+                </div>
+                {selectedProfession === "Veterinarian" && (
+                  <div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="inputGroupText03"
+                      onChange={handleExpertiseChange}
+                      placeholder={expertiseForVeterinarian}
+                    />
+                  </div>
+                )}
+                {selectedProfession === "Field_Expert" && (
+                  <div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="inputGroupText03"
+                      onChange={handleSpecialityChange}
+                      placeholder={specialityForFieldExpert}
+                    />
+                  </div>
+                )}
 
                 <div className="form-check">
                   <button
@@ -454,7 +461,11 @@ const Profile = (props) => {
             )}
           <div>
             {verified.toUpperCase() !== "TRUE" && downloadLink && (
-              <a className= "btn btn-primary" href={downloadLink} download="verification_document.pdf">
+              <a
+                className="btn btn-primary"
+                href={downloadLink}
+                download="verification_document.pdf"
+              >
                 Download Verification Document
               </a>
             )}
