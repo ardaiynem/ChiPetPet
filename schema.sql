@@ -193,7 +193,7 @@ INSERT INTO user (first_name, last_name, username, email, password, verified, ro
 VALUES ('John', 'Doe', 'johndoe', 'john@email.com', 'password', 'yes', 'animal_shelter');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
-VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'yes', 'adopter');
+VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'yes', 'user');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
 VALUES ('John', 'Smith', 'johnsmith', 'johnsmith@email.com', 'password', 'yes', 'veterinarian');
@@ -209,6 +209,12 @@ VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$K
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
 VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@email.com', 'password', 'True', 'veterinarian');
+
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('a', 'a', 'a', 'a@email.com', 'pbkdf2_sha256$260000$A7zHVyUC5F6duUTGeD4IT5$ROaskyhQVBHZt91eUQWKm8oMCd0pGxhX3qeKTVyZb10=', 'True', 'admin');
+
+INSERT INTO admin (user_id, verification_documents)
+VALUES (8, NULL);
 
 INSERT INTO animal_shelter (user_id, address, contact, verification_documents)
 VALUES (4, '123 Shelter St', '123-456-7890', NULL);
