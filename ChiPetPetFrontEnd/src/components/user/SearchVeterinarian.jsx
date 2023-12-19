@@ -10,6 +10,8 @@ function SearchVeterinarian() {
   const [veterinarians, setVeterinarians] = useState([]);
   const [selectedVet, setSelectedVet] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [showModalMsg, setShowModalMsg] = useState(false);
+
   const [selectedTime, setSelectedTime] = useState(null);
 
   const [selectedDate, setDate] = useState("2023-01-01");
@@ -38,11 +40,14 @@ function SearchVeterinarian() {
   }, [name, address, expertise, sortOption]);
 
   const handleMakeAppointment = () => {
-
-
-
     setShowModal(false);
   };
+
+
+  const handleContact = () => {
+    setShowModalMsg(false);
+  };
+
 
   const renderTimeOptions = () => {
     const timeOptions = [];
@@ -50,20 +55,20 @@ function SearchVeterinarian() {
       { date: "2024-01-01", time: "10:00" },
       { date: "2024-01-01", time: "14:00" },
       { date: "2024-01-02", time: "10:00" },
-    ]; 
-  
+    ];
+
     for (let hour = 9; hour <= 17; hour++) {
       for (let minute = 0; minute < 60; minute += 60) {
         const formattedTime = `${hour.toString().padStart(2, "0")}:${minute
           .toString()
           .padStart(2, "0")}`;
-  
+
         // Assuming selectedDate is the current selected date
         const isUnavailable = existingAppointments.some(
           (appointment) =>
             appointment.date === selectedDate && appointment.time === formattedTime
         );
-  
+
         timeOptions.push(
           <option
             key={formattedTime}
@@ -78,8 +83,8 @@ function SearchVeterinarian() {
     }
     return timeOptions;
   };
-  
-  
+
+
   return (
     <div className="p-0" style={{ width: "100%" }}>
       <Button
@@ -201,8 +206,9 @@ function SearchVeterinarian() {
                 >
                   Make Appointment
                 </Button>
-                <Button className="btn btn-primary" type="button">
-                  Another Button
+                <Button className="btn btn-primary" type="button"
+                  onClick={() => setShowModalMsg(true)}>
+                  Contact
                 </Button>
               </div>
             </div>
@@ -241,6 +247,27 @@ function SearchVeterinarian() {
           </Button>
           <Button variant="primary" onClick={handleMakeAppointment}>
             Make Appointment
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal for contacting */}
+      <Modal show={showModalMsg} onHide={() => setShowModalMsg(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Send Message to {selectedVet?.username}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-floating">
+            <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{height: "200px"}}></textarea>
+            <label htmlFor="floatingTextarea2">Comments</label>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleContact}>
+            Send Message
           </Button>
         </Modal.Footer>
       </Modal>

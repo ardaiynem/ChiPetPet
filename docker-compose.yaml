@@ -23,7 +23,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./ChiPetPetBackend:/code
+      - ./ChiPetPetBackEnd:/code
 
   front-end:
     image: chipetpetfrontend
@@ -32,4 +32,4 @@ services:
     depends_on:
       - back-end
     volumes:
-      - ./ChiPetPetFrontend/src:/app/src
+      - ./ChiPetPetFrontEnd/src:/app/src

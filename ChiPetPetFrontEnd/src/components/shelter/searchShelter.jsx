@@ -21,6 +21,7 @@ function SearchShelter() {
   const [page, setPage] = useState(1);
   const [shelters, setShelters] = useState([]);
 
+
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [sortOption, setSortOption] = useState("None");
@@ -44,6 +45,7 @@ function SearchShelter() {
         setTimedAlert("Error retrieving shelters", "error", 3000);
       });
   }, [name, address]);
+
 
   let items = [];
   const shelterlPerPage = 6;
@@ -175,6 +177,7 @@ function SearchShelter() {
             ))}
         </div>
         <Pagination size="lg">{items}</Pagination>
+
       </div>
     </>
   );
