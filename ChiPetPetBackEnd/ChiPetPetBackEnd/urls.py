@@ -29,4 +29,5 @@ urlpatterns = [
     path('appointment/', include('appointment.urls')),
     path('application/', include('application.urls')),
     path('notification/', include('notification.urls')),
+    path('system_report/', include('system_report.urls')),
 ]

@@ -43,7 +43,9 @@ def get_appointment(request):
 def get_appointment_by_user(request):
     user_id = request.GET.get('user_id')
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM appointment WHERE user_id = %s", [user_id])
+    cursor.execute("""SELECT * FROM appointment, user, pet
+                   WHERE appointment.user_id = %s AND appointment.user_id = user.user_id AND appointment.pet_id = pet.pet_id
+                   """, [user_id])
     appointments = cursor.fetchall()
     cursor.close()
 
@@ -59,7 +61,24 @@ def get_appointment_by_user(request):
         'appointment_text': row[3],
         'user_id': row[4],
         'veterinarian_id': row[5],
-        'pet_id': row[6]
+        'pet_id': row[6],
+        'first_name': row[8],
+        'last_name': row[9],
+        'username': row[10],
+        'email': row[11],
+        'verified': row[13],
+        'role': row[14],
+        'pet_id': row[15],
+        'animal_shelter_id': row[16],
+        'name': row[17],
+        'species': row[18],
+        'breed': row[19],
+        'gender': row[20],
+        'age': row[21],
+        'health_status': row[22],
+        'description': row[23],
+        'photo': row[24],
+        'adoption_status': row[25]
     } for row in appointments]}, status=200)
 
     

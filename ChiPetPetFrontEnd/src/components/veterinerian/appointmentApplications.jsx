@@ -26,6 +26,7 @@ function AppointmentList() {
       .then((res) => {
         setAppointments(res.data.appointments);
         console.log(res.data.appointments);
+        console.log(userDetails.user_id);
       })
       .catch((err) => {
         setTimedAlert("Error getting appointments", "error", 3000);
