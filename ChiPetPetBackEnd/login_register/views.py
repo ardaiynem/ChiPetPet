@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 from django.db import connection
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -378,20 +379,35 @@ def change_address_and_contact(request):
 
 
 @csrf_exempt
+@require_http_methods(["PATCH"])
 def change_password(request):
-    if request.method == 'POST':
-
+        
         data = json.loads(request.body)
         username = data['username']
-        new_password = data['password']
+        old_password = data['old_password']
+        new_password = data['new_password'] 
 
         cursor = connection.cursor()
-        cursor.execute('UPDATE user SET password = %s WHERE username = %s',
-                       (make_password(new_password), username))
 
-        return JsonResponse({'status': 'Password change successful.'}, status=200)
+        cursor.execute("""SELECT * 
+                        FROM user 
+                        WHERE username = %s""", (username, ))
+        user = cursor.fetchone()
 
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+        if user is None or check_password(old_password, user[5]):
+            cursor.execute('UPDATE user SET password = %s WHERE username = %s', (make_password(new_password), username))
+            return JsonResponse({'status': 'Password changed successfully'}, status=200)
+                
+        return HttpResponse(status=403)
+        
+
+   
+        
+   
+   
+
+    
 
 
 @csrf_exempt
