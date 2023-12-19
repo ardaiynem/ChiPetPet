@@ -14,6 +14,7 @@ import catImg from "../../assets/cat1.jpeg";
 import HealthRecords from "../healthRecords";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
+import { insertPetsFromExcel } from "../../apiHelper/backendHelper";
 import { useAlert } from "../../AlertContext";
 
 function AnimalList() {
@@ -27,6 +28,29 @@ function AnimalList() {
   const [pets, setPets] = useState([]);
 
   const { setTimedAlert } = useAlert();
+
+  // for uploading excel file
+  const [excelFile, setExcelFile] = useState(null);
+  const handleFileChange = (e) => {
+    setExcelFile(e.target.files[0]);
+  };
+  const handleExcelFileSubmit = () => {
+    // Create a FormData object to send the file
+    const formData = new FormData();
+    formData.append("shelter_id", userDetails.user_id);
+    formData.append("excel_file", excelFile);
+
+    console.log(excelFile);
+    insertPetsFromExcel(formData)
+      .then((res) => {
+        console.log(res.data);
+        setTimedAlert("Excel file uploaded successfully", "success", 3000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTimedAlert("Error uploading excel file", "error", 3000);
+      });
+  };
 
   const [formData, setFormData] = useState({
     name: "",
@@ -52,6 +76,7 @@ function AnimalList() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showExcellModal, setExcellModal] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
 
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -199,7 +224,10 @@ function AnimalList() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex flex-column gap-2 mt-3">
+          <div
+            className="d-flex flex-column gap-2 mt-3"
+            style={{ alignItems: "center" }}
+          >
             <button
               className="btn btn-primary"
               type="button"
@@ -209,6 +237,7 @@ function AnimalList() {
                 color: "white",
                 maxWidth: "250px",
               }}
+              onClick={() => setExcellModal(true)}
             >
               Add Excell Sheet
             </button>
@@ -591,6 +620,24 @@ function AnimalList() {
               Close
             </Button>
             <Button variant="success" onClick={() => setShowEditModal(false)}>
+              Submit
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show={showExcellModal} onHide={() => setExcellModal(false)}>
+          <Modal.Header>
+            <Modal.Title>Insert Excell File</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Select an excell file</p>
+            <input type="file" onChange={handleFileChange} />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setExcellModal(false)}>
+              Close
+            </Button>
+            <Button variant="success" onClick={handleExcelFileSubmit}>
               Submit
             </Button>
           </Modal.Footer>

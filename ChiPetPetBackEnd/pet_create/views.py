@@ -370,7 +370,7 @@ def insert_pets_from_excel(request):
                         pet_data,
                     )
 
-            return JsonResponse({'status': 'Pets inserted successfully'}, status=201)
+            return JsonResponse({'status': 'Pets inserted successfully'}, status=200)
 
         except Exception as e:
             return JsonResponse({'error': f'Internal server error: {str(e)}'}, status=500)
