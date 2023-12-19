@@ -1,7 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Card, Button } from "react-bootstrap";
 
-
 import { PanelContext } from "../contexts/panelContext";
 import SearchPetPanel from "../components/SearchPetPanel";
 import SingleAnimalPanel from "../components/SingleAnimalPanel";
@@ -31,11 +30,16 @@ function MenuCards() {
 
   const { getProfile } = useProfiles();
 
-  const [role, setRole] = useState("user");
+  //const [role, setRole] = useState("user");
+
+  const [verified, setVerified] = useState(userDetails.verified);
+  const [role, setRole] = useState(
+    verified.toUpperCase() === "TRUE" ? userDetails.role.toLowerCase() : "user"
+  );
   const [cards, setCards] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
-  let cardHeadersUser = [
+  /* let cardHeadersUser = [
     { name: "Search Pet", element: <SearchAnimalByType /> },
     { name: "Search Veterinarian", element: <SearchVeterinarian /> },
     { name: "Search Shelter", element: <SearchShelter /> },
@@ -50,6 +54,19 @@ function MenuCards() {
     { name: "Upload Health Records", element: <UploadHealthRecord /> },
     { name: "Guide", element: <GuidePage /> },
     { name: "Upload Health Records", element: <UploadHealthRecord /> },
+  ]; */
+
+  let cardHeadersUser = [
+    { name: "Search Pet", element: <SearchAnimalByType /> },
+    { name: "Search Veterinarian", element: <SearchVeterinarian /> },
+    { name: "Search Shelter", element: <SearchShelter /> },
+    { name: "My Applications", element: <MyApplications /> },
+    { name: "Appointments", element: <AppointmentList /> },
+    { name: "My Pet", element: <MyPets /> },
+    { name: "Pet Blog", element: <PetBlog /> },
+    { name: "Messages", element: <MessagePage /> },
+    { name: "Profile", element: <Profile role={role} /> },
+    { name: "Guide", element: <GuidePage /> },
   ];
 
   let cardHeadersShelter = [
@@ -57,6 +74,10 @@ function MenuCards() {
     { name: "Adoption Application", element: <ApplicationsList /> },
     { name: "Messages", element: <MessagePage /> },
     { name: "Profile", element: <Profile role={role} /> },
+    { name: "Add New Animal", element: <AddNewAnimal /> },
+    { name: "Pet Blog", element: <PetBlog /> },
+    { name: "Guide", element: <GuidePage /> },
+    { name: "Animal List", element: <AnimalList /> },
   ];
 
   let cardHeadersVeterinarian = [
@@ -65,6 +86,8 @@ function MenuCards() {
     { name: "Adoption Application", element: <AppointmentList /> },
     { name: "Messages", element: <MessagePage /> },
     { name: "Profile", element: <Profile role={role} /> },
+    { name: "Pet Blog", element: <PetBlog /> },
+    { name: "Guide", element: <GuidePage /> },
   ];
 
   let cardHeadersAdmin = [
@@ -72,22 +95,25 @@ function MenuCards() {
     { name: "Adoption Application", element: <AdoptionApplicationsAdmin /> },
     { name: "Verification Operations", element: <VerificationRequests /> },
     { name: "Profile", element: <Profile role={role} /> },
+    { name: "Messages", element: <MessagePage /> },
+    { name: "Pet Blog", element: <PetBlog /> },
+    { name: "Guide", element: <GuidePage /> },
   ];
 
   useEffect(() => {
     switch (role) {
       case "user":
-      case "expert":
+      case "field_expert":
         setCards(cardHeadersUser);
-        break;
-      case "shelter":
-        setCards(cardHeadersShelter);
         break;
       case "veterinarian":
         setCards(cardHeadersVeterinarian);
         break;
       case "admin":
         setCards(cardHeadersAdmin);
+        break;
+      case "animal_shelter":
+        setCards(cardHeadersShelter);
         break;
       default:
         setCards([]);
@@ -136,7 +162,7 @@ function MenuCards() {
             style={{ width: "300px", borderRadius: "50%" }}
           />
           <span className="badge rounded-pill bg-primary">
-            {role.toUpperCase()}
+            {role.toUpperCase().replace("_", " ")}
           </span>
         </div>
       </div>

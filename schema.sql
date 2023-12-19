@@ -193,7 +193,7 @@ INSERT INTO user (first_name, last_name, username, email, password, verified, ro
 VALUES ('John', 'Doe', 'johndoe', 'john@email.com', 'password', 'yes', 'animal_shelter');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
-VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'yes', 'adopter');
+VALUES ('Jane', 'Doe', 'janedoe', 'jane@email.com', 'password', 'yes', 'user');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
 VALUES ('John', 'Smith', 'johnsmith', 'johnsmith@email.com', 'password', 'yes', 'veterinarian');
@@ -202,7 +202,7 @@ INSERT INTO user (first_name, last_name, username, email, password, verified, ro
 VALUES ('b', 'b', 'b', 'b@b.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$Kz4TLHr4Ud6AS4vjk21ze03LaX+7FbUA7aDZCjyLkb0=', 'True', 'animal_shelter');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
-VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$84kXvMQbYxBbbmd1qhDPIQ$Og+wlbG71N5RgBddkRkBihA/pbe1sy9MGDI3EC9NvWo=', 'True', 'adopter');
+VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$84kXvMQbYxBbbmd1qhDPIQ$Og+wlbG71N5RgBddkRkBihA/pbe1sy9MGDI3EC9NvWo=', 'True', 'user');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
 VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$SuoMUQI3vxs03bLVrWHJhe$4osJksIDs7TcFZ8RQr8kRxz2j7ESE8kmRsKcgu2l+HM=', 'True', 'veterinarian');

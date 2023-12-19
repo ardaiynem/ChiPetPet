@@ -10,7 +10,13 @@ export const AuthProvider = ({ children }) => {
 
   const login = (userDetails) => {
     // Implement your login logic here
-    setUserDetails(userDetails);
+    setUserDetails({
+      ...userDetails,
+      role:
+        userDetails.verified.toUpperCase() === "TRUE"
+          ? userDetails.role
+          : "user",
+    });
     localStorage.setItem("userDetails", JSON.stringify(userDetails));
     setAuthenticated(true);
   };

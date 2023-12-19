@@ -2,7 +2,8 @@ import { Card, Button, Dropdown, Modal, Form } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../../contexts/panelContext";
-import { getAllVeterinarians, getPetsByAdopterId, createAppointment, getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
+import { getAllVeterinarians, getPetsByAdopterId, createAppointment, getPetsByAdopterIdForShelter,
+  getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
@@ -23,7 +24,7 @@ function SearchVeterinarian() {
   const [selectedPetApt, setSelectedPetApt] = useState(null);
 
 
-  const [selectedTime, setSelectedTime] = useState("09:00");
+  const [selectedTime, setSelectedTime] = useState(null);
 
   const [selectedDate, setDate] = useState("2023-01-01");
 
@@ -52,13 +53,24 @@ function SearchVeterinarian() {
   }, [name, address, expertise, sortOption]);
 
   useEffect(() => {
-    getPetsByAdopterId(userDetails.user_id)
+
+    if (userDetails.role.toUpperCase() === "ANIMAL_SHELTER") {
+      getPetsByAdopterIdForShelter(userDetails.user_id)
       .then((res) => {
         setUserPets(res.data.pets);
       })
       .catch((err) => {
         setTimedAlert("Error getting pets", "error", 3000);
       });
+    } else {
+      getPetsByAdopterId(userDetails.user_id)
+      .then((res) => {
+        setUserPets(res.data.pets);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting pets", "error", 3000);
+      });
+    }
   }, []);
 
   const getExistingAppointments = (user_id) => {
@@ -88,6 +100,13 @@ function SearchVeterinarian() {
       return;
     }
 
+    console.log(selectedTime);
+
+    if(selectedTime === ""){
+      setTimedAlert("Select valid time", "error", 3000);
+      return;
+    }
+
     // create date and time string
     const formattedDate = `${selectedDate} ${selectedTime}`;
     console.log("formattedDate", formattedDate);
@@ -104,6 +123,7 @@ function SearchVeterinarian() {
     createAppointment(data)
       .then((res) => {
         setTimedAlert("Appointment created", "success", 3000);
+        getExistingAppointments(selectedVet.user_id);
       })
       .catch((err) => {
         setTimedAlert("Error creating appointment", "error", 3000);
@@ -347,7 +367,7 @@ function SearchVeterinarian() {
               onChange={(e) => setSelectedTime(e.target.value)}
               value={selectedTime}
             >
-              <option value="" disabled>
+              <option hidden value="">
                 Select a time
               </option>
               {renderTimeOptions()}
