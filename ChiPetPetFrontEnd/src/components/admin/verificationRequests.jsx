@@ -3,6 +3,7 @@ import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { getUnverifiedDocuments, verifyUser, rejectVerificationRequest } from '../../apiHelper/backendHelper';
+import { useAlert } from "../../AlertContext";
 
 // converts base64 string into blob
 const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
@@ -27,6 +28,7 @@ const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
 
 
 function VerificationRequests() {
+    const {setTimedAlert} = useAlert();
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
     const [verificationRequests, setVerificationRequests] = useState([]);
@@ -63,11 +65,18 @@ function VerificationRequests() {
         verifyUser(data)
         .then((res) => {
             console.log(res); 
+            setVerificationRequests(prevRequests =>
+                prevRequests.filter(request => request.user_id !== id)
+            );
+            setTimedAlert("The user is verified", "success", 3000);
         })
         .catch((err) => {
             console.log(err);
             setTimedAlert("Error verifiying the user", "error", 3000);
         });
+
+
+
         
     };
 
@@ -80,12 +89,17 @@ function VerificationRequests() {
         rejectVerificationRequest(data)
         .then((res) => {
             console.log(res); 
+            setVerificationRequests(prevRequests =>
+                prevRequests.filter(request => request.user_id !== id)
+            );
+            setTimedAlert("The user is rejected", "success", 3000);
         })
         .catch((err) => {
             console.log(err);
             setTimedAlert("Error verifiying the user", "error", 3000);
         });
         
+
     }
 
 
@@ -164,7 +178,7 @@ function VerificationRequests() {
 
 
 
-                <div className="d-flex justify-content-center p-3" style={{ flex: "1 1 0", height: "40vh" }}>
+                <div className="d-flex justify-content-center p-3" style={{ flex: "1 1 0", height: "45vh" }}>
                     <div className="card border-primary mb-3 w-100" style={{visibility: selectedRow ? "visible" : "hidden"}}>
                         <div className="d-flex card-header justify-content-start p-3">
                             
@@ -176,7 +190,7 @@ function VerificationRequests() {
                         <div className="card-body d-flex flex-column gap-3">
 
                             
-                                <a href={selectedRow?.downloadLink} download="verification_document.pdf">
+                                <a className= "btn btn-primary" href={selectedRow?.downloadLink} download="verification_document.pdf">
                                     Download Verification Document
                                 </a>
 

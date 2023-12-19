@@ -438,7 +438,7 @@ const Profile = (props) => {
             )}
           <div>
             {verified.toUpperCase() !== "TRUE" && downloadLink && (
-              <a href={downloadLink} download="verification_document.pdf">
+              <a className= "btn btn-primary" href={downloadLink} download="verification_document.pdf">
                 Download Verification Document
               </a>
             )}
