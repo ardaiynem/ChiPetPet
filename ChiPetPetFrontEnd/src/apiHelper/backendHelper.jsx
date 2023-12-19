@@ -116,6 +116,10 @@ export const insertPet = async () => {
   return await postFetcher(url.INSERT_PET_PATH());
 };
 
+export const insertPetsFromExcel = async (data) => {
+  return await postFetcher(url.INSERT_PETS_FROM_EXCEL_PATH(), data);
+};
+
 export const getPetsByShelter = async (user_id) => {
   return await getFetcher(url.GET_PETS_BY_SHELTER_PATH(user_id));
 };

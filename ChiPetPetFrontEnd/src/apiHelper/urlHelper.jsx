@@ -43,6 +43,7 @@ export const GET_HEALTH_RECORDS_BY_PET_PATH = (pet_id) => HEALTH_RECORD_PATH() +
 // pet_create
 export const PET_CREATE_PATH = () => COMMON_PATH + "pet_create/";
 export const INSERT_PET_PATH = () => PET_CREATE_PATH() + "insert_pet/";
+export const INSERT_PETS_FROM_EXCEL_PATH = () => PET_CREATE_PATH() + "insert_pets_from_excel/";
 export const GET_PETS_BY_SHELTER_PATH = (user_id) => PET_CREATE_PATH() + "get_pets_by_shelter/?user_id=" + user_id;
 export const GET_PETS_BY_TYPE_PATH = (type) => PET_CREATE_PATH() + "get_pets_by_type/?type=" + type;
 export const GET_PET_BY_ID_PATH = (petid) => PET_CREATE_PATH() + "get_pet_by_id/?petid=" + petid;
