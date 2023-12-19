@@ -132,6 +132,10 @@ export const getPetsByAdopterId = async (adopter_id) => {
   return await getFetcher(url.GET_PETS_BY_ADOPTER_ID_PATH(adopter_id));
 };
 
+export const getPetsByAdopterIdForShelter = async (adopter_id) => {
+  return await getFetcher(url.GET_PETS_BY_ADOPTER_ID_FOR_SHELTER_PATH(adopter_id));
+}
+
 // verification documents
 
 export const getUnverifiedDocuments = async () => {
