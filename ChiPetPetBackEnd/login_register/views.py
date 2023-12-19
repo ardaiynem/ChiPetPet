@@ -232,7 +232,7 @@ def get_users_by_role(request):
             {
                 'user_id': user[0],
                 'speciality': user[1],
-                'verification_documents': base64.b64encode(user[2]).decode('utf-8') if user[3] else None,
+                'verification_documents': base64.b64encode(user[2]).decode('utf-8') if user[2] else None,
             }
             for user in field_experts
         ]

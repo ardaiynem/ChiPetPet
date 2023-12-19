@@ -154,6 +154,18 @@ const Profile = (props) => {
     // for uploading verification documents
     const [selectedProfession, setSelectedProfession] = useState('');
     const [verificationDocument, setVerificationDocument] = useState(null);
+    const [expertiseForVeterinarian, setExpertiseForVeterinarian] = useState("Enter expertise");
+    const [specialityForFieldExpert, setSpecialityForFieldExpert] = useState("Enter speciality");
+
+    // Function to handle expertise change
+    const handleExpertiseChange = (e) => {
+        setExpertiseForVeterinarian(e.target.value);
+    };
+
+    // Function to handle speciality change
+    const handleSpecialityChange = (e) => {
+        setSpecialityForFieldExpert(e.target.value);
+    };
 
     // Function to handle file input change
     const handleFileChange = (e) => {
@@ -172,10 +184,13 @@ const Profile = (props) => {
         formData.append('user_id', userDetails.user_id);
         formData.append('verification_document', verificationDocument);
         formData.append('role', selectedProfession);
+        formData.append('expertise', expertiseForVeterinarian);
+        formData.append('speciality', specialityForFieldExpert);
 
         userDetails.verified = "False";
         changeUserDetails(userDetails);
-
+        
+        console.log(formData);
         // Call the API to upload the verification document
         uploadVerificationDocument(formData)
         .then((res) => {
@@ -244,6 +259,17 @@ const Profile = (props) => {
 
                             <input type="file" className="form-control" id="inputGroupFile02" onChange={handleFileChange}  />
                         </div>
+                        {   (selectedProfession === "Veterinarian") &&
+                        <div>
+                            <input type="text" className="form-control" id="inputGroupText03" onChange={handleExpertiseChange}  placeholder={expertiseForVeterinarian}/>
+                        </div>
+                        }
+                        {   (selectedProfession === "Field_Expert") &&
+                        <div>
+                            <input type="text" className="form-control" id="inputGroupText03" onChange={handleSpecialityChange}  placeholder={specialityForFieldExpert}/>
+                        </div>
+                        }
+
 
                         <div className="form-check">
 

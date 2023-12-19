@@ -56,6 +56,8 @@ def upload_verification_document(request):
             user_id = request.POST.get('user_id')
             verification_document = request.FILES.get('verification_document')
             user_role = request.POST.get('role')
+            expertise = request.POST.get('expertise')
+            speciality = request.POST.get('speciality')
 
             user_type = user_role.lower()
 
@@ -63,6 +65,8 @@ def upload_verification_document(request):
 
             cursor.execute("""SELECT * FROM {table} WHERE user_id = %s""".format(table = user_type), (user_id, ))
             user = cursor.fetchone()
+
+
 
             # change user role
             cursor.execute("""
@@ -92,6 +96,21 @@ def upload_verification_document(request):
                         """.format(user_type=user_type), (pdf_data, user_id, ))
 
             connection.commit()
+            
+            if user_type == "veterinarian":
+                cursor.execute("""
+                        UPDATE {table}
+                        SET expertise = %s
+                        WHERE user_id = %s
+                        """.format(table = user_type), (expertise, user_id, ))
+            
+            if user_type == "field_expert":
+                cursor.execute("""
+                        UPDATE {table}
+                        SET speciality = %s
+                        WHERE user_id = %s
+                        """.format(table = user_type), (speciality, user_id, ))
+                
 
             return JsonResponse({'status': 'Verification document uploaded successfully'}, status=200)
         
