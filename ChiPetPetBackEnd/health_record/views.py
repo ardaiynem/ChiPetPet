@@ -31,7 +31,7 @@ def upload_health_record(request):
                             (pet_id, date, fertility, health_report))
             connection.commit()
 
-            return JsonResponse({'date': date, 'status': 'Health record inserted successfully'}, status=200)
+            return JsonResponse({'status': 'Health record inserted successfully'}, status=200)
 
         except json.JSONDecodeError as e:
             return JsonResponse({'error': 'Invalid JSON format: {}'.format(str(e))}, status=400)
