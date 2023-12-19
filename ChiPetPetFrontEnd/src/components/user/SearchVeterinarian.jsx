@@ -23,7 +23,7 @@ function SearchVeterinarian() {
   const [selectedPetApt, setSelectedPetApt] = useState(null);
 
 
-  const [selectedTime, setSelectedTime] = useState("09:00");
+  const [selectedTime, setSelectedTime] = useState(null);
 
   const [selectedDate, setDate] = useState("2023-01-01");
 
@@ -85,6 +85,13 @@ function SearchVeterinarian() {
 
     if (!selectedPetApt) {
       setTimedAlert("Please select a pet", "error", 3000);
+      return;
+    }
+
+    console.log(selectedTime);
+
+    if(selectedTime === ""){
+      setTimedAlert("Select valid time", "error", 3000);
       return;
     }
 
@@ -347,7 +354,7 @@ function SearchVeterinarian() {
               onChange={(e) => setSelectedTime(e.target.value)}
               value={selectedTime}
             >
-              <option value="" disabled>
+              <option hidden value="">
                 Select a time
               </option>
               {renderTimeOptions()}
