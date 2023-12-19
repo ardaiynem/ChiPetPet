@@ -31,7 +31,8 @@ function ApplicationsList() {
       });
   }, []);
 
-  const toggleRowSelection = (rowNumber) => {
+  const toggleRowSelection = (e, rowNumber) => {
+    e.stopPropagation();
     console.log(rowNumber);
     if (selectedRow === rowNumber) {
       setSelectedRow(null);
@@ -66,7 +67,7 @@ function ApplicationsList() {
         Back
       </Button>
 
-      <div className="d-flex">
+      <div className="d-flex" onClick={() => setSelectedRow(null)}>
         <div className="" style={{ flex: "1 1 0", maxWidth: "70%" }}>
           <div className="d-flex justify-content-between mb-5 mt-4">
             <FormControl
@@ -103,7 +104,7 @@ function ApplicationsList() {
               {applications.map((application, index) => (
                 <tr
                   className={selectedRow == index ? "table-primary" : ""}
-                  onClick={() => toggleRowSelection(index)}
+                  onClick={(e) => toggleRowSelection(e, index)}
                 >
                   <th scope="row">{index}</th>
                   <td>{application.adopter_username}</td>

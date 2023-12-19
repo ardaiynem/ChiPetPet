@@ -29,7 +29,6 @@ function SearchPetPanel(props) {
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
 
-
   const { setTimedAlert } = useAlert();
 
   if (animalType) {
@@ -54,7 +53,7 @@ function SearchPetPanel(props) {
           setTimedAlert("Error retrieving animals", "error", 3000);
           console.log(err);
         });
-    }, [name, breed]);
+    }, [name, breed, sortOption]);
   } else if (shelterid) {
     useEffect(() => {
       axios
@@ -72,12 +71,11 @@ function SearchPetPanel(props) {
         .then((res) => {
           console.log("With shelter", res.data);
           setPets(res.data.pets);
-
         })
         .catch((err) => {
           setTimedAlert("Error retrieving animals", "error", 3000);
         });
-    }, [name, breed]);
+    }, [name, breed, sortOption]);
   }
 
   let items = [];
@@ -141,7 +139,7 @@ function SearchPetPanel(props) {
             <Dropdown.Menu>
               <Dropdown.Item
                 onClick={() => {
-                  setSortOption("username");
+                  setSortOption("name");
                 }}
               >
                 {"Name(A-Z)"}
@@ -161,36 +159,38 @@ function SearchPetPanel(props) {
           className="d-flex w-70 ms-3 mt-3 flex-column flex-wrap"
           style={{ height: "700px" }}
         >
-          {pets
-            .map((pet) => (
-              <Card
-                key={pet.id}
-                className="mb-3 me-3"
-                style={{ maxWidth: "576px" }}
-              >
-                <Row className="no-gutters">
-                  <Col xs={4} className="d-flex">
-                    <Card.Img src={`data:image/png;base64, ${pet.photo}`} style={{ objectFit: "cover" }} />
-                  </Col>
-                  <Col xs={8}>
-                    <Card.Body>
-                      <Card.Title>{pet.name}</Card.Title>
-                      <Card.Text>{pet.description}</Card.Text>
-                      <Button
-                        variant="primary"
-                        onClick={() =>
-                          setCurrentPanel(
-                            <SingleAnimalPanel petid={pet.pet_id} />
-                          )
-                        }
-                      >
-                        Go somewhere
-                      </Button>
-                    </Card.Body>
-                  </Col>
-                </Row>
-              </Card>
-            ))}
+          {pets.map((pet) => (
+            <Card
+              key={pet.id}
+              className="mb-3 me-3"
+              style={{ maxWidth: "576px" }}
+            >
+              <Row className="no-gutters">
+                <Col xs={4} className="d-flex">
+                  <Card.Img
+                    src={`data:image/png;base64, ${pet.photo}`}
+                    style={{ objectFit: "cover" }}
+                  />
+                </Col>
+                <Col xs={8}>
+                  <Card.Body>
+                    <Card.Title>{pet.name}</Card.Title>
+                    <Card.Text>{pet.description}</Card.Text>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        setCurrentPanel(
+                          <SingleAnimalPanel petid={pet.pet_id} />
+                        )
+                      }
+                    >
+                      Go somewhere
+                    </Button>
+                  </Card.Body>
+                </Col>
+              </Row>
+            </Card>
+          ))}
           {/* <div class="card mb-3" style="max-width: 540px;">
                         <div class="row g-0">
                             <div class="col-md-4">

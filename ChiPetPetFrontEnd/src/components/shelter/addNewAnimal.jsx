@@ -13,6 +13,7 @@ import { useState, useEffect, useContext } from "react";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
 import { PanelContext } from "../../contexts/panelContext";
+import { useAlert } from "../../AlertContext";
 
 function AddNewAnimal() {
   const [formData, setFormData] = useState({
@@ -29,6 +30,7 @@ function AddNewAnimal() {
 
   const { isAuthenticated, login, logout, userDetails } = useAuth();
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+  const { setTimedAlert } = useAlert();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,7 +64,10 @@ function AddNewAnimal() {
           "Content-Type": "multipart/form-data",
         },
       })
-      .then((res) => console.log(res.data));
+      .then((res) => {
+        setTimedAlert("Animal added successfully", "success", 3000);
+        setCurrentPanel("back");
+      });
   };
 
   return (
@@ -77,7 +82,7 @@ function AddNewAnimal() {
       <Form onSubmit={handleSubmit}>
         <Row className="mb-3">
           <Col>
-            <label className="form-label" for="customFile">
+            <label className="form-label" htmlFor="customFile">
               Upload Image
             </label>
             <input
