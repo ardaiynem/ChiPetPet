@@ -40,7 +40,8 @@ function MenuCards() {
     { name: "Profile", element: <Profile role={role} /> },
     { name: "Add New Animal", element: <AddNewAnimal /> },
     { name: "Verification Operations", element: <VerificationRequests /> },
-    { name: "Guide", element: <GuidePage /> }
+    { name: "Guide", element: <GuidePage /> },
+    { name: "Upload Health Records", element: <UploadHealthRecord /> }
   ];
 
   let cardHeadersShelter = [
