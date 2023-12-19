@@ -8,23 +8,7 @@ import { useAlert } from "../../AlertContext";
 
 function AppointmentList() {
   const [selectedRow, setSelectedRow] = useState(null);
-  const [appointments, setAppointments] = useState([
-    {
-      'appointment_id': "1",
-      'date': "2021-05-05",
-      'location': "Istanbul",
-      'appointment_text': "I need help",
-      'user_id': "1",
-      'veterinarian_id': "1", 
-      'first_name': "Köpük",
-      'last_name': "Köpük",
-      'username': "Köpük",
-      'email': "Köpük",
-      'password': "Köpük",
-      'verified': "Köpük",
-      'role': "Köpük",
-    }
-  ]);
+  const [appointments, setAppointments] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const { setTimedAlert } = useAlert();
   const { userDetails } = useAuth(); 
@@ -38,17 +22,22 @@ function AppointmentList() {
   };
 
   useEffect(() => {
-    // getAppointmentByVeterinarian(userDetails.user_id)
-    //   .then((res) => {
-    //     setAppointments(res.data.appointments);
-    //   })
-    //   .catch((err) => {
-    //     setTimedAlert("Error getting appointments", "error", 3000);
-    //   });
+    getAppointmentByVeterinarian(userDetails.user_id)
+      .then((res) => {
+        setAppointments(res.data.appointments);
+        console.log(res.data.appointments);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting appointments", "error", 3000);
+      });
   }, []);
 
   const contactHandler = () => {
     alert("Contacted");
+  }
+
+  const rescheduleApplicationHandler = () => {
+    alert("Rescheduled");
   }
 
   return (
@@ -84,9 +73,9 @@ function AppointmentList() {
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
+                <th scope="col">Adopter Name</th>
                 <th scope="col">Appointment For</th>
-                <th scope="col">Appointment Status</th>
+                <th scope="col">Health Status</th>
                 <th scope="col">Date</th>
               </tr>
             </thead>
@@ -97,9 +86,9 @@ function AppointmentList() {
                   onClick={() => toggleRowSelection(index)}
                 >
                   <th scope="row">{index}</th>
-                  <td>{appointment.pet_name}</td>
-                  <td>{appointment.appointment_for}</td>
-                  <td>{appointment.appointment_status}</td>
+                  <td>{appointment.username}</td>
+                  <td>{appointment.name}</td>
+                  <td>{appointment.health_status}</td>
                   <td>{appointment.date}</td>
                 </tr>
               ))}
@@ -111,14 +100,14 @@ function AppointmentList() {
         <div className="d-flex flex-column align-items-end" style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}>
           <div className="card mb-3" style={{ width: "100%" }}>
             <div className="d-flex p-3 justify-content-center">
-              <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
-              <h5 className="card-title" style={{marginRight:"50px"}}>{appointments[selectedRow].pet_name}</h5>
+              <img src={appointments[selectedRow].photo ? appointments[selectedRow].photo : catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
+              <h5 className="card-title" style={{marginRight:"50px"}}>{appointments[selectedRow].name}</h5>
               <div className="d-flex flex-column align-items-start">
                 <button className="btn btn-primary" onClick={contactHandler} type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
                   Contact
                 </button>
                 <button
-                  onClick={rejectApplicationHandler}
+                  onClick={rescheduleApplicationHandler}
                   className="btn btn-danger mb-2"
                   type="button"
                   // disabled={appointments[selectedRow].application_status !== "PENDING"}
@@ -131,43 +120,32 @@ function AppointmentList() {
                 >
                   Reschedule
                 </button>
-                <button
-                  onClick={acceptApplicationHandler}
-                  className="btn btn-success mb-2"
-                  type="button"
-                  // disabled={appointments[selectedRow].application_status !== "PENDING"}
-                  style={{
-                    backgroundColor: "green",
-                    borderColor: "green",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Accept
-                </button>
               </div>
             </div>
             
             <div className="card-body">
               <h5 className="card-title">Appointment</h5>
-              <p className="card-text">note: {appointments[selectedRow].appointment_text}</p>
+              <p className="card-text">Appointment Note: {appointments[selectedRow].appointment_text}</p>
 
             </div>
             <div className="d-flex flex-row">
               <div className="d-flex p-3 justify-content-center">
-              <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
-              <h5 className="card-title" style={{marginRight:"50px"}}>Köpük</h5>
             </div>
               <div>
                 <table className="table table-striped" style={{ width: "300px", marginLeft: "10px" }}>
                 <thead>
               <tr>
-                <th scope="col">Name</th>
                 <th scope="col">Species</th>
+                <th scope="col">Breed</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Age</th>
               </tr>
             </thead>
             <tbody>
-              
+              <th scope="col">{appointments[selectedRow].species}</th>
+              <th scope="col">{appointments[selectedRow].breed}</th>
+              <th scope="col">{appointments[selectedRow].gender}</th>
+              <th scope="col">{appointments[selectedRow].age}</th>
             </tbody>
                 </table>
               </div>

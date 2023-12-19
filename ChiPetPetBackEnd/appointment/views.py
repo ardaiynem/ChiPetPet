@@ -77,8 +77,6 @@ def get_appointment_by_veterinarian(request):
     appointments = cursor.fetchall()
     cursor.close()
 
-    return JsonResponse({"appointments": appointments}, status=200)
-
     if appointments is None:
         return JsonResponse({
             'error': 'Appointment does not exist'
@@ -91,13 +89,24 @@ def get_appointment_by_veterinarian(request):
         'appointment_text': row[3],
         'user_id': row[4],
         'veterinarian_id': row[5],
-        'first_name': row[7],
-        'last_name': row[8],
-        'username': row[9],
-        'email': row[10],
-        'password': row[11],
-        'verified': row[12],
-        'role': row[13]
+        'pet_id': row[6],
+        'first_name': row[8],
+        'last_name': row[9],
+        'username': row[10],
+        'email': row[11],
+        'verified': row[13],
+        'role': row[14],
+        'pet_id': row[15],
+        'animal_shelter_id': row[16],
+        'name': row[17],
+        'species': row[18],
+        'breed': row[19],
+        'gender': row[20],
+        'age': row[21],
+        'health_status': row[22],
+        'description': row[23],
+        'photo': row[24],
+        'adoption_status': row[25]
     } for row in appointments]}, status=200)
 
 

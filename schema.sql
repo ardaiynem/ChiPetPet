@@ -202,13 +202,19 @@ INSERT INTO user (first_name, last_name, username, email, password, verified, ro
 VALUES ('b', 'b', 'b', 'b@b.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$Kz4TLHr4Ud6AS4vjk21ze03LaX+7FbUA7aDZCjyLkb0=', 'True', 'animal_shelter');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
-VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$84kXvMQbYxBbbmd1qhDPIQ$Og+wlbG71N5RgBddkRkBihA/pbe1sy9MGDI3EC9NvWo=', 'True', 'user');
+VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$Kz4TLHr4Ud6AS4vjk21ze03LaX+7FbUA7aDZCjyLkb0=', 'True', 'user');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
-VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$SuoMUQI3vxs03bLVrWHJhe$4osJksIDs7TcFZ8RQr8kRxz2j7ESE8kmRsKcgu2l+HM=', 'True', 'veterinarian');
+VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$Kz4TLHr4Ud6AS4vjk21ze03LaX+7FbUA7aDZCjyLkb0=', 'True', 'veterinarian');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
 VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@email.com', 'password', 'True', 'veterinarian');
+
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('a', 'a', 'a', 'a@email.com', 'pbkdf2_sha256$260000$A7zHVyUC5F6duUTGeD4IT5$ROaskyhQVBHZt91eUQWKm8oMCd0pGxhX3qeKTVyZb10=', 'True', 'admin');
+
+INSERT INTO admin (user_id, verification_documents)
+VALUES (8, NULL);
 
 INSERT INTO animal_shelter (user_id, address, contact, verification_documents)
 VALUES (4, '123 Shelter St', '123-456-7890', NULL);
