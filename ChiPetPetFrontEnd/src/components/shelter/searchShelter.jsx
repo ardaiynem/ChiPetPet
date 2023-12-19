@@ -6,26 +6,56 @@ import {
   Pagination,
   Dropdown,
   Stack,
+  Modal,
+  Form,
 } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
-
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { getAllShelters } from "../../apiHelper/backendHelper";
 import ShelterContact from "./shelterContact";
 import SearchPetPanel from "../SearchPetPanel";
 import axios from "axios";
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
 
 function SearchShelter() {
+  const { userDetails } = useAuth();
+  const { setTimedAlert } = useAlert();
+
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const [page, setPage] = useState(1);
   const [shelters, setShelters] = useState([]);
 
+  const [selectedShelter, setSelectedShelter] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [sortOption, setSortOption] = useState("None");
 
+  const handleContact = () => {
+    console.log("will send message here", selectedShelter, message);
+
+    setShowModal(false);
+    const formattedDate = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+    axios
+      .post("http://127.0.0.1:8000/message/send", {
+        user_id: userDetails.user_id,
+        date_and_time: formattedDate,
+        receiver_id: selectedShelter.user_id,
+        content: message,
+      })
+      .then((res) => {
+        setShowModal(false);
+        setMessage("");
+        setTimedAlert("Message successfully sent", "success", 3000);
+      });
+  };
   useEffect(() => {
     axios
       .get(
@@ -45,7 +75,6 @@ function SearchShelter() {
         setTimedAlert("Error retrieving shelters", "error", 3000);
       });
   }, [name, address]);
-
 
   let items = [];
   const shelterlPerPage = 6;
@@ -152,11 +181,10 @@ function SearchShelter() {
                         height: "40px",
                       }}
                       className="mb-2"
-                      onClick={() =>
-                        setCurrentPanel(
-                          <ShelterContact shelterid={shelter.user_id} />
-                        )
-                      }
+                      onClick={() => {
+                        setSelectedShelter(shelter);
+                        setShowModal(true);
+                      }}
                     >
                       Contact
                     </Button>
@@ -177,7 +205,40 @@ function SearchShelter() {
             ))}
         </div>
         <Pagination size="lg">{items}</Pagination>
-
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Send Message to {selectedShelter?.username}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="form-floating">
+              <textarea
+                className="form-control"
+                placeholder="Type your message here"
+                id="floatingTextarea2"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                style={{ height: "200px" }}
+              ></textarea>
+              <label htmlFor="floatingTextarea2">Your message here</label>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowModal(false);
+                setMessage("");
+              }}
+            >
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleContact}>
+              Send Message
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     </>
   );
