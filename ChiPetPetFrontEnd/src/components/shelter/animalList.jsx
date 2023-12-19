@@ -30,6 +30,7 @@ function AnimalList() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showExcellModal, setExcellModal] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
 
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -94,8 +95,8 @@ function AnimalList() {
               ))}
             </tbody>
           </table>
-          <div className="d-flex flex-column gap-2 mt-3">
-            <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", maxWidth: "250px" }}>
+          <div className="d-flex flex-column gap-2 mt-3" style={{alignItems: "center"}}>
+            <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", maxWidth: "250px" }} onClick={() => setExcellModal(true)}>
               Add Excell Sheet
             </button>
           </div>
@@ -394,7 +395,7 @@ function AnimalList() {
           Submit
         </Button>
       </Form>
-    </div>
+      </div>
         </ModalBody>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowEditModal(false)}>
@@ -405,6 +406,27 @@ function AnimalList() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal show={showExcellModal} onHide={() => setExcellModal(false)}>
+          <Modal.Header>
+            <Modal.Title>Insert Excell File</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+          <p>Select an excell file</p>
+          <input
+              type="file"
+            />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setExcellModal(false)}>
+              Close
+            </Button>
+            <Button variant="success" onClick={() => setExcellModal(false)}>
+              Submit
+            </Button>
+          </Modal.Footer>
+      </Modal>
+
       </div>
     </div>
   );
