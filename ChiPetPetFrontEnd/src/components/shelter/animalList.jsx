@@ -3,8 +3,37 @@ import { useState, useContext } from "react";
 import { Button, Dropdown, FormControl, Modal, ModalBody, Row, Col, Form } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 import HealthRecords from "../healthRecords";
+import { insertPetsFromExcel } from "../../apiHelper/backendHelper";
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
 
 function AnimalList() {
+  const { userDetails } = useAuth();
+  const { setTimedAlert } = useAlert();
+
+  // for uploading excel file
+  const [excelFile, setExcelFile] = useState(null);
+  const handleFileChange = (e) => {
+    setExcelFile(e.target.files[0]);
+  };
+  const handleExcelFileSubmit = () => {
+    // Create a FormData object to send the file
+    const formData = new FormData();
+    formData.append("shelter_id", userDetails.user_id);
+    formData.append("excel_file", excelFile);
+
+    console.log(excelFile)
+    insertPetsFromExcel(formData)
+      .then((res) => {
+        console.log(res.data); 
+        setTimedAlert("Excel file uploaded successfully", "success", 3000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setTimedAlert("Error uploading excel file", "error", 3000);
+      });
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     species: "Cat",
@@ -415,13 +444,14 @@ function AnimalList() {
           <p>Select an excell file</p>
           <input
               type="file"
+              onChange={handleFileChange}
             />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setExcellModal(false)}>
               Close
             </Button>
-            <Button variant="success" onClick={() => setExcellModal(false)}>
+            <Button variant="success" onClick={handleExcelFileSubmit}>
               Submit
             </Button>
           </Modal.Footer>
