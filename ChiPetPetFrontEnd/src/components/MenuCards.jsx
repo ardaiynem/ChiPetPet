@@ -1,6 +1,17 @@
 import { useState, useEffect, useContext } from "react";
 import { Card, Button } from "react-bootstrap";
-import catImg from "../assets/cat1.jpeg";
+
+import redFox from "../assets/profile_pictures/red_fox.jpg"
+import whiteFox from "../assets/profile_pictures/arctic_fox.jpg"
+import bird1 from "../assets/profile_pictures/bird1.jpeg"
+import bird2 from "../assets/profile_pictures/bird2.jpg"
+import blackCat from "../assets/profile_pictures/black_cat.jpg"
+import butterfly from "../assets/profile_pictures/butterfly.jpg"
+import dog1 from "../assets/profile_pictures/dog1.jpg"
+import dog2 from "../assets/profile_pictures/dog2.jpg"
+import turtle from "../assets/profile_pictures/turtle.jpg"
+import whiteCat from "../assets/profile_pictures/white_cat.jpg"
+
 import { PanelContext } from "../contexts/panelContext";
 import SearchPetPanel from "../components/SearchPetPanel";
 import SingleAnimalPanel from "../components/SingleAnimalPanel";
@@ -22,8 +33,14 @@ import Profile from "./Profile";
 import PetBlog from "./PetBlog";
 import MyApplications from "../components/user/MyApplications";
 import GuidePage from "./GuidePage";
+import { useAuth } from "../AuthContext";
+
 
 function MenuCards() {
+  const { userDetails } = useAuth();
+  const profilePictures = [redFox, whiteFox, bird1, bird2, blackCat, butterfly, dog1, dog2, turtle, whiteCat];
+  const profilePictureIndex = userDetails.user_id % profilePictures.length;
+
   const [role, setRole] = useState("user");
   const [cards, setCards] = useState([]);
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -40,6 +57,7 @@ function MenuCards() {
     { name: "Profile", element: <Profile role={role} /> },
     { name: "Add New Animal", element: <AddNewAnimal /> },
     { name: "Verification Operations", element: <VerificationRequests /> },
+    { name: "Upload Health Records", element: <UploadHealthRecord /> },
     { name: "Guide", element: <GuidePage /> }
   ];
 
@@ -122,7 +140,7 @@ function MenuCards() {
           className="d-flex w-50 flex-column justify-content-center align-items-center flex-wrap gap-3"
           style={{ flex: "2 2 auto" }}
         >
-          <img src={catImg} style={{ width: "300px", borderRadius: "50%" }} />
+          <img src={profilePictures[profilePictureIndex]} style={{ width: "300px", borderRadius: "50%" }} />
           <span className="badge rounded-pill bg-primary">
             {role.toUpperCase()}
           </span>
