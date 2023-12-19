@@ -66,6 +66,7 @@ function MainPage() {
 
                   <button
                     onClick={() => {
+                      setCurrentPanel("back")
                       logout();
                     }}
                     className="btn btn-dark rounded ml-2"
