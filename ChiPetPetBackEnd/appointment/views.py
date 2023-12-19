@@ -107,7 +107,7 @@ def get_veterinarian_appointment_dates(request):
     veterinarian_id = request.GET.get('veterinarian_id')
     cursor = connection.cursor()
 
-    cursor.execute("""SELECT date FROM appointment WHERE veterinarian_id = %s""", [veterinarian_id]) 
+    cursor.execute("""SELECT date_and_time FROM appointment WHERE veterinarian_id = %s""", [veterinarian_id]) 
     appointments = cursor.fetchall()
     cursor.close()
 
@@ -123,7 +123,7 @@ def get_veterinarian_appointment_dates(request):
 @require_http_methods(["POST"])
 def create_appointment(request):
     data = json.loads(request.body)
-    date = data.get('date')
+    date_and_time = data.get('date_and_time')
     location = data.get('location')
     appointment_text = data.get('appointment_text')
     user_id = data.get('user_id')
@@ -131,8 +131,8 @@ def create_appointment(request):
     pet_id = data.get('pet_id')
     cursor = connection.cursor()
 
-    cursor.execute("""SELECT * FROM appointment WHERE date = %s AND user_id = %s AND veterinarian_id = %s 
-                   AND pet_id = %s""", [date, user_id, veterinarian_id, pet_id])
+    cursor.execute("""SELECT * FROM appointment WHERE date_and_time = %s AND user_id = %s AND veterinarian_id = %s 
+                   AND pet_id = %s""", [date_and_time, user_id, veterinarian_id, pet_id])
     appointment = cursor.fetchone()
 
     if appointment is not None:
@@ -140,8 +140,8 @@ def create_appointment(request):
             'error': 'Appointment already exists'
         }, status=404)
 
-    cursor.execute("""INSERT INTO appointment (date, location, appointment_text, user_id, veterinarian_id, pet_id) 
-                   VALUES (%s, %s, %s, %s, %s)""", [date, location, appointment_text, user_id, veterinarian_id, pet_id])
+    cursor.execute("""INSERT INTO appointment (date_and_time, location, appointment_text, user_id, veterinarian_id, pet_id) 
+                   VALUES (%s, %s, %s, %s, %s, %s)""", [date_and_time, location, appointment_text, user_id, veterinarian_id, pet_id])
     connection.commit()
     cursor.close()
     return JsonResponse({

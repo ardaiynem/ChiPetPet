@@ -26,6 +26,7 @@ export const GET_APPOINTMENT_BY_VETERINARIAN_PATH = (veterinarianId) => APPOINTM
 export const CREATE_APPOINTMENT_PATH = () => APPOINTMENT_PATH() + 'create_appointment';
 export const UPDATE_APPOINTMENT_PATH = () => APPOINTMENT_PATH() + 'update_appointment';
 export const DELETE_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'delete_appointment/appointment_id=?' + appointmentId;
+export const GET_VETERINARIAN_APPOINTMENT_DATES_PATH = (veterinarianId) => APPOINTMENT_PATH() + 'get_veterinarian_appointment_dates/?veterinarian_id=' + veterinarianId;
 
 // notification
 export const NOTIFICATION_PATH = () => COMMON_PATH + 'notification/';
