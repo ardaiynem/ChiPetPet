@@ -190,33 +190,6 @@ function ApplicationsList() {
                     </tbody>
                   </table>
                 </div>
-              {/* <div>
-                <table
-                  className="table table-striped"
-                  style={{ width: "300px", marginLeft: "10px" }}
-                >
-                  <thead>
-                    <tr>
-                      <th scope="col">Name</th>
-                      <th scope="col">Species</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Pamuk</td>
-                      <td>Dog</td>
-                    </tr>
-                    <tr>
-                      <td>El Gato</td>
-                      <td>Cat</td>
-                    </tr>
-                    <tr>
-                      <td>Splinter</td>
-                      <td>Rat</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div> */}
             </div>
           </div>
           )}
