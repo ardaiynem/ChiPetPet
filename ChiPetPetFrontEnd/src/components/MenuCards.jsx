@@ -23,6 +23,7 @@ import PetBlog from "./PetBlog";
 import MyApplications from "../components/user/MyApplications";
 import UserAppointments from "./user/UserAppointments";
 import GuidePage from "./GuidePage";
+import SystemRecords from "./admin/SystemRecords";
 import { useAuth } from "../AuthContext";
 import { useProfiles } from "../ProfilesContext";
 
@@ -99,6 +100,7 @@ function MenuCards() {
     { name: "Messages", element: <MessagePage /> },
     { name: "Pet Blog", element: <PetBlog /> },
     { name: "Guide", element: <GuidePage /> },
+    { name: "System Records", element: <SystemRecords /> }
   ];
 
   useEffect(() => {
