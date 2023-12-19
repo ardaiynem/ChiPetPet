@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../contexts/panelContext";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
-import catImg from "../assets/cat1.jpeg";
+import { useProfiles } from "../ProfilesContext";
 
 const BlogPage = ({ post_id }) => {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -12,6 +12,8 @@ const BlogPage = ({ post_id }) => {
   const { isAuthenticated, login, logout, userDetails } = useAuth();
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
+
+  const { getProfile } = useProfiles();
 
   const [blog, setBlog] = useState({
     date_and_time: "",
@@ -77,7 +79,7 @@ const BlogPage = ({ post_id }) => {
         },
       })
       .then((res) => {
-        console.log(res.data.comments);
+        console.log("comments", res.data.comments);
         setComments(res.data.comments);
       });
     console.log("post_id", post_id);
@@ -86,7 +88,7 @@ const BlogPage = ({ post_id }) => {
         params: { post_id: post_id },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log("blog", res.data);
         setBlog(res.data);
       });
   }, []);
@@ -106,7 +108,7 @@ const BlogPage = ({ post_id }) => {
           <div className="card border-primary mb-2 w-100">
             <div className="d-flex card-header justify-content-start">
               <img
-                src={catImg}
+                src={getProfile(blog.user_id)}
                 style={{ width: "50px", borderRadius: "50%", flex: "0 0 auto" }}
               />
               <div className="ms-3" style={{ flex: "4 4 auto" }}>
@@ -144,11 +146,7 @@ const BlogPage = ({ post_id }) => {
           style={{ flex: "2 2 0", border: "1px solid", overflowY: "scroll" }}
         >
           {comments.map((c, i) => (
-            <BlogPostBubble
-              key={i}
-              handleRemove={handleRemove}
-              comment={c}
-            />
+            <BlogPostBubble key={i} handleRemove={handleRemove} comment={c} />
           ))}
         </div>
       </div>

@@ -8,23 +8,27 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
+
+
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def index(request):
     return HttpResponse("Blog")
 
+
 @csrf_exempt
 @require_http_methods(["GET"])
 def getBlog(request):
-    
+
     cursor = connection.cursor()
 
     post_id = request.GET.get('post_id')
 
-    cursor.execute("SELECT post_id, date_and_time, content, topic, username, role FROM blog_post NATURAL JOIN user where post_id = %s", (post_id, ))
+    cursor.execute(
+        "SELECT post_id, date_and_time, content, topic, username, role, user_id FROM blog_post NATURAL JOIN user where post_id = %s", (post_id, ))
 
     blog = cursor.fetchone()
-    
+
     cursor.close()
 
     return JsonResponse({
@@ -33,7 +37,8 @@ def getBlog(request):
         "content": blog[2],
         "topic": blog[3],
         "username": blog[4],
-        "role": blog[5]}, status=200)
+        "role": blog[5],
+        "user_id": blog[6]}, status=200)
 
 
 @csrf_exempt
@@ -41,9 +46,10 @@ def getBlog(request):
 def getTopics(request):
 
     cursor = connection.cursor()
-    cursor.execute("SELECT topic, post_id, username, date_and_time FROM blog_post NATURAL JOIN user")
+    cursor.execute(
+        "SELECT topic, post_id, username, date_and_time FROM blog_post NATURAL JOIN user")
     topics = cursor.fetchall()
-    
+
     cursor.close()
     return JsonResponse({'topics': [
         {"topic": topic[0],
@@ -52,16 +58,18 @@ def getTopics(request):
          "date": topic[3]} for topic in topics
     ]}, status=200)
 
+
 @csrf_exempt
 @require_http_methods(["GET"])
 def getTopicBlogs(request):
-    
+
     topic = request.GET.get('topic')
 
     cursor = connection.cursor()
-    cursor.execute("SELECT post_id, user_id, date_and_time, topic, content, username FROM blog_post NATURAL JOIN user where topic = %s", (topic, ))
+    cursor.execute(
+        "SELECT post_id, user_id, date_and_time, topic, content, username FROM blog_post NATURAL JOIN user where topic = %s", (topic, ))
     blogs = cursor.fetchall()
-    
+
     cursor.close()
 
     return JsonResponse({'blogs': [{
@@ -72,6 +80,7 @@ def getTopicBlogs(request):
         "content": blog[4]
     } for blog in blogs]}, status=200)
 
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def createBlog(request):
@@ -80,43 +89,43 @@ def createBlog(request):
 
     cursor = connection.cursor()
 
-    cursor.execute("INSERT INTO blog_post(user_id, date_and_time, topic, content) VALUES(%s, %s, %s, %s)", 
-                    (data['user_id'], data['date_and_time'], data['topic'], data['content']))
-    
+    cursor.execute("INSERT INTO blog_post(user_id, date_and_time, topic, content) VALUES(%s, %s, %s, %s)",
+                   (data['user_id'], data['date_and_time'], data['topic'], data['content']))
+
     connection.commit()
 
     cursor.execute("SELECT COUNT(*) FROM blog_post")
-    
+
     blog_count = cursor.fetchone()[0]
 
     cursor.close()
 
     return JsonResponse({
-       "post_id": blog_count 
+        "post_id": blog_count
     }, status=200)
-
 
 
 @csrf_exempt
 @require_http_methods(["PATCH"])
 def updateBlog(request):
-    
+
     data = json.loads(request.body)
 
     cursor = connection.cursor()
-    cursor.execute("UPDATE blog_post SET date_and_time = %s, topic = %s, content = %s WHERE post_id = %s", 
+    cursor.execute("UPDATE blog_post SET date_and_time = %s, topic = %s, content = %s WHERE post_id = %s",
                    (data['date_and_time'], data['topic'], data['content'], data['post_id']))
-    
+
     connection.commit()
 
     cursor.close()
-    
+
     return HttpResponse(status=200)
+
 
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def deleteBlog(request):
-    
+
     post_id = request.GET.get('post_id')
     user_id = request.GET.get('user_id')
 
@@ -126,8 +135,9 @@ def deleteBlog(request):
 
     connection.commit()
 
-    cursor.execute("DELETE FROM blog_post WHERE post_id = %s AND user_id = %s", (post_id, user_id))
-    
+    cursor.execute(
+        "DELETE FROM blog_post WHERE post_id = %s AND user_id = %s", (post_id, user_id))
+
     connection.commit()
 
     cursor.close()
@@ -138,15 +148,16 @@ def deleteBlog(request):
 @csrf_exempt
 @require_http_methods(["GET"])
 def getBlogComments(request):
-    
+
     cursor = connection.cursor()
 
     post_id = request.GET.get('post_id')
 
-    cursor.execute("SELECT comment_id, date_and_time, content, user_id, username, role FROM comment NATURAL JOIN user where post_id = %s", (post_id, ))
+    cursor.execute(
+        "SELECT comment_id, date_and_time, content, user_id, username, role FROM comment NATURAL JOIN user where post_id = %s", (post_id, ))
 
     comments = cursor.fetchall()
-    
+
     cursor.close()
 
     return JsonResponse({"comments": [{
@@ -157,6 +168,7 @@ def getBlogComments(request):
         "user_name": comment[4],
         "role": comment[5]} for comment in comments]}, status=200)
 
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def createComment(request):
@@ -164,18 +176,17 @@ def createComment(request):
     data = json.loads(request.body)
 
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO comment SELECT %s, COALESCE(MAX(comment_id) + 1, 1), %s, %s, %s FROM comment WHERE post_id = %s", 
+    cursor.execute("INSERT INTO comment SELECT %s, COALESCE(MAX(comment_id) + 1, 1), %s, %s, %s FROM comment WHERE post_id = %s",
                    (data['post_id'], data['user_id'], data['date_and_time'], data['content'], data['post_id']))
-    
+
     connection.commit()
     cursor.execute("SELECT MAX(comment_id) FROM comment")
 
-    max_index = cursor.fetchone();
+    max_index = cursor.fetchone()
 
     cursor.close()
 
-    return JsonResponse({"comment_id": max_index[0]},status=200)
-
+    return JsonResponse({"comment_id": max_index[0]}, status=200)
 
 
 @csrf_exempt
@@ -185,15 +196,14 @@ def updateComment(request):
     data = json.loads(request.body)
 
     cursor = connection.cursor()
-    cursor.execute("UPDATE comment SET date_and_time = %s, content = %s WHERE (post_id, comment_id, user_id) = (%s, %s, %s)", 
+    cursor.execute("UPDATE comment SET date_and_time = %s, content = %s WHERE (post_id, comment_id, user_id) = (%s, %s, %s)",
                    (data['date_and_time'], data['content'], data['post_id'], data['comment_id'], data['user_id']))
-    
+
     connection.commit()
 
     cursor.close()
 
     return HttpResponse(status=200)
-
 
 
 @csrf_exempt
@@ -205,9 +215,9 @@ def deleteComment(request):
     user_id = request.GET.get('user_id')
 
     cursor = connection.cursor()
-    cursor.execute("DELETE FROM comment WHERE (post_id, comment_id, user_id) = (%s, %s, %s)", 
+    cursor.execute("DELETE FROM comment WHERE (post_id, comment_id, user_id) = (%s, %s, %s)",
                    (post_id, comment_id, user_id))
-    
+
     connection.commit()
 
     cursor.close()
