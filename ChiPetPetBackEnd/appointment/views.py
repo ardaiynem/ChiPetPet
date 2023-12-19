@@ -182,7 +182,7 @@ def create_appointment(request):
 def update_appointment(request):
     data = json.loads(request.body)
     appointment_id = data.get('appointment_id')
-    date = data.get('date')
+    date_and_time = data.get('date_and_time')
     location = data.get('location')
     appointment_text = data.get('appointment_text')
     user_id = data.get('user_id')
@@ -198,9 +198,9 @@ def update_appointment(request):
             'error': 'Appointment does not exist'
         }, status=404)
 
-    cursor.execute("""UPDATE appointment SET date = %s, location = %s, appointment_text = %s, user_id = %s, 
+    cursor.execute("""UPDATE appointment SET date_and_time = %s, location = %s, appointment_text = %s, user_id = %s, 
                    veterinarian_id = %s, pet_id = %s WHERE appointment_id = %s""", 
-                   [date, location, appointment_text, user_id, veterinarian_id, pet_id, appointment_id])
+                   [date_and_time, location, appointment_text, user_id, veterinarian_id, pet_id, appointment_id])
     connection.commit()
     cursor.close()
 

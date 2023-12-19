@@ -20,12 +20,12 @@ export const DELETE_APPLICATION_PATH = (applicationId) => APPLICATION_PATH() + '
 
 // appointment
 export const APPOINTMENT_PATH = () => COMMON_PATH + 'appointment/';
-export const GET_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'get_appointment/?=appointment_id=' + appointmentId;
+export const GET_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'get_appointment/?appointment_id=' + appointmentId;
 export const GET_APPOINTMENT_BY_USER_PATH = (userId) => APPOINTMENT_PATH() + 'get_appointment_by_user/?user_id=' + userId;
 export const GET_APPOINTMENT_BY_VETERINARIAN_PATH = (veterinarianId) => APPOINTMENT_PATH() + 'get_appointment_by_veterinarian/?veterinarian_id=' + veterinarianId;
 export const CREATE_APPOINTMENT_PATH = () => APPOINTMENT_PATH() + 'create_appointment';
 export const UPDATE_APPOINTMENT_PATH = () => APPOINTMENT_PATH() + 'update_appointment';
-export const DELETE_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'delete_appointment/appointment_id=?' + appointmentId;
+export const DELETE_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'delete_appointment/?appointment_id=' + appointmentId;
 export const GET_VETERINARIAN_APPOINTMENT_DATES_PATH = (veterinarianId) => APPOINTMENT_PATH() + 'get_veterinarian_appointment_dates/?veterinarian_id=' + veterinarianId;
 
 // notification
@@ -43,6 +43,7 @@ export const GET_HEALTH_RECORDS_BY_PET_PATH = (pet_id) => HEALTH_RECORD_PATH() +
 // pet_create
 export const PET_CREATE_PATH = () => COMMON_PATH + "pet_create/";
 export const INSERT_PET_PATH = () => PET_CREATE_PATH() + "insert_pet/";
+export const INSERT_PETS_FROM_EXCEL_PATH = () => PET_CREATE_PATH() + "insert_pets_from_excel/";
 export const GET_PETS_BY_SHELTER_PATH = (user_id) => PET_CREATE_PATH() + "get_pets_by_shelter/?user_id=" + user_id;
 export const GET_PETS_BY_TYPE_PATH = (type) => PET_CREATE_PATH() + "get_pets_by_type/?type=" + type;
 export const GET_PET_BY_ID_PATH = (petid) => PET_CREATE_PATH() + "get_pet_by_id/?petid=" + petid;
