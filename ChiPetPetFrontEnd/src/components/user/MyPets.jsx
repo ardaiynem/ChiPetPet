@@ -8,21 +8,21 @@ import { useAlert } from "../../AlertContext";
 
 function MyPets() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
-    const [ pets, setPets ] = useState([]);
+    const [pets, setPets] = useState([]);
 
     const { userDetails } = useAuth();
     const { setTimedAlert } = useAlert();
 
     useEffect(() => {
         getPetsByAdopterId(userDetails.user_id)
-          .then((res) => {
-            console.log(res.data.pets);
-            setPets(res.data.pets);
-          })
-          .catch((err) => {
-            setTimedAlert("Error getting pets", "error", 3000);
-          });
-      }, []);
+            .then((res) => {
+                console.log(res.data.pets);
+                setPets(res.data.pets);
+            })
+            .catch((err) => {
+                setTimedAlert("Error getting pets", "error", 3000);
+            });
+    }, []);
 
     const [selectedPet, setSelectedPet] = useState(null);
 
@@ -80,30 +80,50 @@ function MyPets() {
                                 <th scope="col">Species</th>
                             </tr>
                         </thead>
-                        {/* <tbody>
+                        <tbody>
                             {
                                 pets.map((pet) => (
                                     <tr onClick={() => { setSelectedPet(pet) }}>
-                                        <th scope="row">{pet.id}</th>
-                                        <td>{pet.name}</td>
+                                        <th scope="row">{pet.pet_id}</th>
+                                        <td>{pet.pet_name}</td>
                                         <td>{pet.species}</td>
                                     </tr>
                                 ))
                             }
-                        </tbody> */}
+                        </tbody>
                     </table>
                 </div>
+
                 <div className="d-flex justify-content-end" style={{ flex: "1 1 0" }}>
-                    <div className="card" style={{ width: "400px", visibility: selectedPet ? "visible" : "hidden" }}>
-                        <div className="d-flex p-3 justify-content-center">
-                            <img src={catImg} className="card-img-top" />
+                    <div className="card" style={{ width: "600px", visibility: selectedPet ? "visible" : "hidden" }}>
+                        <div className="d-flex p-3 gap-3 justify-content-between">
+                            <img src={catImg} className="card-img-top" style={{width:"300px"}}/>
+                            <table className="table table-striped" >
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Species</th>
+                                        <td>{selectedPet?.species}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Breed</th>
+                                        <td>{selectedPet?.breed}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Gender</th>
+                                        <td>{selectedPet?.gender}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Age</th>
+                                        <td>{selectedPet?.age}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         <div className="card-body">
-                            <h5 className="card-title">{selectedPet?.name}</h5>
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <h5 className="card-title">{selectedPet?.pet_name}</h5>
+                            <p className="card-text">{selectedPet?.description}</p>
                             <div className="d-grid gap-2">
-                                <button className="btn btn-primary" type="button">Button</button>
-                                <button className="btn btn-primary" type="button">Button</button>
+                                <button className="btn btn-primary" type="button">Edit</button>
                             </div>
                         </div>
                     </div>
