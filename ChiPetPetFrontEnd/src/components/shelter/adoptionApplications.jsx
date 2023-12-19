@@ -49,18 +49,22 @@ function ApplicationsList() {
     const applicationId = [applications[selectedRow].application_id];
 
     const data = {
-      "application_id": applicationId,
-      "application_status": "SHELTER_APPROVED"
-    }
+      application_id: applicationId,
+      application_status: "SHELTER_APPROVED",
+    };
 
-    updateApplicationStatus(data)
-      .then((res) => {
-        setTimedAlert("Application approved", "success", 3000);
-      })
-      .catch((err) => {
+    updateApplicationStatus(data).then((res) => {
+      setApplications(
+        applications.filter(
+          (a) => applications[selectedRow].application_id !== a.application_id
+        )
+      );
+      setSelectedRow(null);
+      setTimedAlert("Application approved", "success", 3000);
+    });
+    /* .catch((err) => {
         setTimedAlert("Error accepting application", "error", 3000);
-      });
-
+      }); */
   };
 
   const rejectApplicationHandler = () => {
@@ -72,17 +76,22 @@ function ApplicationsList() {
     const applicationId = [applications[selectedRow].application_id];
 
     const data = {
-      "application_id": applicationId,
-      "application_status": "REJECTED"
-    }
+      application_id: applicationId,
+      application_status: "REJECTED",
+    };
 
-    updateApplicationStatus(data)
-      .then((res) => {
-        setTimedAlert("Application rejected", "success", 3000);
-      })
-      .catch((err) => {
+    updateApplicationStatus(data).then((res) => {
+      setApplications(
+        applications.filter(
+          (a) => applications[selectedRow].application_id !== a.application_id
+        )
+      );
+      setSelectedRow(null);
+      setTimedAlert("Application rejected", "success", 3000);
+    });
+    /* .catch((err) => {
         setTimedAlert("Error rejecting application", "error", 3000);
-      });
+      }); */
   };
 
   return (
@@ -148,68 +157,72 @@ function ApplicationsList() {
           className="d-flex flex-column align-items-end"
           style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}
         >
-        {selectedRow !== null && (
-          <div className="card mb-3" style={{ width: "100%" }}>
-            <div className="d-flex p-3 justify-content-center">
-              <img
-                src={catImg}
-                className="card-img-top"
-                alt="Cat"
-                style={{ width: "200px", marginRight: "20px" }}
-              />
-              <h5 className="card-title" style={{ marginRight: "50px" }}>
-                {applications[selectedRow].adopter_username}
-              </h5>
-              <div className="d-flex flex-column align-items-start">
-                <button
-                  onClick={rejectApplicationHandler}
-                  className="btn btn-danger mb-2"
-                  type="button"
-                  disabled={applications[selectedRow].application_status !== "PENDING"}
-                  style={{
-                    backgroundColor: "red",
-                    borderColor: "red",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Reject
-                </button>
-                <button
-                  onClick={acceptApplicationHandler}
-                  className="btn btn-success mb-2"
-                  type="button"
-                  disabled={applications[selectedRow].application_status !== "PENDING"}
-                  style={{
-                    backgroundColor: "green",
-                    borderColor: "green",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Accept
-                </button>
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  style={{
-                    backgroundColor: "blue",
-                    borderColor: "blue",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Contact
-                </button>
+          {selectedRow !== null && (
+            <div className="card mb-3" style={{ width: "100%" }}>
+              <div className="d-flex p-3 justify-content-center">
+                <img
+                  src={catImg}
+                  className="card-img-top"
+                  alt="Cat"
+                  style={{ width: "200px", marginRight: "20px" }}
+                />
+                <h5 className="card-title" style={{ marginRight: "50px" }}>
+                  {applications[selectedRow].adopter_username}
+                </h5>
+                <div className="d-flex flex-column align-items-start">
+                  <button
+                    onClick={rejectApplicationHandler}
+                    className="btn btn-danger mb-2"
+                    type="button"
+                    disabled={
+                      applications[selectedRow].application_status !== "PENDING"
+                    }
+                    style={{
+                      backgroundColor: "red",
+                      borderColor: "red",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={acceptApplicationHandler}
+                    className="btn btn-success mb-2"
+                    type="button"
+                    disabled={
+                      applications[selectedRow].application_status !== "PENDING"
+                    }
+                    style={{
+                      backgroundColor: "green",
+                      borderColor: "green",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    style={{
+                      backgroundColor: "blue",
+                      borderColor: "blue",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Contact
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="card-body">
-              <h5 className="card-title">Application</h5>
-              <p className="card-text">
-                {applications[selectedRow].application_text}
-              </p>
-            </div>
-            <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
+              <div className="card-body">
+                <h5 className="card-title">Application</h5>
+                <p className="card-text">
+                  {applications[selectedRow].application_text}
+                </p>
+              </div>
+              <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
                 <div style={{ flex: "1 1 0" }}>
                   <table class="table table-striped">
                     <thead>
@@ -221,16 +234,16 @@ function ApplicationsList() {
                       </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                          <td> {applications[selectedRow].pet_species} </td>
-                          <td> {applications[selectedRow].pet_breed} </td>
-                          <td> {applications[selectedRow].pet_gender} </td>
-                          <td> {applications[selectedRow].pet_age} </td>
-                        </tr>
+                      <tr>
+                        <td> {applications[selectedRow].pet_species} </td>
+                        <td> {applications[selectedRow].pet_breed} </td>
+                        <td> {applications[selectedRow].pet_gender} </td>
+                        <td> {applications[selectedRow].pet_age} </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
-              {/* <div>
+                {/* <div>
                 <table
                   className="table table-striped"
                   style={{ width: "300px", marginLeft: "10px" }}
@@ -257,8 +270,8 @@ function ApplicationsList() {
                   </tbody>
                 </table>
               </div> */}
+              </div>
             </div>
-          </div>
           )}
         </div>
       </div>
