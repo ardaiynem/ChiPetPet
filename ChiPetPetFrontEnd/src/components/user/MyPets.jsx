@@ -6,7 +6,7 @@ import { getPetsByAdopterId } from "../../apiHelper/backendHelper";
 
 function MyPets() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
-    const { pets, setPets } = useState([]);
+    const [pets, setPets] = useState([]);
 
     useEffect(() => {
         getPetsByAdopterId(userDetails.user_id)
@@ -77,7 +77,7 @@ function MyPets() {
                         <tbody>
                             {
                                 pets.map((pet) => (
-                                    <tr onClick={() => {setSelectedPet(pet)}}>
+                                    <tr onClick={() => { setSelectedPet(pet) }}>
                                         <th scope="row">{pet.id}</th>
                                         <td>{pet.name}</td>
                                         <td>{pet.species}</td>
@@ -88,7 +88,7 @@ function MyPets() {
                     </table>
                 </div>
                 <div className="d-flex justify-content-end" style={{ flex: "1 1 0" }}>
-                    <div className="card" style={{ width: "400px", visibility: selectedPet ? "visible": "hidden" }}>
+                    <div className="card" style={{ width: "400px", visibility: selectedPet ? "visible" : "hidden" }}>
                         <div className="d-flex p-3 justify-content-center">
                             <img src={catImg} className="card-img-top" />
                         </div>
