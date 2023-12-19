@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import json
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db import connection
 import pandas as pd
@@ -428,15 +429,28 @@ def get_pets_by_shelter_with_attributes(request):
     name = request.GET.get('name')
     breed = request.GET.get('breed')
     sortOption = request.GET.get('sortOption')
+    species = request.GET.get('species')
 
     cursor = connection.cursor()
 
-    query = """SELECT * FROM pet 
-          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
+    if (species is None):
+        query = """SELECT * FROM pet 
+          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s"""
+    else:
+        query = """SELECT * FROM pet 
+          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s """ + "AND species LIKE %s"
 
-    cursor.execute(
-        query, (shelter_id, f"%{breed}%", f"%{name}%")
-    )
+    query = (query + " {}").format(";" if sortOption ==
+                                   "None" else f"ORDER BY {sortOption}")
+
+    if (species is None):
+        cursor.execute(
+            query, (shelter_id, f"%{breed}%", f"%{name}%")
+        )
+    else:
+        cursor.execute(
+            query, (shelter_id, f"%{breed}%", f"%{name}%", f"%{species}%")
+        )
 
     pets = cursor.fetchall()
 
@@ -452,11 +466,32 @@ def get_pets_by_shelter_with_attributes(request):
             'health_status': pet[7],
             'description': pet[8],
             'photo': pet[9].decode('utf-8') if pet[9] else None,
-            'adoption_status': pet[10],
+            'adoption_status': pet[10]
         }
         for pet in pets
-    ]}
+    ],
+    }
 
     cursor.close()
 
     return JsonResponse(pets_list, status=200)
+
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_pet(request):
+
+    pet_id = request.GET.get('pet_id')
+
+    cursor = connection.cursor()
+
+    cursor.execute("DELETE FROM owns WHERE pet_id = %s",
+                   (pet_id, ))
+
+    connection.commit()
+    cursor.execute("DELETE FROM pet WHERE pet_id = %s",
+                   (pet_id, ))
+    connection.commit()
+    cursor.close()
+
+    return HttpResponse(status=200)
