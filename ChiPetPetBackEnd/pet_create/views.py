@@ -219,6 +219,32 @@ def get_pets_by_shelter(request):
 
 
 @csrf_exempt
+@require_http_methods(["GET"])
+def get_pets_by_adopter_id(request):
+    adopter_id = request.GET.get('adopter_id')
+    cursor = connection.cursor()
+
+    cursor.execute("""SELECT * FROM pet, owns, user
+                    WHERE pet.pet_id = owns.pet_id
+                    AND owns.adopter_id = user.user_id
+                    AND user.user_id = %s
+                    """, [adopter_id])
+    
+    pets = cursor.fetchall()
+    cursor.close()
+
+    if pets is None:
+        return JsonResponse({
+            'error': 'Pet does not exist'
+        }, status=404)
+    
+    return JsonResponse({"pets": [{
+        'pet_id': row[0],
+        'pet_name': row[2],
+    } for row in pets]}, status=200)
+
+
+@csrf_exempt
 def insert_pets_from_excel(request):
     if request.method == 'POST':
         try:
