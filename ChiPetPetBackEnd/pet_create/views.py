@@ -7,48 +7,40 @@ import pandas as pd
 from django.views.decorators.http import require_http_methods
 import base64
 
+
 @csrf_exempt
+@require_http_methods(["POST"])
 def insert_pet(request):
-    if request.method == 'POST':
-        try:
 
-            shelter_id = request.POST.get('shelter_id')
-            name = request.POST.get('name')
-            species = request.POST.get('species')
-            breed = request.POST.get('breed')
-            gender = request.POST.get('gender')
-            age = request.POST.get('age')
-            health_status = request.POST.get('health_status')
-            description = request.POST.get('description')
-            photo = request.FILES.get('photo')
-            adoption_status = request.POST.get('adoption_status')
+    shelter_id = request.POST.get('shelter_id')
+    name = request.POST.get('name')
+    species = request.POST.get('species')
+    breed = request.POST.get('breed')
+    gender = request.POST.get('gender')
+    age = request.POST.get('age')
+    health_status = request.POST.get('health_status')
+    description = request.POST.get('description')
+    photo = request.FILES.get('photo')
+    adoption_status = request.POST.get('adoption_status')
 
-            # Convert base64-encoded photo to bytes
-            if photo:
-                # Read the photo file content and convert it to base64
-                photo_content = base64.b64encode(photo.read()).decode('utf-8')
-            else:
-                photo_content = None
+    # Convert base64-encoded photo to bytes
+    if photo:
+        # Read the photo file content and convert it to base64
+        photo_content = base64.b64encode(photo.read()).decode('utf-8')
+    else:
+        photo_content = None
 
-            # Insert into the pet table
-            cursor = connection.cursor()
+    # Insert into the pet table
+    cursor = connection.cursor()
 
-            cursor.execute("""INSERT INTO pet (
-                            shelter_id, name, species, breed, gender, age, health_status,
-                            description, photo, adoption_status
-                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                           (shelter_id, name, species, breed, gender, age, health_status,
-                            description, photo_content, adoption_status))
+    cursor.execute("""INSERT INTO pet (
+                    shelter_id, name, species, breed, gender, age, health_status,
+                    description, photo, adoption_status
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                   (shelter_id, name, species, breed, gender, age, health_status,
+                    description, photo_content, adoption_status))
 
-            return JsonResponse({'status': 'Pet inserted successfully'}, status=201)
-
-        except json.JSONDecodeError as e:
-            return JsonResponse({'error': 'Invalid JSON format: {}'.format(str(e))}, status=400)
-
-        except Exception as e:
-            return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
-
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+    return JsonResponse({'status': 'Pet inserted successfully'}, status=201)
 
 
 @csrf_exempt
