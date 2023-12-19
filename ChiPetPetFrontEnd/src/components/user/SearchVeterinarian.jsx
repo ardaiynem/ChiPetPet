@@ -308,6 +308,15 @@ function SearchVeterinarian() {
               {renderTimeOptions()}
             </Form.Control>
           </Form.Group>
+
+          <Form.Group controlId="appointmentText">
+            <Form.Label>Additional Information:</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Enter additional information..."
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
