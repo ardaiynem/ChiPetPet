@@ -13,20 +13,20 @@ CREATE TABLE animal_shelter (
     user_id INT PRIMARY KEY,
     address VARCHAR(255) DEFAULT '',
     contact VARCHAR(200) DEFAULT '',
-    verification_documents BLOB,
+    verification_documents MEDIUMBLOB,
     FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
 
 CREATE TABLE field_expert (
    	user_id INT PRIMARY KEY,
     speciality VARCHAR(100) DEFAULT '',
-    verification_documents BLOB,
+    verification_documents MEDIUMBLOB,
     FOREIGN KEY (user_id) REFERENCES user(user_id) 
 );
 
 CREATE TABLE admin (
     user_id INT PRIMARY KEY,
-    verification_documents BLOB,
+    verification_documents MEDIUMBLOB,
     FOREIGN KEY (user_id) REFERENCES user(user_id) 
 );
 
@@ -41,7 +41,7 @@ CREATE TABLE pet (
     age INT,
     health_status VARCHAR(50),
     description TEXT,
-    photo BLOB,
+    photo MEDIUMBLOB,
     adoption_status VARCHAR(20),
     FOREIGN KEY (shelter_id) REFERENCES animal_shelter(user_id) 
 );
@@ -90,7 +90,7 @@ CREATE TABLE veterinarian (
     user_id INT PRIMARY KEY,
     address VARCHAR(255) DEFAULT '',
     contact VARCHAR(200) DEFAULT '',
-    verification_documents BLOB,
+    verification_documents MEDIUMBLOB,
 	expertise VARCHAR(200) DEFAULT '',
     FOREIGN KEY (user_id) REFERENCES user(user_id) 
 );
