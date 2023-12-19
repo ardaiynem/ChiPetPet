@@ -253,3 +253,20 @@ export const deleteComment = (post_id, comment_id, user_id) => async () => {
       url.DELETE_COMMENT_PATH(post_id, comment_id, user_id)
     );
   };
+
+  // system report 
+  export const getTopVets = async () => {
+    return await getFetcher(url.GET_TOP_VETS_PATH());
+  };
+
+  export const getTopAdopters = async () => {
+    return await getFetcher(url.GET_TOP_ADOPTERS_PATH());
+  };
+
+  export const getTopShelters = async () => {
+    return await getFetcher(url.GET_TOP_SHELTERS_PATH());
+  };
+
+  export const getMostAdoptedBreed = async () => {
+    return await getFetcher(url.GET_MOST_ADOPTED_BREED_PATH());
+  };

@@ -1,9 +1,52 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { PanelContext } from "../../contexts/panelContext";
+import { getTopVets, getTopAdopters, getTopShelters, getMostAdoptedBreed } from "../../apiHelper/backendHelper";
 
 function SystemRecords() {
   const { setCurrentPanel } = useContext(PanelContext);
+
+  const [topVets, setTopVets ] = useState([]);
+  const [topAdopters, setTopAdopters ] = useState([]);
+  const [topShelters, setTopShelters ] = useState([]);
+  const [mostAdoptedBreeds, setMostAdoptedBreeds ] = useState([]);
+
+
+  useEffect(() => {
+
+    getTopVets()
+    .then((res) => {
+        setTopVets(res.data.top_vets);
+    })
+    .catch((err) => {
+        setTimedAlert("Error retrieving top vets", "error", 3000);
+    });
+
+    getTopAdopters()
+    .then((res) => {
+        setTopAdopters(res.data.top_adopters);
+    })
+    .catch((err) => {
+        setTimedAlert("Error retrieving top adopters", "error", 3000);
+    });
+
+    getTopShelters()
+    .then((res) => {
+        setTopShelters(res.data.top_shelters);
+    })
+    .catch((err) => {
+        setTimedAlert("Error retrieving top shelters", "error", 3000);
+    });
+
+    getMostAdoptedBreed()
+    .then((res) => {
+        setMostAdoptedBreeds(res.data.most_adopted_breed);
+    })
+    .catch((err) => {
+        setTimedAlert("Error retrieving most adopted breeds", "error", 3000);
+    });
+
+}, []);
 
   // Define an array with sample data
   const animalData = [
@@ -30,38 +73,38 @@ function SystemRecords() {
       {/* Render the first two tables side by side */}
       <div className="d-flex">
         <div className="m-2" style={{ flex: "1" }}>
-        <h>Top 5 bisibisi</h>
+        <h>Top 5 veterinarians</h>
         <table className="table table-striped">
           <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Species</th>
+            <th scope="col">Veterinarian</th>
+            <th scope="col">Appoinment Count</th>
           </tr>
         </thead>
         <tbody>
-          {animalData.slice(0, 5).map((animal, index) => (
+          {topVets.slice(0, 5).map((vet, index) => (
             <tr key={index}>
-              <td>{animal.name}</td>
-              <td>{animal.species}</td>
+              <td>{vet.username}</td>
+              <td>{vet.count}</td>
             </tr>
           ))}
         </tbody>
           </table>
         </div>
         <div className="m-2" style={{ flex: "1" }}>
-        <h>Top 5 bisibisi</h>
+        <h>Top 5 adopters</h>
           <table className="table table-striped">
           <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Species</th>
+            <th scope="col">Adopter</th>
+            <th scope="col">Adopt Count</th>
           </tr>
         </thead>
         <tbody>
-        {animalData.slice(0, 5).map((animal, index) => (
+        {topAdopters.slice(0, 5).map((adopter, index) => (
             <tr key={index}>
-              <td>{animal.name}</td>
-              <td>{animal.species}</td>
+              <td>{adopter.username}</td>
+              <td>{adopter.count}</td>
             </tr>
           ))}
         </tbody>
@@ -72,38 +115,38 @@ function SystemRecords() {
       {/* Render the other two tables below the first two */}
       <div className="d-flex">
         <div className="m-2" style={{ flex: "1" }}>
-        <h>Top 5 bisibisi</h>
+        <h>Top 5 animal shelters</h>
           <table className="table table-striped">
           <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Species</th>
+            <th scope="col">Shelter Name</th>
+            <th scope="col">Animal Count</th>
           </tr>
         </thead>
         <tbody>
-        {animalData.slice(0, 5).map((animal, index) => (
+        {topShelters.slice(0, 5).map((shelter, index) => (
             <tr key={index}>
-              <td>{animal.name}</td>
-              <td>{animal.species}</td>
+              <td>{shelter.username}</td>
+              <td>{shelter.animal_count}</td>
             </tr>
           ))}
         </tbody>
           </table>
         </div>
         <div className="m-2" style={{ flex: "1" }}>
-        <h>Top 5 bisibisi</h>
+        <h>Top 5 most adopted breeds</h>
           <table className="table table-striped">
           <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Species</th>
+            <th scope="col">Breed</th>
+            <th scope="col">Adopt Count</th>
           </tr>
         </thead>
         <tbody>
-        {animalData.slice(0, 5).map((animal, index) => (
+        {mostAdoptedBreeds.slice(0, 5).map((breed, index) => (
             <tr key={index}>
-              <td>{animal.name}</td>
-              <td>{animal.species}</td>
+              <td>{breed.breed}</td>
+              <td>{breed.breed_count}</td>
             </tr>
           ))}
         </tbody>

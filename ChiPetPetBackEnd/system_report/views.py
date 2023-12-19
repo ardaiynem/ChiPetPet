@@ -14,11 +14,19 @@ def get_top_vets(request):
             cursor.execute("""SELECT user.username, count(*) as count
                            FROM user JOIN appointment ON appointment.veterinarian_id = user.user_id
                            GROUP BY user.username
-                           ORDER BY count
+                           ORDER BY count DESC
                             
             """)
             topVets = cursor.fetchall()
-            return JsonResponse({'top_vets': topVets}, status=200)
+
+            topVetsList = {"top_vets": [
+                {
+                    'username': vet[0],
+                    'count': vet[1],
+                }
+                for vet in topVets
+            ]}
+            return JsonResponse(topVetsList, status=200)
 
         except Exception as e:
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
@@ -33,11 +41,20 @@ def get_top_adopters(request):
             cursor.execute("""SELECT user.username, count(*) as count
                            FROM user JOIN owns ON owns.adopter_id = user.user_id
                            GROUP BY user.username
-                           ORDER BY count
+                           ORDER BY count DESC
                             
             """)
             topAdopters = cursor.fetchall()
-            return JsonResponse({'top_adopters': topAdopters}, status=200)
+
+            topAdoptersList = {"top_adopters": [
+                {
+                    'username': adopter[0],
+                    'count': adopter[1],
+                }
+                for adopter in topAdopters
+            ]}
+
+            return JsonResponse(topAdoptersList, status=200)
 
         except Exception as e:
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
@@ -53,11 +70,20 @@ def get_top_shelters(request):
             cursor.execute("""SELECT user.username, count(*) as animal_count
                            FROM user JOIN pet ON pet.shelter_id = user.user_id
                            GROUP BY user.username
-                           ORDER BY animal_count
+                           ORDER BY animal_count DESC
                             
             """)
             topShelters = cursor.fetchall()
-            return JsonResponse({'top_adopters': topShelters}, status=200)
+
+            topSheltersList = {"top_shelters": [
+                {
+                    'username': shelter[0],
+                    'animal_count': shelter[1],
+                }
+                for shelter in topShelters
+            ]}
+
+            return JsonResponse(topSheltersList, status=200)
 
         except Exception as e:
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
@@ -72,11 +98,20 @@ def get_most_adopted_breed(request):
             cursor.execute("""SELECT pet.breed, count(*) as breed_count
                            FROM pet NATURAL JOIN owns
                            GROUP BY pet.breed
-                           ORDER BY breed_count
+                           ORDER BY breed_count DESC
                             
             """)
             mostAdoptedBreed = cursor.fetchall()
-            return JsonResponse({'most_adopted_breed': mostAdoptedBreed}, status=200)
+
+            mostAdoptedBreedList = {"most_adopted_breed": [
+                {
+                    'breed': breed[0],
+                    'breed_count': breed[1],
+                }
+                for breed in mostAdoptedBreed
+            ]}
+
+            return JsonResponse(mostAdoptedBreedList, status=200)
 
         except Exception as e:
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)

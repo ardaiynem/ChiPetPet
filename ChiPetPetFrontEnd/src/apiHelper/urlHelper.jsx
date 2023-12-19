@@ -87,3 +87,12 @@ export const UPDATE_BLOG_PATH = () => BLOGPOST_PATH + 'updateBlog';
 export const UPDATE_COMMENT_PATH = () => BLOGPOST_PATH + 'updateComment';
 export const DELETE_BLOG_PATH = (post_id, user_id) => BLOGPOST_PATH + 'deleteBlog/?post_id=' + post_id + '&user_id=' + user_id;
 export const DELETE_COMMENT_PATH = (post_id, comment_id, user_id) => BLOGPOST_PATH + 'deleteComment/?post_id=' + post_id + '&comment_id' + comment_id + '&user_id=' + user_id;
+
+
+// system report paths
+export const SYSTEM_REPORT_PATH = () => COMMON_PATH + "system_report/";
+export const GET_TOP_VETS_PATH = () => SYSTEM_REPORT_PATH() + "get_top_vets";
+export const GET_TOP_ADOPTERS_PATH = () => SYSTEM_REPORT_PATH() + "get_top_adopters";
+export const GET_TOP_SHELTERS_PATH = () => SYSTEM_REPORT_PATH() + "get_top_shelters";
+export const GET_MOST_ADOPTED_BREED_PATH = () => SYSTEM_REPORT_PATH() + "get_most_adopted_breed";
+
