@@ -21,6 +21,7 @@ import SearchShelter from "../components/shelter/searchShelter";
 import Profile from "./Profile";
 import PetBlog from "./PetBlog";
 import MyApplications from "../components/user/MyApplications";
+import UserAppointments from "./user/UserAppointments";
 import GuidePage from "./GuidePage";
 import { useAuth } from "../AuthContext";
 import { useProfiles } from "../ProfilesContext";
@@ -61,7 +62,7 @@ function MenuCards() {
     { name: "Search Veterinarian", element: <SearchVeterinarian /> },
     { name: "Search Shelter", element: <SearchShelter /> },
     { name: "My Applications", element: <MyApplications /> },
-    { name: "Appointments", element: <AppointmentList /> },
+    { name: "Appointments", element: <UserAppointments /> },
     { name: "My Pet", element: <MyPets /> },
     { name: "Pet Blog", element: <PetBlog /> },
     { name: "Messages", element: <MessagePage /> },
