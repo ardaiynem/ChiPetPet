@@ -60,9 +60,7 @@ export const getAppointmentByUser = async (userId) => {
 };
 
 export const getAppointmentByVeterinarian = async (veterinarianId) => {
-  return await getFetcher(
-    url.GET_APPOINTMENT_BY_VETERINARIAN_PATH(veterinarianId)
-  );
+  return await getFetcher(url.GET_APPOINTMENT_BY_VETERINARIAN_PATH(veterinarianId));
 };
 
 export const createAppointment = async (data) => {
@@ -75,6 +73,10 @@ export const updateAppointment = async (data) => {
 
 export const deleteAppointment = async (appointmentId) => {
   return await deleteFetcher(url.DELETE_APPOINTMENT_PATH(appointmentId));
+};
+
+export const getVeterinarianAppointmentDates = async (veterinarianId) => {
+  return await getFetcher(url.GET_VETERINARIAN_APPOINTMENT_DATES_PATH(veterinarianId));
 };
 
 // notification

@@ -2,7 +2,7 @@ import { Card, Button, Dropdown, Modal, Form } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../../contexts/panelContext";
-import { getAllVeterinarians, getPetsByAdopterId } from "../../apiHelper/backendHelper";
+import { getAllVeterinarians, getPetsByAdopterId, createAppointment, getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
@@ -13,6 +13,8 @@ function SearchVeterinarian() {
   const [selectedVet, setSelectedVet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showModalMsg, setShowModalMsg] = useState(false);
+  const [existingAppointments, setExistingAppointments] = useState([]);
+  const [appointmentText, setAppointmentText] = useState("");
   
   const { userDetails } = useAuth();
   const { setTimedAlert } = useAlert();
@@ -21,7 +23,7 @@ function SearchVeterinarian() {
   const [selectedPetApt, setSelectedPetApt] = useState(null);
 
 
-  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedTime, setSelectedTime] = useState("09:00");
 
   const [selectedDate, setDate] = useState("2023-01-01");
 
@@ -59,7 +61,54 @@ function SearchVeterinarian() {
       });
   }, []);
 
+  const getExistingAppointments = (user_id) => {
+    getVeterinarianAppointmentDates(user_id)
+      .then((res) => {
+        const converted = res.data.appointments?.map((appointment) => {
+          const [dateTime] = appointment;
+          let [date, time] = dateTime.split("T");
+          time = time.substring(0, 3) + "00";
+          return { date, time };
+        });
+
+        setExistingAppointments(converted);
+
+        console.log("converted", converted);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting appointments", "error", 3000);
+      });
+  };
+    
+
   const handleMakeAppointment = () => {
+
+    if (!selectedPetApt) {
+      setTimedAlert("Please select a pet", "error", 3000);
+      return;
+    }
+
+    // create date and time string
+    const formattedDate = `${selectedDate} ${selectedTime}`;
+    console.log("formattedDate", formattedDate);
+    
+    const data = {
+      "date_and_time": formattedDate,
+      "location": selectedVet.address,
+      "appointment_text": appointmentText,
+      "user_id": userDetails.user_id,
+      "veterinarian_id": selectedVet.user_id,
+      "pet_id": selectedPetApt.pet_id
+    }
+
+    createAppointment(data)
+      .then((res) => {
+        setTimedAlert("Appointment created", "success", 3000);
+      })
+      .catch((err) => {
+        setTimedAlert("Error creating appointment", "error", 3000);
+      });
+
     setShowModal(false);
   };
 
@@ -85,11 +134,6 @@ function SearchVeterinarian() {
 
   const renderTimeOptions = () => {
     const timeOptions = [];
-    const existingAppointments = [
-      { date: "2024-01-01", time: "10:00" },
-      { date: "2024-01-01", time: "14:00" },
-      { date: "2024-01-02", time: "10:00" },
-    ];
 
     for (let hour = 9; hour <= 17; hour++) {
       for (let minute = 0; minute < 60; minute += 60) {
@@ -216,6 +260,7 @@ function SearchVeterinarian() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedVet(vet);
+                    getExistingAppointments(vet.user_id);
                   }}
                 >
                   <th scope="row">{vet.username}</th>
@@ -278,7 +323,7 @@ function SearchVeterinarian() {
             <Dropdown>
               <Dropdown.Toggle variant="success" id="dropdown-basic">
                 {
-                  selectedPetApt ? selectedPetApt.name : "Select Pet"
+                  selectedPetApt ? selectedPetApt.pet_name : "Select Pet"
                 }
               </Dropdown.Toggle>
 
@@ -299,8 +344,8 @@ function SearchVeterinarian() {
             <Form.Label>Select Time:</Form.Label>
             <Form.Control
               as="select"
-              value={selectedTime}
               onChange={(e) => setSelectedTime(e.target.value)}
+              value={selectedTime}
             >
               <option value="" disabled>
                 Select a time
@@ -315,6 +360,8 @@ function SearchVeterinarian() {
               as="textarea"
               rows={3}
               placeholder="Enter additional information..."
+              value={appointmentText}
+              onChange={(e) => setAppointmentText(e.target.value)}
             />
           </Form.Group>
         </Modal.Body>
