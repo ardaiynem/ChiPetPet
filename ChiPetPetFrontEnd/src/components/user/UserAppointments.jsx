@@ -2,7 +2,7 @@ import { Button, Dropdown, FormControl, Modal, Form } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { getAppointmentByUser, deleteAppointment, updateApplication, getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
+import { getAppointmentByUser, deleteAppointment, updateAppointment, getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 
@@ -118,8 +118,8 @@ function UserAppointments() {
 
   const handleRescheduleAppointment = () => {
 
-    if (!selectedPetApt) {
-      setTimedAlert("Please select a pet", "error", 3000);
+    if (selectedRow === null) {
+      setTimedAlert("Please select an appointment", "error", 3000);
       return;
     }
 
@@ -147,10 +147,12 @@ function UserAppointments() {
       "pet_id": appointments[selectedRow].pet_id,
     }
 
-    updateApplication(data)
+    updateAppointment(data)
       .then((res) => {
         setShowModal(false);
         setAppointmentText("");
+        getExistingAppointments(appointments[selectedRow].veterinarian_id);
+        setSelectedRow(null);
         setTimedAlert("Appointment successfully rescheduled", "success", 3000);
       })
       .catch((err) => {

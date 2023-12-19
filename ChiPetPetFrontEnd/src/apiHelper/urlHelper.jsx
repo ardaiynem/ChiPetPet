@@ -20,12 +20,12 @@ export const DELETE_APPLICATION_PATH = (applicationId) => APPLICATION_PATH() + '
 
 // appointment
 export const APPOINTMENT_PATH = () => COMMON_PATH + 'appointment/';
-export const GET_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'get_appointment/?=appointment_id=' + appointmentId;
+export const GET_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'get_appointment/?appointment_id=' + appointmentId;
 export const GET_APPOINTMENT_BY_USER_PATH = (userId) => APPOINTMENT_PATH() + 'get_appointment_by_user/?user_id=' + userId;
 export const GET_APPOINTMENT_BY_VETERINARIAN_PATH = (veterinarianId) => APPOINTMENT_PATH() + 'get_appointment_by_veterinarian/?veterinarian_id=' + veterinarianId;
 export const CREATE_APPOINTMENT_PATH = () => APPOINTMENT_PATH() + 'create_appointment';
 export const UPDATE_APPOINTMENT_PATH = () => APPOINTMENT_PATH() + 'update_appointment';
-export const DELETE_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'delete_appointment/appointment_id=?' + appointmentId;
+export const DELETE_APPOINTMENT_PATH = (appointmentId) => APPOINTMENT_PATH() + 'delete_appointment/?appointment_id=' + appointmentId;
 export const GET_VETERINARIAN_APPOINTMENT_DATES_PATH = (veterinarianId) => APPOINTMENT_PATH() + 'get_veterinarian_appointment_dates/?veterinarian_id=' + veterinarianId;
 
 // notification
