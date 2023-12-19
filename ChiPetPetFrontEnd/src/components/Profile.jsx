@@ -272,7 +272,7 @@ const Profile = (props) => {
               style={{ width: "300px", borderRadius: "50%" }}
             />
             <span className="badge rounded-pill bg-primary">
-              {role.toUpperCase()}
+              {role.toUpperCase().replace("_", " ")}
             </span>
           </div>
         </div>
