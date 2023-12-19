@@ -15,6 +15,10 @@ function SearchVeterinarian() {
   const [showModal, setShowModal] = useState(false);
   const [showModalMsg, setShowModalMsg] = useState(false);
 
+  const [userPets, setUserPets] = useState([{ name: "necdet" }, { name: "kemal" }]);
+  const [selectedPetApt, setSelectedPetApt] = useState(null);
+
+
   const [selectedTime, setSelectedTime] = useState(null);
 
   const [selectedDate, setDate] = useState("2023-01-01");
@@ -259,6 +263,27 @@ function SearchVeterinarian() {
             onChange={(e) => setDate(e.target.value)}
             value={selectedDate}
           />
+          <div class="mb-3 mt-3">
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                {
+                  selectedPetApt ? selectedPetApt.name : "Select Pet"
+                }
+              </Dropdown.Toggle>
+
+              {
+                userPets &&
+
+                <Dropdown.Menu>
+                  {userPets.map((pet) => (
+                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>{pet.name}</Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+
+              }
+            </Dropdown>
+
+          </div>
           <Form.Group controlId="appointmentTime">
             <Form.Label>Select Time:</Form.Label>
             <Form.Control
