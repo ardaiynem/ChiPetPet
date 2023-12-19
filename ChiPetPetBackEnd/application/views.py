@@ -19,9 +19,9 @@ def get_applications_admin(request):
     cursor = connection.cursor()
     cursor.execute("""SELECT * 
                     FROM applies, user as u1, user as u2, animal_shelter, pet 
-                    WHERE applies.adopter_id = u1.user_id AND 
-                    applies.animal_shelter_id = animal_shelter.user_id AND u2.user_id = animal_shelter.user_id AND 
-                    applies.pet_id = pet.pet_id AND applies.application_status = 'SHELTER_APPROVED'""")
+                    WHERE applies.adopter_id = u1.user_id AND applies.animal_shelter_id = animal_shelter.user_id 
+                    AND u2.user_id = animal_shelter.user_id AND applies.pet_id = pet.pet_id 
+                    AND (applies.application_status = 'SHELTER_APPROVED' OR applies.application_status = 'PENDING') """)
     applications = cursor.fetchall()
     cursor.close()
 
@@ -58,7 +58,7 @@ def get_applications_admin(request):
         'pet_age': row[32],
         'pet_health_status': row[33],
         'pet_description': row[34],
-        'pet_photo': row[35],
+        'pet_photo': row[35].decode('utf-8') if row[35] else None,
         'pet_adoption_status': row[36]
     } for row in applications]}, status=200)
 
@@ -67,6 +67,12 @@ def get_applications_admin(request):
 @require_http_methods(["GET"])
 def get_application_by_adopter(request):
     adopter_id = request.GET.get('adopter_id')
+    # cursor = connection.cursor()
+    # cursor.execute(""" SELECT *
+    #                FROM applies""" )
+    # applications = cursor.fetchall()
+    # return JsonResponse({"applications": applications}, status=200)
+
     cursor = connection.cursor()
     cursor.execute(""" SELECT *
                         FROM applies, user as u1, user as u2, animal_shelter, pet
@@ -80,7 +86,7 @@ def get_application_by_adopter(request):
         return JsonResponse({
             'error': 'No applications found'
         }, status=404)
-    
+    # return HttpResponse(applications, status=200)
     return JsonResponse({"applications": [{
         'application_id': row[0],
         'application_status': row[1],
@@ -109,7 +115,7 @@ def get_application_by_adopter(request):
         'pet_age': row[32],
         'pet_health_status': row[33],
         'pet_description': row[34],
-        'pet_photo': row[35],
+        'pet_photo': row[35].decode('utf-8') if row[35] else None,
         'pet_adoption_status': row[36]
     } for row in applications]}, status=200)
 
@@ -162,7 +168,7 @@ def get_application_by_shelter(request):
         'pet_age': row[32],
         'pet_health_status': row[33],
         'pet_description': row[34],
-        'pet_photo': row[35],
+        'pet_photo': row[35].decode('utf-8') if row[35] else None,
         'pet_adoption_status': row[36]
     } for row in applications]}, status=200)
 

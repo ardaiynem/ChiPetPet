@@ -54,6 +54,14 @@ function UserAppointments() {
     deleteAppointment(appointmentId)
       .then((res) => {
         setTimedAlert("Appointment cancelled", "success", 3000);
+
+        setAppointments(
+          appointments.filter((appointment) => {
+            return appointment.appointment_id !== appointmentId[0];
+          })
+        );
+
+        setSelectedRow(null);
       })
       .catch((err) => {
         setTimedAlert("Error cancelling appointment", "error", 3000);
@@ -241,7 +249,7 @@ function UserAppointments() {
             <div className="card mb-3" style={{ width: "100%" }}>
               <div className="d-flex p-3 justify-content-center">
                 <img src={appointments[selectedRow].photo ? appointments[selectedRow].photo : catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
-                <h5 className="card-title" style={{ marginRight: "50px" }}>{appointments[selectedRow].name}</h5>
+                <h5 className="card-title" style={{ marginRight: "50px" }}>{appointments[selectedRow]?.name}</h5>
                 <div className="d-flex flex-column align-items-start">
                   <button className="btn btn-primary" onClick={() => setShowModalMsg(true)}
                     type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
@@ -251,7 +259,6 @@ function UserAppointments() {
                     onClick={() => setShowModal(true)}
                     className="btn btn-success mb-2"
                     type="button"
-                    // disabled={appointments[selectedRow].application_status !== "PENDING"}
                     style={{
                       backgroundColor: "green",
                       borderColor: "green",
@@ -265,7 +272,6 @@ function UserAppointments() {
                     onClick={cancelAppointmentHandler}
                     className="btn btn-danger mb-2"
                     type="button"
-                    // disabled={appointments[selectedRow].application_status !== "PENDING"}
                     style={{
                       backgroundColor: "red",
                       borderColor: "red",
@@ -280,7 +286,7 @@ function UserAppointments() {
 
               <div className="card-body">
                 <h5 className="card-title">Appointment</h5>
-                <p className="card-text">Appointment Note: {appointments[selectedRow].appointment_text}</p>
+                <p className="card-text">Appointment Note: {appointments[selectedRow]?.appointment_text}</p>
 
               </div>
               <div className="d-flex flex-row">
@@ -297,10 +303,10 @@ function UserAppointments() {
                       </tr>
                     </thead>
                     <tbody>
-                      <th scope="col">{appointments[selectedRow].species}</th>
-                      <th scope="col">{appointments[selectedRow].breed}</th>
-                      <th scope="col">{appointments[selectedRow].gender}</th>
-                      <th scope="col">{appointments[selectedRow].age}</th>
+                      <th scope="col">{appointments[selectedRow]?.species}</th>
+                      <th scope="col">{appointments[selectedRow]?.breed}</th>
+                      <th scope="col">{appointments[selectedRow]?.gender}</th>
+                      <th scope="col">{appointments[selectedRow]?.age}</th>
                     </tbody>
                   </table>
                 </div>

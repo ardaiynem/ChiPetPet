@@ -53,6 +53,14 @@ function AdoptionApplicationsAdmin() {
     updateApplicationStatus(data)
       .then((res) => {
         setTimedAlert("Application accepted", "success", 3000);
+
+        setApplications(
+          applications.filter(
+            (a) => applications[selectedRow].application_id !== a.application_id
+          )
+        );
+
+        setSelectedRow(null);
       })
       .catch((err) => {
         setTimedAlert("Error accepting application", "error", 3000);
@@ -76,6 +84,14 @@ function AdoptionApplicationsAdmin() {
     updateApplicationStatus(data)
       .then((res) => {
         setTimedAlert("Application rejected", "success", 3000);
+
+        setApplications(
+          applications.filter(
+            (a) => applications[selectedRow].application_id !== a.application_id
+          )
+        );
+
+        setSelectedRow(null);
       })
       .catch((err) => {
         setTimedAlert("Error rejecting application", "error", 3000);
@@ -171,14 +187,14 @@ function AdoptionApplicationsAdmin() {
                 style={{ width: "200px", marginRight: "20px" }}
               />
               <h5 className="card-title" style={{ marginRight: "50px" }}>
-                {applications[selectedRow].adopter_username}
+                {applications[selectedRow]?.adopter_username}
               </h5>
               <div className="d-flex flex-column align-items-start">
                 <button
                   onClick={rejectApplicationHandler}
                   className="btn btn-danger mb-2"
                   type="button"
-                  disabled={applications[selectedRow].application_status !== "PENDING"}
+                  // disabled={applications[selectedRow].application_status !== "SHELTER_APPROVED"}
                   style={{
                     backgroundColor: "red",
                     borderColor: "red",
@@ -192,7 +208,7 @@ function AdoptionApplicationsAdmin() {
                   onClick={acceptApplicationHandler}
                   className="btn btn-success mb-2"
                   type="button"
-                  disabled={applications[selectedRow].application_status !== "PENDING"}
+                  disabled={applications[selectedRow]?.application_status !== "SHELTER_APPROVED"}
                   style={{
                     backgroundColor: "green",
                     borderColor: "green",
@@ -219,7 +235,7 @@ function AdoptionApplicationsAdmin() {
             <div className="card-body">
               <h5 className="card-title">Application</h5>
               <p className="card-text">
-                {applications[selectedRow].application_text}
+                {applications[selectedRow]?.application_text}
               </p>
             </div>
             <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
@@ -235,10 +251,10 @@ function AdoptionApplicationsAdmin() {
                     </thead>
                     <tbody>
                         <tr>
-                          <td> {applications[selectedRow].pet_species} </td>
-                          <td> {applications[selectedRow].pet_breed} </td>
-                          <td> {applications[selectedRow].pet_gender} </td>
-                          <td> {applications[selectedRow].pet_age} </td>
+                          <td> {applications[selectedRow]?.pet_species} </td>
+                          <td> {applications[selectedRow]?.pet_breed} </td>
+                          <td> {applications[selectedRow]?.pet_gender} </td>
+                          <td> {applications[selectedRow]?.pet_age} </td>
                         </tr>
                     </tbody>
                   </table>

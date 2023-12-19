@@ -53,18 +53,19 @@ function ApplicationsList() {
       application_status: "SHELTER_APPROVED",
     };
 
-    updateApplicationStatus(data).then((res) => {
-      setApplications(
-        applications.filter(
-          (a) => applications[selectedRow].application_id !== a.application_id
-        )
-      );
-      setSelectedRow(null);
-      setTimedAlert("Application approved", "success", 3000);
-    });
-    /* .catch((err) => {
-        setTimedAlert("Error accepting application", "error", 3000);
-      }); */
+    updateApplicationStatus(data)
+      .then((res) => {
+        setApplications(
+          applications.filter(
+            (a) => applications[selectedRow].application_id !== a.application_id
+          )
+        );
+        setSelectedRow(null);
+        setTimedAlert("Application approved", "success", 3000);
+      })
+      .catch((err) => {
+          setTimedAlert("Error accepting application", "error", 3000);
+      }); 
   };
 
   const rejectApplicationHandler = () => {
@@ -80,18 +81,19 @@ function ApplicationsList() {
       application_status: "REJECTED",
     };
 
-    updateApplicationStatus(data).then((res) => {
-      setApplications(
-        applications.filter(
-          (a) => applications[selectedRow].application_id !== a.application_id
-        )
-      );
-      setSelectedRow(null);
-      setTimedAlert("Application rejected", "success", 3000);
-    });
-    /* .catch((err) => {
+    updateApplicationStatus(data)
+      .then((res) => {
+        setApplications(
+          applications.filter(
+            (a) => applications[selectedRow].application_id !== a.application_id
+          )
+        );
+        setSelectedRow(null);
+        setTimedAlert("Application rejected", "success", 3000);
+      })
+      .catch((err) => {
         setTimedAlert("Error rejecting application", "error", 3000);
-      }); */
+      });
   };
 
   return (

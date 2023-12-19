@@ -57,6 +57,8 @@ function ApplicationsList() {
             return application.application_id !== applicationId[0];
           })
         );
+
+        setSelectedRow(null);
       })
       .catch((err) => {
         setTimedAlert("Error cancelling application", "error", 3000);
@@ -143,7 +145,7 @@ function ApplicationsList() {
                   onClick={cancelApplicationHandler}
                   className="btn btn-danger mb-2"
                   type="button"
-                  disabled={applications[selectedRow].application_status !== "PENDING"}
+                  disabled={applications[selectedRow].application_status === "ACCEPTED"}
                   style={{
                     backgroundColor: "red",
                     borderColor: "red",
