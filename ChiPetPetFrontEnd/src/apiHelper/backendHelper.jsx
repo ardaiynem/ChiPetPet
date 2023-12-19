@@ -103,8 +103,8 @@ export const deleteNotification = async (user_id, date_and_time) => {
 };
 
 // health record
-export const uploadHealthRecord = async () => {
-  return await postFetcher(url.UPLOAD_HEALTH_RECORD_PATH());
+export const uploadHealthRecord = async (data) => {
+  return await postFetcher(url.UPLOAD_HEALTH_RECORD_PATH(), data);
 };
 
 export const getHealthRecordsByPet = async (pet_id) => {
@@ -131,6 +131,10 @@ export const getPetById = async (petid) => {
 export const getPetsByAdopterId = async (adopter_id) => {
   return await getFetcher(url.GET_PETS_BY_ADOPTER_ID_PATH(adopter_id));
 };
+
+export const getPetsByAdopterIdForShelter = async (adopter_id) => {
+  return await getFetcher(url.GET_PETS_BY_ADOPTER_ID_FOR_SHELTER_PATH(adopter_id));
+}
 
 // verification documents
 
