@@ -2,8 +2,10 @@ import { Card, Button, Dropdown, Modal, Form } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../../contexts/panelContext";
-import { getAllVeterinarians } from "../../apiHelper/backendHelper";
+import { getAllVeterinarians, getPetsByAdopterId } from "../../apiHelper/backendHelper";
 import axios from "axios";
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
 
 function SearchVeterinarian() {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -11,8 +13,11 @@ function SearchVeterinarian() {
   const [selectedVet, setSelectedVet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showModalMsg, setShowModalMsg] = useState(false);
+  
+  const { userDetails } = useAuth();
+  const { setTimedAlert } = useAlert();
 
-  const [userPets, setUserPets] = useState([{ name: "necdet" }, { name: "kemal" }]);
+  const [userPets, setUserPets] = useState([]);
   const [selectedPetApt, setSelectedPetApt] = useState(null);
 
 
@@ -25,6 +30,7 @@ function SearchVeterinarian() {
   const [address, setAddress] = useState("");
   const [expertise, setExpertise] = useState("");
 
+  const [message, setMessage] = useState("");
   useEffect(() => {
     axios
       .get(
@@ -43,15 +49,39 @@ function SearchVeterinarian() {
       });
   }, [name, address, expertise, sortOption]);
 
+  useEffect(() => {
+    getPetsByAdopterId(userDetails.user_id)
+      .then((res) => {
+        setUserPets(res.data.pets);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting pets", "error", 3000);
+      });
+  }, []);
+
   const handleMakeAppointment = () => {
     setShowModal(false);
   };
 
-
   const handleContact = () => {
-    setShowModalMsg(false);
+    const formattedDate = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+    console.log("Selected vet", selectedVet);
+    axios
+      .post("http://127.0.0.1:8000/message/send", {
+        user_id: userDetails.user_id,
+        date_and_time: formattedDate,
+        receiver_id: selectedVet.user_id,
+        content: message,
+      })
+      .then((res) => {
+        setShowModalMsg(false);
+        setMessage("");
+        setTimedAlert("Message successfully sent", "success", 3000);
+      });
   };
-
 
   const renderTimeOptions = () => {
     const timeOptions = [];
@@ -70,7 +100,8 @@ function SearchVeterinarian() {
         // Assuming selectedDate is the current selected date
         const isUnavailable = existingAppointments.some(
           (appointment) =>
-            appointment.date === selectedDate && appointment.time === formattedTime
+            appointment.date === selectedDate &&
+            appointment.time === formattedTime
         );
 
         timeOptions.push(
@@ -78,7 +109,7 @@ function SearchVeterinarian() {
             key={formattedTime}
             value={formattedTime}
             disabled={isUnavailable}
-            style={{ color: isUnavailable ? 'red' : 'black' }}
+            style={{ color: isUnavailable ? "red" : "black" }}
           >
             {formattedTime}
           </option>
@@ -88,7 +119,6 @@ function SearchVeterinarian() {
     return timeOptions;
   };
 
-
   return (
     <div className="p-0" style={{ width: "100%" }}>
       <Button
@@ -97,8 +127,12 @@ function SearchVeterinarian() {
       >
         Back
       </Button>
-      <div className="d-flex" onClick={() => setSelectedVet(null)}>
-        <div className="" style={{ flex: "1 1 0" }}>
+      <div className="d-flex">
+        <div
+          className=""
+          style={{ flex: "1 1 0" }}
+          onClick={() => setSelectedVet(null)}
+        >
           <div className="d-flex align-items-center mb-5">
             <div className="d-flex mt-1">
               <input
@@ -177,7 +211,13 @@ function SearchVeterinarian() {
             </thead>
             <tbody>
               {veterinarians.map((vet) => (
-                <tr key={vet.user_id} onClick={(e) => { e.stopPropagation(); setSelectedVet(vet) }}>
+                <tr
+                  key={vet.user_id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedVet(vet);
+                  }}
+                >
                   <th scope="row">{vet.username}</th>
                   <td>{vet.address}</td>
                   <td>{vet.expertise}</td>
@@ -210,8 +250,11 @@ function SearchVeterinarian() {
                 >
                   Make Appointment
                 </Button>
-                <Button className="btn btn-primary" type="button"
-                  onClick={() => setShowModalMsg(true)}>
+                <Button
+                  className="btn btn-primary"
+                  type="button"
+                  onClick={() => setShowModalMsg(true)}
+                >
                   Contact
                 </Button>
               </div>
@@ -244,7 +287,7 @@ function SearchVeterinarian() {
 
                 <Dropdown.Menu>
                   {userPets.map((pet) => (
-                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>{pet.name}</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>{pet.pet_name}</Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
 
@@ -283,12 +326,25 @@ function SearchVeterinarian() {
         </Modal.Header>
         <Modal.Body>
           <div className="form-floating">
-            <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{ height: "200px" }}></textarea>
-            <label htmlFor="floatingTextarea2">Comments</label>
+            <textarea
+              className="form-control"
+              placeholder="Type your message here"
+              id="floatingTextarea2"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              style={{ height: "200px" }}
+            ></textarea>
+            <label htmlFor="floatingTextarea2">Your message here</label>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowModal(false);
+              setMessage("");
+            }}
+          >
             Close
           </Button>
           <Button variant="primary" onClick={handleContact}>

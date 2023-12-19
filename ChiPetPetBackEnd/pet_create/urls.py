@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import insert_pet, get_pets, get_pets_by_shelter, insert_pets_from_excel, get_pets_by_type, get_pet_by_id, get_pets_by_type_with_attributes, get_pets_by_shelter_with_attributes
+from .views import insert_pet, get_pets, get_pets_by_shelter, insert_pets_from_excel, get_pets_by_type, get_pet_by_id, get_pets_by_type_with_attributes, get_pets_by_shelter_with_attributes, get_pets_by_adopter_id
 
 urlpatterns = [
     path('insert_pet/', insert_pet, name='insert_pet'),
@@ -12,5 +12,6 @@ urlpatterns = [
     path('get_pets_by_type_with_attributes/', get_pets_by_type_with_attributes,
          name='get_pets_by_type_with_attributes'),
     path('get_pets_by_shelter_with_attributes/', get_pets_by_shelter_with_attributes,
-         name='get_pets_by_shelter_with_attributes')
+         name='get_pets_by_shelter_with_attributes'), 
+     path('get_pets_by_adopter_id/', get_pets_by_adopter_id, name='get_pets_by_adopter_id')
 ]
