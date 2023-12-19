@@ -44,6 +44,48 @@ def insert_pet(request):
 
 
 @csrf_exempt
+@require_http_methods(["POST"])
+def update_pet(request):
+
+    pet_id = request.POST.get('pet_id')
+    name = request.POST.get('name')
+    species = request.POST.get('species')
+    breed = request.POST.get('breed')
+    gender = request.POST.get('gender')
+    age = request.POST.get('age')
+    health_status = request.POST.get('health_status')
+    description = request.POST.get('description')
+    photo = request.FILES.get('photo')
+    adoption_status = request.POST.get('adoption_status')
+
+    # Convert base64-encoded photo to bytes
+    if photo:
+        # Read the photo file content and convert it to base64
+        photo_content = base64.b64encode(photo.read()).decode('utf-8')
+    else:
+        photo_content = None
+
+    # Insert into the pet table
+    cursor = connection.cursor()
+
+    cursor.execute("""UPDATE pet SET
+                    name = %s, 
+                   species = %s, 
+                   breed = %s, 
+                   gender = %s, 
+                   age = %s,
+                 health_status = %s,
+                description = %s, 
+                   photo = %s, 
+                   adoption_status = %s
+                     WHERE pet_id = %s""",
+                   (name, species, breed, gender, age, health_status,
+                    description, photo_content, adoption_status, pet_id))
+
+    return JsonResponse({'status': 'Pet updated successfully', 'petid': pet_id}, status=201)
+
+
+@csrf_exempt
 def get_pets(request):
     if request.method == 'GET':
         try:
@@ -229,7 +271,7 @@ def get_pets_by_adopter_id(request):
                     AND owns.adopter_id = user.user_id
                     AND user.user_id = %s
                     """, [adopter_id])
-    
+
     pets = cursor.fetchall()
     cursor.close()
 
@@ -237,7 +279,7 @@ def get_pets_by_adopter_id(request):
         return JsonResponse({
             'error': 'Pet does not exist'
         }, status=404)
-        
+
     return JsonResponse({"pets": [{
         'pet_id': row[0],
         'adopter_id': row[1],
@@ -263,7 +305,7 @@ def get_pets_by_adopter_id_for_shelter(request):
                     WHERE pet.shelter_id = user.user_id
                     AND user.user_id = %s
                     """, [adopter_id])
-    
+
     pets = cursor.fetchall()
     cursor.close()
 
@@ -271,7 +313,7 @@ def get_pets_by_adopter_id_for_shelter(request):
         return JsonResponse({
             'error': 'Pet does not exist'
         }, status=404)
-    
+
     return JsonResponse({"pets": [{
         'pet_id': row[0],
         'adopter_id': row[1],
@@ -285,7 +327,7 @@ def get_pets_by_adopter_id_for_shelter(request):
         'photo': row[9],
         'adoption_status': row[10]
     } for row in pets]}, status=200)
-        
+
 
 @csrf_exempt
 def insert_pets_from_excel(request):
