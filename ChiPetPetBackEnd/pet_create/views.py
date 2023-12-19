@@ -237,10 +237,19 @@ def get_pets_by_adopter_id(request):
         return JsonResponse({
             'error': 'Pet does not exist'
         }, status=404)
-    
+        
     return JsonResponse({"pets": [{
         'pet_id': row[0],
+        'adopter_id': row[1],
         'pet_name': row[2],
+        'species': row[3],
+        'breed': row[4],
+        'gender': row[5],
+        'age': row[6],
+        'health_status': row[7],
+        'description': row[8],
+        'photo': row[9],
+        'adoption_status': row[10]
     } for row in pets]}, status=200)
 
 

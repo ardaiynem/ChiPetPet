@@ -2,37 +2,21 @@ import { Card, Button, Dropdown } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
+import { getPetsByAdopterId } from "../../apiHelper/backendHelper";
 
 function MyPets() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
+    const { pets, setPets } = useState([]);
 
-    const [pets, setPets] = useState([
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-        {
-            id: 1,
-            name: "catto",
-            species: "street"
-        },
-    ]);
+    useEffect(() => {
+        getPetsByAdopterId(userDetails.user_id)
+            .then((res) => {
+                setPets(res.data.pets);
+            })
+            .catch((err) => {
+                setTimedAlert("Error getting pets", "error", 3000);
+            });
+    }, []);
 
     const [selectedPet, setSelectedPet] = useState(null);
 
