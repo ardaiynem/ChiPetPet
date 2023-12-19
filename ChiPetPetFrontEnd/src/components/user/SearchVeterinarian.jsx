@@ -2,20 +2,22 @@ import { Card, Button, Dropdown, Modal, Form } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../../contexts/panelContext";
-import { getAllVeterinarians } from "../../apiHelper/backendHelper";
+import { getAllVeterinarians, getPetsByAdopterId } from "../../apiHelper/backendHelper";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 
 function SearchVeterinarian() {
-  const { userDetails } = useAuth();
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const [veterinarians, setVeterinarians] = useState([]);
   const [selectedVet, setSelectedVet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showModalMsg, setShowModalMsg] = useState(false);
+  
+  const { userDetails } = useAuth();
+  const { setTimedAlert } = useAlert();
 
-  const [userPets, setUserPets] = useState([{ name: "necdet" }, { name: "kemal" }]);
+  const [userPets, setUserPets] = useState([]);
   const [selectedPetApt, setSelectedPetApt] = useState(null);
 
 
@@ -29,7 +31,6 @@ function SearchVeterinarian() {
   const [expertise, setExpertise] = useState("");
 
   const [message, setMessage] = useState("");
-  const { setTimedAlert } = useAlert();
   useEffect(() => {
     axios
       .get(
@@ -47,6 +48,16 @@ function SearchVeterinarian() {
         setVeterinarians(res.data.veterinarians);
       });
   }, [name, address, expertise, sortOption]);
+
+  useEffect(() => {
+    getPetsByAdopterId(userDetails.user_id)
+      .then((res) => {
+        setUserPets(res.data.pets);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting pets", "error", 3000);
+      });
+  }, []);
 
   const handleMakeAppointment = () => {
     setShowModal(false);
@@ -276,7 +287,7 @@ function SearchVeterinarian() {
 
                 <Dropdown.Menu>
                   {userPets.map((pet) => (
-                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>{pet.name}</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>{pet.pet_name}</Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
 

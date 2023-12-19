@@ -123,8 +123,10 @@ CREATE TABLE appointment (
     appointment_text VARCHAR(255),
     user_id INT,
     veterinarian_id INT,
+    pet_id INT,
     FOREIGN KEY (user_id) REFERENCES user(user_id),
-    FOREIGN KEY (veterinarian_id) REFERENCES user(user_id) 
+    FOREIGN KEY (veterinarian_id) REFERENCES user(user_id),
+    FOREIGN KEY (pet_id) REFERENCES pet(pet_id)
 );
 
 CREATE TABLE message (
@@ -197,16 +199,40 @@ INSERT INTO user (first_name, last_name, username, email, password, verified, ro
 VALUES ('John', 'Smith', 'johnsmith', 'johnsmith@email.com', 'password', 'yes', 'veterinarian');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
-VALUES ('b', 'b', 'b', 'b@b.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$Kz4TLHr4Ud6AS4vjk21ze03LaX+7FbUA7aDZCjyLkb0=', 'b', 'user');
+VALUES ('b', 'b', 'b', 'b@b.com', 'pbkdf2_sha256$260000$9FHonBlSAvEYlPS7PvBFHp$Kz4TLHr4Ud6AS4vjk21ze03LaX+7FbUA7aDZCjyLkb0=', 'True', 'animal_shelter');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
-VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$84kXvMQbYxBbbmd1qhDPIQ$Og+wlbG71N5RgBddkRkBihA/pbe1sy9MGDI3EC9NvWo=', 'c', 'user');
+VALUES ('c', 'c', 'c', 'c@c.com', 'pbkdf2_sha256$260000$84kXvMQbYxBbbmd1qhDPIQ$Og+wlbG71N5RgBddkRkBihA/pbe1sy9MGDI3EC9NvWo=', 'True', 'adopter');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
-VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$SuoMUQI3vxs03bLVrWHJhe$4osJksIDs7TcFZ8RQr8kRxz2j7ESE8kmRsKcgu2l+HM=', 'd', 'user');
+VALUES ('d', 'd', 'd', 'd@d.com', 'pbkdf2_sha256$260000$SuoMUQI3vxs03bLVrWHJhe$4osJksIDs7TcFZ8RQr8kRxz2j7ESE8kmRsKcgu2l+HM=', 'True', 'veterinarian');
 
 INSERT INTO user (first_name, last_name, username, email, password, verified, role)
-VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@email.com', 'password', 'yes', 'veterinarian');
+VALUES ('Jane', 'Smith', 'janesmith', 'janesmith@email.com', 'password', 'True', 'veterinarian');
+
+INSERT INTO animal_shelter (user_id, address, contact, verification_documents)
+VALUES (4, '123 Shelter St', '123-456-7890', NULL);
+
+INSERT INTO adopter (user_id)
+VALUES (5);
+
+INSERT INTO veterinarian (user_id, address, contact, verification_documents, expertise)
+VALUES (6, '123 Vet St', '123-456-7890', NULL, 'Dogs');
+
+INSERT INTO pet (shelter_id, name, species, breed, gender, age, health_status, description, photo, adoption_status)
+VALUES (4, 'Buddy', 'Dog', 'Labrador Retriever', 'Male', 2, 'Good', 'Friendly and playful dog', NULL, 'Available'); 
+
+INSERT INTO pet (shelter_id, name, species, breed, gender, age, health_status, description, photo, adoption_status)
+VALUES (4, 'cato', 'cato', 'cato cato', 'Female', 2, 'Good', 'Friendly and playful cato', NULL, 'Adopted'); 
+
+INSERT INTO owns (pet_id, adopter_id)
+VALUES (2, 5);
+
+INSERT INTO applies (application_status, application_text, adopter_id, animal_shelter_id, pet_id)
+VALUES ('PENDING', 'I would like to adopt Buddy.', 5, 4, 1);
+
+INSERT INTO appointment (date_and_time, location, appointment_text, user_id, veterinarian_id, pet_id)
+VALUES ('2020-11-11 11:11:11', '123 Vet St', 'Checkup', 5, 6, 1);
 
 INSERT INTO message  
 VALUES ("1999-09-29", "Hello", 4, 5);
@@ -257,15 +283,6 @@ VALUES (2);
 
 INSERT INTO veterinarian (user_id, address, contact, verification_documents, expertise)
 VALUES (3, '123 Vet St', '123-456-7890', NULL, 'Dogs');
-
-INSERT INTO pet (shelter_id, name, species, breed, gender, age, health_status, description, photo, adoption_status)
-VALUES (1, 'Buddy', 'Dog', 'Labrador Retriever', 'Male', 2, 'Good', 'Friendly and playful dog', NULL, 'Available');
-
-INSERT INTO applies (application_status, application_text, adopter_id, animal_shelter_id, pet_id)
-VALUES ('PENDING', 'I would like to adopt Buddy.', 2, 1, 1);
-
-INSERT INTO appointment (date_and_time, location, appointment_text, user_id, veterinarian_id)
-VALUES ('2020-11-11 11:11:11', '123 Vet St', 'Checkup', 2, 3);
 
 INSERT INTO notification (user_id, date_and_time, topic, description)
 VALUES (2, '2023-01-01 10:00:00', 'Application Status', 'Your adoption application is pending review.');
