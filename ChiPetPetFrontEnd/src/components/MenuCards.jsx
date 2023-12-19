@@ -58,7 +58,8 @@ function MenuCards() {
     { name: "Add New Animal", element: <AddNewAnimal /> },
     { name: "Verification Operations", element: <VerificationRequests /> },
     { name: "Upload Health Records", element: <UploadHealthRecord /> },
-    { name: "Guide", element: <GuidePage /> }
+    { name: "Guide", element: <GuidePage /> },
+    { name: "Upload Health Records", element: <UploadHealthRecord /> }
   ];
 
   let cardHeadersShelter = [
