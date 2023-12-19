@@ -2,7 +2,7 @@ import { Button, Dropdown, FormControl, Modal, Form } from 'react-bootstrap';
 import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { getAppointmentByUser } from "../../apiHelper/backendHelper";
+import { getAppointmentByUser, deleteAppointment, updateApplication, getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 
@@ -13,19 +13,14 @@ function UserAppointments() {
   const { setTimedAlert } = useAlert();
   const { userDetails } = useAuth();
 
-  const [selectedVet, setSelectedVet] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showModalMsg, setShowModalMsg] = useState(false);
   const [appointmentText, setAppointmentText] = useState("");
   const [existingAppointments, setExistingAppointments] = useState([]);
 
-  const [userPets, setUserPets] = useState([]);
-  const [selectedPetApt, setSelectedPetApt] = useState(null);
-
   const [selectedTime, setSelectedTime] = useState(null);
 
   const [selectedDate, setDate] = useState("2023-01-01");
-
 
   const [message, setMessage] = useState("");
 
@@ -38,7 +33,7 @@ function UserAppointments() {
   };
 
   useEffect(() => {
-    getAppointmentByUser(5)
+    getAppointmentByUser(userDetails.user_id)
       .then((res) => {
         setAppointments(res.data.appointments);
         console.log(res.data.appointments);
@@ -48,13 +43,47 @@ function UserAppointments() {
       });
   }, []);
 
-  const contactHandler = () => {
-    alert("Contacted");
-  }
+  const cancelAppointmentHandler = () => {
+    if (selectedRow === null) {
+      setTimedAlert("Please select an appointment", "error", 3000);
+      return;
+    }
 
-  const rescheduleApplicationHandler = () => {
-    alert("Rescheduled");
-  }
+    const appointmentId = [appointments[selectedRow].appointment_id];
+
+    deleteAppointment(appointmentId)
+      .then((res) => {
+        setTimedAlert("Appointment cancelled", "success", 3000);
+      })
+      .catch((err) => {
+        setTimedAlert("Error cancelling appointment", "error", 3000);
+      });
+  };
+
+  const getExistingAppointments = (user_id) => {
+    getVeterinarianAppointmentDates(user_id)
+      .then((res) => {
+        const converted = res.data.appointments?.map((appointment) => {
+          const [dateTime] = appointment;
+          let [date, time] = dateTime.split("T");
+          time = time.substring(0, 3) + "00";
+          return { date, time };
+        });
+
+        setExistingAppointments(converted);
+
+        console.log("converted", converted);
+      })
+      .catch((err) => {
+        setTimedAlert("Error getting appointments", "error", 3000);
+      });
+  };
+
+  useEffect(() => {
+    if (selectedRow !== null) {
+      getExistingAppointments(appointments[selectedRow].veterinarian_id);
+    }
+  }, [selectedRow]);
 
   const renderTimeOptions = () => {
     const timeOptions = [];
@@ -87,17 +116,20 @@ function UserAppointments() {
     return timeOptions;
   };
 
-  const handleMakeAppointment = () => {
+  const handleRescheduleAppointment = () => {
 
     if (!selectedPetApt) {
       setTimedAlert("Please select a pet", "error", 3000);
       return;
     }
 
-    console.log(selectedTime);
+    if (!selectedDate) {
+      setTimedAlert("Please select a date", "error", 3000);
+      return;
+    }
 
-    if (selectedTime === "") {
-      setTimedAlert("Select valid time", "error", 3000);
+    if (!selectedTime) {
+      setTimedAlert("Please select a time", "error", 3000);
       return;
     }
 
@@ -106,24 +138,24 @@ function UserAppointments() {
     console.log("formattedDate", formattedDate);
 
     const data = {
+      "appointment_id": appointments[selectedRow].appointment_id,
       "date_and_time": formattedDate,
-      "location": selectedVet.address,
+      "location": appointments[selectedRow].location,
       "appointment_text": appointmentText,
       "user_id": userDetails.user_id,
-      "veterinarian_id": selectedVet.user_id,
-      "pet_id": selectedPetApt.pet_id
+      "veterinarian_id": appointments[selectedRow].veterinarian_id,
+      "pet_id": appointments[selectedRow].pet_id,
     }
 
-    createAppointment(data)
+    updateApplication(data)
       .then((res) => {
-        setTimedAlert("Appointment created", "success", 3000);
-        getExistingAppointments(selectedVet.user_id);
+        setShowModal(false);
+        setAppointmentText("");
+        setTimedAlert("Appointment successfully rescheduled", "success", 3000);
       })
       .catch((err) => {
-        setTimedAlert("Error creating appointment", "error", 3000);
+        setTimedAlert("Error rescheduling appointment", "error", 3000);
       });
-
-    setShowModal(false);
   };
 
   const handleContact = () => {
@@ -131,12 +163,11 @@ function UserAppointments() {
       .toISOString()
       .slice(0, 19)
       .replace("T", " ");
-    console.log("Selected vet", selectedVet);
     axios
       .post("http://127.0.0.1:8000/message/send", {
         user_id: userDetails.user_id,
         date_and_time: formattedDate,
-        receiver_id: selectedVet.user_id,
+        receiver_id: appointments[selectedRow].veterinarian_id,
         content: message,
       })
       .then((res) => {
@@ -216,6 +247,20 @@ function UserAppointments() {
                   </button>
                   <button
                     onClick={() => setShowModal(true)}
+                    className="btn btn-success mb-2"
+                    type="button"
+                    // disabled={appointments[selectedRow].application_status !== "PENDING"}
+                    style={{
+                      backgroundColor: "green",
+                      borderColor: "green",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Reschedule
+                  </button>
+                  <button
+                    onClick={cancelAppointmentHandler}
                     className="btn btn-danger mb-2"
                     type="button"
                     // disabled={appointments[selectedRow].application_status !== "PENDING"}
@@ -226,7 +271,7 @@ function UserAppointments() {
                       width: "100px",
                     }}
                   >
-                    Reschedule
+                    Cancel
                   </button>
                 </div>
               </div>
@@ -266,7 +311,7 @@ function UserAppointments() {
       {/* Modal for making appointment */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Make Appointment</Modal.Title>
+          <Modal.Title>Reschedule Appointment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <input
@@ -274,27 +319,6 @@ function UserAppointments() {
             onChange={(e) => setDate(e.target.value)}
             value={selectedDate}
           />
-          <div class="mb-3 mt-3">
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                {
-                  selectedPetApt ? selectedPetApt.pet_name : "Select Pet"
-                }
-              </Dropdown.Toggle>
-
-              {
-                userPets &&
-
-                <Dropdown.Menu>
-                  {userPets.map((pet) => (
-                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>{pet.pet_name}</Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-
-              }
-            </Dropdown>
-
-          </div>
           <Form.Group controlId="appointmentTime">
             <Form.Label>Select Time:</Form.Label>
             <Form.Control
@@ -324,8 +348,8 @@ function UserAppointments() {
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleMakeAppointment}>
-            Make Appointment
+          <Button variant="primary" onClick={handleRescheduleAppointment}>
+            Reschedule Appointment
           </Button>
         </Modal.Footer>
       </Modal>
@@ -333,7 +357,7 @@ function UserAppointments() {
       {/* Modal for contacting */}
       <Modal show={showModalMsg} onHide={() => setShowModalMsg(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Send Message to {selectedVet?.username}</Modal.Title>
+          <Modal.Title>Send Message to {appointments[selectedRow]?.veterinarian_id}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-floating">
