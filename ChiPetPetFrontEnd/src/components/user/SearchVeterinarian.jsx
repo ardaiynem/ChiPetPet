@@ -93,7 +93,7 @@ function SearchVeterinarian() {
       >
         Back
       </Button>
-      <div className="d-flex">
+      <div className="d-flex" onClick={() => setSelectedVet(null)}>
         <div className="" style={{ flex: "1 1 0" }}>
           <div className="d-flex align-items-center mb-5">
             <div className="d-flex mt-1">
@@ -173,7 +173,7 @@ function SearchVeterinarian() {
             </thead>
             <tbody>
               {veterinarians.map((vet) => (
-                <tr key={vet.user_id} onClick={() => setSelectedVet(vet)}>
+                <tr key={vet.user_id} onClick={(e) => { e.stopPropagation(); setSelectedVet(vet) }}>
                   <th scope="row">{vet.username}</th>
                   <td>{vet.address}</td>
                   <td>{vet.expertise}</td>
@@ -258,7 +258,7 @@ function SearchVeterinarian() {
         </Modal.Header>
         <Modal.Body>
           <div className="form-floating">
-            <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{height: "200px"}}></textarea>
+            <textarea className="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style={{ height: "200px" }}></textarea>
             <label htmlFor="floatingTextarea2">Comments</label>
           </div>
         </Modal.Body>
