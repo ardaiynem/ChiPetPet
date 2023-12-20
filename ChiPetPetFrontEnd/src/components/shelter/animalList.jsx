@@ -10,7 +10,7 @@ import {
   Col,
   Form,
 } from "react-bootstrap";
-import catImg from "../../assets/cat1.jpeg";
+import emptyImg from "../../assets/empty.png";
 import HealthRecords from "../healthRecords";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
@@ -319,7 +319,7 @@ function AnimalList() {
                 <img
                   src={
                     selectedAnimal.photo === null
-                      ? catImg
+                      ? emptyImg
                       : `data:image/png;base64, ${selectedAnimal.photo}`
                   }
                   className="card-img-top"

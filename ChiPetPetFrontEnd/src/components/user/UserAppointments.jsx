@@ -1,5 +1,5 @@
 import { Button, Dropdown, FormControl, Modal, Form } from 'react-bootstrap';
-import catImg from "../../assets/cat1.jpeg";
+import emptyImg from "../assets/empty.png";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { getAppointmentByUser, deleteAppointment, updateAppointment, getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
@@ -248,7 +248,7 @@ function UserAppointments() {
           <div className="d-flex flex-column align-items-end" style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}>
             <div className="card mb-3" style={{ width: "100%" }}>
               <div className="d-flex p-3 justify-content-center">
-                <img src={appointments[selectedRow].photo ? appointments[selectedRow].photo : catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
+                <img src={appointments[selectedRow].photo ? appointments[selectedRow].photo : emptyImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
                 <h5 className="card-title" style={{ marginRight: "50px" }}>{appointments[selectedRow]?.name}</h5>
                 <div className="d-flex flex-column align-items-start">
                   <button className="btn btn-primary" onClick={() => setShowModalMsg(true)}
