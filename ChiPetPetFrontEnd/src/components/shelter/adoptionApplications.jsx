@@ -26,7 +26,7 @@ function ApplicationsList() {
     getApplicationByShelter(userDetails.user_id)
       .then((res) => {
         setApplications(res.data.applications);
-        console.log(res.data.applications)
+        console.log(res.data.applications);
       })
       .catch((err) => {
         setTimedAlert("Error getting applications", "error", 3000);
@@ -66,8 +66,8 @@ function ApplicationsList() {
         setTimedAlert("Application approved", "success", 3000);
       })
       .catch((err) => {
-          setTimedAlert("Error accepting application", "error", 3000);
-      }); 
+        setTimedAlert("Error accepting application", "error", 3000);
+      });
   };
 
   const rejectApplicationHandler = () => {
@@ -165,9 +165,11 @@ function ApplicationsList() {
             <div className="card mb-3" style={{ width: "100%" }}>
               <div className="d-flex p-3 justify-content-center">
                 <img
-                  src={applications[selectedRow]?.pet_photo === null
+                  src={
+                    applications[selectedRow]?.pet_photo === null
                       ? emptyImg
-                      : `data:image/png;base64, ${applications[selectedRow]?.pet_photo}`}
+                      : `data:image/png;base64, ${applications[selectedRow]?.pet_photo}`
+                  }
                   className="card-img-top"
                   alt="Cat"
                   style={{ width: "200px", marginRight: "20px" }}
@@ -183,12 +185,12 @@ function ApplicationsList() {
                     disabled={
                       applications[selectedRow].application_status !== "PENDING"
                     }
-                      style={{
-                        backgroundColor: "red",
-                        borderColor: "red",
-                        color: "white",
-                        width: "100px",
-                      }}
+                    style={{
+                      backgroundColor: "red",
+                      borderColor: "red",
+                      color: "white",
+                      width: "100px",
+                    }}
                   >
                     Reject
                   </button>
@@ -207,18 +209,6 @@ function ApplicationsList() {
                     }}
                   >
                     Accept
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    type="button"
-                    style={{
-                      backgroundColor: "blue",
-                      borderColor: "blue",
-                      color: "white",
-                      width: "100px",
-                    }}
-                  >
-                    Contact
                   </button>
                 </div>
               </div>
