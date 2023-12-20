@@ -97,7 +97,7 @@ function MyPets() {
                 <div className="d-flex justify-content-end" style={{ flex: "1 1 0" }}>
                     <div className="card" style={{ width: "600px", visibility: selectedPet ? "visible" : "hidden" }}>
                         <div className="d-flex p-3 gap-3 justify-content-between">
-                            <img src={catImg} className="card-img-top" style={{width:"300px"}}/>
+                            <img src={pets[selectedPet]?.photo || catImg} className="card-img-top" style={{width:"300px"}}/>
                             <table className="table table-striped" >
                                 <tbody>
                                     <tr>
