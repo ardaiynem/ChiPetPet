@@ -114,8 +114,7 @@ function AddNewAnimal() {
               <Form.Label>Species</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle
-                  className="border border-primary"
-                  variant="success"
+                  variant="secondary"
                   id="dropdown-basic"
                 >
                   {formData.species}
@@ -203,6 +202,7 @@ function AddNewAnimal() {
               <Form.Control
                 type="number"
                 min="1"
+                max="1200"
                 step="1"
                 placeholder="Enter age"
                 name="age"
@@ -234,8 +234,7 @@ function AddNewAnimal() {
               <Form.Label>Health Status</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle
-                  className="border border-primary"
-                  variant="success"
+                  variant="secondary"
                   id="dropdown-basic"
                 >
                   {formData.health_status}
@@ -265,8 +264,7 @@ function AddNewAnimal() {
               <Form.Label>Adoption Status</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle
-                  className="border border-primary"
-                  variant="success"
+                  variant="secondary"
                   id="dropdown-basic"
                 >
                   {formData.adoption_status}

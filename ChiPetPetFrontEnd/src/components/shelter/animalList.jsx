@@ -176,20 +176,19 @@ function AnimalList() {
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "150px", marginLeft:"15px" }}
             />
 
             <FormControl
               type="text"
               value={breed}
-              placeholder="breed"
+              placeholder="Breed"
               onChange={(e) => setBreed(e.target.value)}
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "150px", marginLeft:"15px" }}
             />
 
-            <label> Age in months </label>
-            <label> Min: </label>
+            <label style={{ marginLeft: "15px" }}> Min Age (Months): </label>
             <FormControl
               type="number"
               value={age.min}
@@ -203,24 +202,24 @@ function AnimalList() {
                 })
               }
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "100px", marginLeft: "5px" }}
             />
 
-            <label> Max: </label>
+            <label style={{ marginLeft: "15px" }}> Max Age (Months): </label>
             <FormControl
               type="number"
               value={age.max}
               placeholder="Max Age(Months): "
               onChange={(e) =>
                 setAge({
-                  min: age.min + 1,
+                  min: age.min,
                   max: e.target.value,
                 })
               }
               min={age.min + 1}
               max={1200}
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "100px", marginLeft: "5px" }}
             />
 
             <Dropdown>
@@ -245,7 +244,7 @@ function AnimalList() {
             </Dropdown>
 
             <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
+              <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ marginLeft: "15px" }}>
                 Species {species === "" ? "" : ": " + species.toUpperCase()}
               </Dropdown.Toggle>
 
@@ -491,8 +490,7 @@ function AnimalList() {
                         <Form.Label>Species</Form.Label>
                         <Dropdown>
                           <Dropdown.Toggle
-                            className="border border-primary"
-                            variant="success"
+                            variant="secondary"
                             id="dropdown-basic"
                           >
                             {selectedAnimal.species}
@@ -598,6 +596,7 @@ function AnimalList() {
                         <Form.Control
                           type="number"
                           min="1"
+                          max="1200"
                           step="1"
                           placeholder="Enter age"
                           name="age"
@@ -628,9 +627,8 @@ function AnimalList() {
                       <Form.Group controlId="formDescription">
                         <Form.Label>Health Status</Form.Label>
                         <Dropdown>
-                          <Dropdown.Toggle
-                            className="border border-primary"
-                            variant="success"
+                         <Dropdown.Toggle
+                            variant="secondary"
                             id="dropdown-basic"
                           >
                             {selectedAnimal.health_status}
@@ -666,8 +664,7 @@ function AnimalList() {
                         <Form.Label>Adoption Status</Form.Label>
                         <Dropdown>
                           <Dropdown.Toggle
-                            className="border border-primary"
-                            variant="success"
+                            variant="secondary"
                             id="dropdown-basic"
                           >
                             {selectedAnimal.adoption_status}
