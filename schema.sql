@@ -146,17 +146,14 @@ CREATE VIEW animal_shelter_info AS
 SELECT user_id, first_name, last_name, username, email, verified, role, address, contact
                     FROM user NATURAL JOIN animal_shelter;
 
-/* 
-///////////////////////////////////////
-TODO TODO TODO TODOT TODO TODOT 
-////////////////////////////////////////
+
 CREATE VIEW pet_search_info AS 
-SELECT pet_id, name, species, breed, gender, age, health_status, photo 
+SELECT * 
 FROM pet 
-WHERE adoption_status = 'WAITING';
+WHERE adoption_status != 'ADOPTED';
 
 
-
+/* 
 ///////////////////////////////////////
 TODO TODO TODO TODOT TODO TODOT 
 ////////////////////////////////////////

@@ -389,22 +389,20 @@ def get_pets_by_type_with_attributes(request):
     min_age = request.GET.get('min_age')
     max_age = request.GET.get('max_age')
 
+    status = request.GET.get('adoption_status')
+
     if (min_age is None or max_age is None):
         min_age = 0
         max_age = 1200
 
     cursor = connection.cursor()
 
-    query = """SELECT * FROM pet 
-          WHERE species LIKE %s AND breed LIKE %s AND name LIKE %s AND age BETWEEN %s AND %s {}"""
+    query = """SELECT * FROM {table} 
+          WHERE species LIKE %s AND breed LIKE %s AND name LIKE %s AND age BETWEEN %s AND %s {order}""".format(table="pet" if status == "ALL" else "pet_search_info", order=";" if sortOption ==
+                                                                                                               "None" else f"ORDER BY {sortOption}")
 
-    query = query.format(";" if sortOption ==
-                         "None" else f"ORDER BY {sortOption}")
-
-    cursor.execute(
-        query, (f"%{type.lower()}%", f"%{breed}%",
-                f"%{name}%", min_age, max_age)
-    )
+    cursor.execute(query, (
+                   f"%{type.lower()}%", f"%{breed}%", f"%{name}%", min_age, max_age))
 
     pets = cursor.fetchall()
 
@@ -452,7 +450,7 @@ def get_pets_by_shelter_with_attributes(request):
     if (species is None):
         species = ""
 
-    query = """SELECT * FROM pet 
+    query = """SELECT * FROM pet_search_info
           WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s AND species LIKE %s AND age BETWEEN %s AND %s"""
 
     query = (query + " {}").format(";" if sortOption ==

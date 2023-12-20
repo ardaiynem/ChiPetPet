@@ -52,6 +52,7 @@ function SearchPetPanel(props) {
               species: animalType,
               max_age: age.max,
               min_age: age.min,
+              adoption_status: "NOTADOPTED",
             },
           }
         )
@@ -78,6 +79,7 @@ function SearchPetPanel(props) {
               user_id: shelterid,
               max_age: age.max,
               min_age: age.min,
+              adoption_status: "NOTADOPTED",
             },
           }
         )
