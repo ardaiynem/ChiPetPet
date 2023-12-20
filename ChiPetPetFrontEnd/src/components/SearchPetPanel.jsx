@@ -270,7 +270,7 @@ function SearchPetPanel(props) {
                         )
                       }
                     >
-                      Go somewhere
+                      Open Pet Profile
                     </Button>
                   </Card.Body>
                 </Col>
