@@ -7,6 +7,7 @@ import UploadHealthRecord from "./uploadPage";
 import { getPetsByVeterinarian } from "../../apiHelper/backendHelper";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
+import emptyImg from "../../assets/empty.png";
 
 function VetAnimalList(){
   const { setTimedAlert } = useAlert();
@@ -67,7 +68,9 @@ function VetAnimalList(){
           {selectedAnimal && (
             <div className="card" style={{ width: "600px" }}>
               <div className="d-flex p-3 justify-content-center">
-                <img src={catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "50px" }} />
+                <img src={selectedAnimal?.photo === null
+                      ? emptyImg
+                      : `data:image/png;base64, ${selectedAnimal.photo}`} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "50px" }} />
                 <h5 className="card-title" style={{ marginRight: "50px", marginBottom: "10px" }}>{selectedAnimal.name}</h5>
                 <table className="table table-striped" style={{ width: "100px" }}>
                   <tbody>
