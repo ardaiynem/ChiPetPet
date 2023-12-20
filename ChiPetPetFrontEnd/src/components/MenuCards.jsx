@@ -24,6 +24,7 @@ import MyApplications from "../components/user/MyApplications";
 import UserAppointments from "./user/UserAppointments";
 import GuidePage from "./GuidePage";
 import SystemRecords from "./admin/SystemRecords";
+import VetAnimalList from "./veterinerian/VetAnimalList";
 import { useAuth } from "../AuthContext";
 import { useProfiles } from "../ProfilesContext";
 
@@ -89,6 +90,7 @@ function MenuCards() {
     { name: "Messages", element: <MessagePage /> },
     { name: "Profile", element: <Profile role={role} /> },
     { name: "Pet Blog", element: <PetBlog /> },
+    { name: "Animal List", element: <VetAnimalList /> },
     { name: "Guide", element: <GuidePage /> },
   ];
 
