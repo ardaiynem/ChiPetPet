@@ -5,6 +5,7 @@ import { useState, useEffect, useContext } from "react";
 import { getPetsByAdopterId } from "../../apiHelper/backendHelper";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
+import emptyImg from "../../assets/empty.png";
 
 function MyPets() {
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
@@ -97,7 +98,9 @@ function MyPets() {
                 <div className="d-flex justify-content-end" style={{ flex: "1 1 0" }}>
                     <div className="card" style={{ width: "600px", visibility: selectedPet ? "visible" : "hidden" }}>
                         <div className="d-flex p-3 gap-3 justify-content-between">
-                            <img src={pets[selectedPet]?.photo || catImg} className="card-img-top" style={{width:"300px"}}/>
+                            <img src={ selectedPet?.photo === null
+                                ? emptyImg
+                                : `data:image/png;base64, ${selectedPet?.photo}`} className="card-img-top" style={{width:"300px"}}/>
                             <table className="table table-striped" >
                                 <tbody>
                                     <tr>
