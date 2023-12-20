@@ -1,5 +1,5 @@
 import { Button, Dropdown, FormControl, Modal, Form } from "react-bootstrap";
-import emptyImg from "../assets/empty.png";
+import emptyImg from "../../assets/empty.png";
 import axios from "axios";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
