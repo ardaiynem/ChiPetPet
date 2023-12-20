@@ -1,6 +1,6 @@
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { Button, Dropdown, FormControl } from "react-bootstrap";
+import { Button, Dropdown, FormControl, Modal, Form } from "react-bootstrap";
 import catImg from "../../assets/cat1.jpeg";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
@@ -8,6 +8,7 @@ import {
   getApplicationByAdopter,
   deleteApplication,
 } from "../../apiHelper/backendHelper";
+import axios from "axios";
 
 /**
  * remove selection when clicked outside
@@ -21,10 +22,15 @@ function ApplicationsList() {
   const { userDetails } = useAuth();
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
+  const [showModal, setShowModal] = useState(false);
+  const [showModalMsg, setShowModalMsg] = useState(false);
+  const [message, setMessage] = useState("");
+
   useEffect(() => {
     getApplicationByAdopter(userDetails.user_id)
       .then((res) => {
         setApplications(res.data.applications);
+        console.log(res.data.applications);
       })
       .catch((err) => {
         setTimedAlert("Error getting applications", "error", 3000);
@@ -39,6 +45,25 @@ function ApplicationsList() {
     } else {
       setSelectedRow(rowNumber);
     }
+  };
+
+  const handleContact = () => {
+    const formattedDate = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+    axios
+      .post("http://127.0.0.1:8000/message/send", {
+        user_id: userDetails.user_id,
+        date_and_time: formattedDate,
+        receiver_id: applications[selectedRow].animal_shelter_id,
+        content: message,
+      })
+      .then((res) => {
+        setShowModalMsg(false);
+        setMessage("");
+        setTimedAlert("Message successfully sent", "success", 3000);
+      });
   };
 
   const cancelApplicationHandler = () => {
@@ -74,8 +99,8 @@ function ApplicationsList() {
         Back
       </Button>
 
-      <div className="d-flex" onClick={() => setSelectedRow(null)}>
-        <div className="" style={{ flex: "1 1 0", maxWidth: "70%" }}>
+      <div className="d-flex">
+        <div className="" style={{ flex: "1 1 0", maxWidth: "70%" }} onClick={() => setSelectedRow(null)}>
           <div className="d-flex justify-content-between mb-5 mt-4">
             <FormControl
               type="text"
@@ -145,7 +170,7 @@ function ApplicationsList() {
                   onClick={cancelApplicationHandler}
                   className="btn btn-danger mb-2"
                   type="button"
-                  disabled={applications[selectedRow].application_status === "ACCEPTED"}
+                  disabled={(applications[selectedRow].application_status === "ACCEPTED") || (applications[selectedRow].application_status === "REJECTED")}
                   style={{
                     backgroundColor: "red",
                     borderColor: "red",
@@ -158,6 +183,7 @@ function ApplicationsList() {
                 
                 <button
                   className="btn btn-primary"
+                  onClick={() => setShowModalMsg(true)}
                   type="button"
                   style={{
                     backgroundColor: "blue",
@@ -202,6 +228,39 @@ function ApplicationsList() {
           )}
         </div>
       </div>
+      {/* Modal for contacting */}
+      <Modal show={showModalMsg} onHide={() => setShowModalMsg(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Send Message to {applications[selectedRow]?.veterinarian_id}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-floating">
+            <textarea
+              className="form-control"
+              placeholder="Type your message here"
+              id="floatingTextarea2"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              style={{ height: "200px" }}
+            ></textarea>
+            <label htmlFor="floatingTextarea2">Your message here</label>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setShowModal(false);
+              setMessage("");
+            }}
+          >
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleContact}>
+            Send Message
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

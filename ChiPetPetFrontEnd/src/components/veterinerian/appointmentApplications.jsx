@@ -1,9 +1,13 @@
-import { Button, Dropdown, FormControl, Modal, Form } from 'react-bootstrap';
-import catImg from "../../assets/cat1.jpeg";
+import { Button, Dropdown, FormControl, Modal, Form } from "react-bootstrap";
+import emptyImg from "../../assets/empty.png";
 import axios from "axios";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { getAppointmentByVeterinarian, getVeterinarianAppointmentDates, updateAppointment } from "../../apiHelper/backendHelper";
+import {
+  getAppointmentByVeterinarian,
+  getVeterinarianAppointmentDates,
+  updateAppointment,
+} from "../../apiHelper/backendHelper";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 
@@ -13,7 +17,7 @@ function AppointmentList() {
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const { setTimedAlert } = useAlert();
   const { userDetails } = useAuth();
-  
+
   const [showModal, setShowModal] = useState(false);
   const [showModalMsg, setShowModalMsg] = useState(false);
   const [appointmentText, setAppointmentText] = useState("");
@@ -37,7 +41,7 @@ function AppointmentList() {
     if (selectedRow !== null) {
       getExistingAppointments(appointments[selectedRow].veterinarian_id);
     }
-  }, [selectedRow]); 
+  }, [selectedRow]);
 
   useEffect(() => {
     getAppointmentByVeterinarian(userDetails.user_id)
@@ -121,7 +125,6 @@ function AppointmentList() {
   };
 
   const handleRescheduleAppointment = () => {
-
     if (selectedRow === null) {
       setTimedAlert("Please select an appointment", "error", 3000);
       return;
@@ -142,14 +145,14 @@ function AppointmentList() {
     console.log("formattedDate", formattedDate);
 
     const data = {
-      "appointment_id": appointments[selectedRow].appointment_id,
-      "date_and_time": formattedDate,
-      "location": appointments[selectedRow].location,
-      "appointment_text": appointmentText,
-      "user_id": userDetails.user_id,
-      "veterinarian_id": appointments[selectedRow].veterinarian_id,
-      "pet_id": appointments[selectedRow].pet_id,
-    }
+      appointment_id: appointments[selectedRow].appointment_id,
+      date_and_time: formattedDate,
+      location: appointments[selectedRow].location,
+      appointment_text: appointmentText,
+      user_id: userDetails.user_id,
+      veterinarian_id: appointments[selectedRow].veterinarian_id,
+      pet_id: appointments[selectedRow].pet_id,
+    };
 
     updateAppointment(data)
       .then((res) => {
@@ -166,7 +169,10 @@ function AppointmentList() {
 
   return (
     <div className="p-0" style={{ width: "100%" }}>
-      <Button className="position-relative top-2 start-2 mb-2" onClick={() => setCurrentPanel("back")}>
+      <Button
+        className="position-relative top-2 start-2 mb-2"
+        onClick={() => setCurrentPanel("back")}
+      >
         Back
       </Button>
 
@@ -221,62 +227,87 @@ function AppointmentList() {
         </div>
 
         {selectedRow !== null && (
-        <div className="d-flex flex-column align-items-end" style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}>
-          <div className="card mb-3" style={{ width: "100%" }}>
-            <div className="d-flex p-3 justify-content-center">
-              <img src={appointments[selectedRow].photo ? appointments[selectedRow].photo : catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
-              <h5 className="card-title" style={{marginRight:"50px"}}>{appointments[selectedRow].name}</h5>
-              <div className="d-flex flex-column align-items-start">
-                <button className="btn btn-primary" 
-                  onClick={() => setShowModalMsg(true)} type="button" 
-                  style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
-                  Contact
-                </button>
-                <button
-                  onClick={() => setShowModal(true)}
-                  className="btn btn-danger mb-2"
-                  type="button"
-                  style={{
-                    backgroundColor: "red",
-                    borderColor: "red",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Reschedule
-                </button>
-              </div>
-            </div>
-            
-            <div className="card-body">
-              <h5 className="card-title">Appointment</h5>
-              <p className="card-text">Appointment Note: {appointments[selectedRow].appointment_text}</p>
-
-            </div>
-            <div className="d-flex flex-row">
+          <div
+            className="d-flex flex-column align-items-end"
+            style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}
+          >
+            <div className="card mb-3" style={{ width: "100%" }}>
               <div className="d-flex p-3 justify-content-center">
-            </div>
-              <div>
-                <table className="table table-striped" style={{ width: "300px", marginLeft: "10px" }}>
-                <thead>
-              <tr>
-                <th scope="col">Species</th>
-                <th scope="col">Breed</th>
-                <th scope="col">Gender</th>
-                <th scope="col">Age</th>
-              </tr>
-            </thead>
-            <tbody>
-              <th scope="col">{appointments[selectedRow].species}</th>
-              <th scope="col">{appointments[selectedRow].breed}</th>
-              <th scope="col">{appointments[selectedRow].gender}</th>
-              <th scope="col">{appointments[selectedRow].age}</th>
-            </tbody>
-                </table>
+                <img
+                  src={
+                    appointments[selectedRow].photo
+                      ? appointments[selectedRow].photo
+                      : emptyImg
+                  }
+                  className="card-img-top"
+                  alt="Cat"
+                  style={{ width: "200px", marginRight: "20px" }}
+                />
+                <h5 className="card-title" style={{ marginRight: "50px" }}>
+                  {appointments[selectedRow].name}
+                </h5>
+                <div className="d-flex flex-column align-items-start">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setShowModalMsg(true)}
+                    type="button"
+                    style={{
+                      backgroundColor: "blue",
+                      borderColor: "blue",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Contact
+                  </button>
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="btn btn-danger mb-2"
+                    type="button"
+                    style={{
+                      backgroundColor: "red",
+                      borderColor: "red",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Reschedule
+                  </button>
+                </div>
+              </div>
+
+              <div className="card-body">
+                <h5 className="card-title">Appointment</h5>
+                <p className="card-text">
+                  Appointment Note: {appointments[selectedRow].appointment_text}
+                </p>
+              </div>
+              <div className="d-flex flex-row">
+                <div className="d-flex p-3 justify-content-center"></div>
+                <div>
+                  <table
+                    className="table table-striped"
+                    style={{ width: "300px", marginLeft: "10px" }}
+                  >
+                    <thead>
+                      <tr>
+                        <th scope="col">Species</th>
+                        <th scope="col">Breed</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Age</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <th scope="col">{appointments[selectedRow].species}</th>
+                      <th scope="col">{appointments[selectedRow].breed}</th>
+                      <th scope="col">{appointments[selectedRow].gender}</th>
+                      <th scope="col">{appointments[selectedRow].age}</th>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         )}
       </div>
       {/* Modal for making appointment */}
@@ -328,7 +359,9 @@ function AppointmentList() {
       {/* Modal for contacting */}
       <Modal show={showModalMsg} onHide={() => setShowModalMsg(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Send Message to {appointments[selectedRow]?.veterinarian_id}</Modal.Title>
+          <Modal.Title>
+            Send Message to {appointments[selectedRow]?.veterinarian_id}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-floating">

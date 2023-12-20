@@ -382,18 +382,28 @@ def insert_pets_from_excel(request):
 @csrf_exempt
 def get_pets_by_type_with_attributes(request):
 
-    type = request.GET.get('type')
+    type = request.GET.get('species')
     name = request.GET.get('name')
     breed = request.GET.get('breed')
     sortOption = request.GET.get('sortOption')
+    min_age = request.GET.get('min_age')
+    max_age = request.GET.get('max_age')
+
+    if (min_age is None or max_age is None):
+        min_age = 0
+        max_age = 1200
 
     cursor = connection.cursor()
 
     query = """SELECT * FROM pet 
-          WHERE LOWER(species) = LOWER(%s) AND breed LIKE %s AND name LIKE %s {}""".format(";" if sortOption == "None" else f"ORDER BY {sortOption}")
+          WHERE species LIKE %s AND breed LIKE %s AND name LIKE %s AND age BETWEEN %s AND %s {}"""
+
+    query = query.format(";" if sortOption ==
+                         "None" else f"ORDER BY {sortOption}")
 
     cursor.execute(
-        query, (type.lower(), f"%{breed}%", f"%{name}%")
+        query, (f"%{type.lower()}%", f"%{breed}%",
+                f"%{name}%", min_age, max_age)
     )
 
     pets = cursor.fetchall()
@@ -430,27 +440,28 @@ def get_pets_by_shelter_with_attributes(request):
     breed = request.GET.get('breed')
     sortOption = request.GET.get('sortOption')
     species = request.GET.get('species')
+    min_age = request.GET.get('min_age')
+    max_age = request.GET.get('max_age')
 
     cursor = connection.cursor()
 
+    if (min_age is None or max_age is None):
+        min_age = 0
+        max_age = 1200
+
     if (species is None):
-        query = """SELECT * FROM pet 
-          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s"""
-    else:
-        query = """SELECT * FROM pet 
-          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s """ + "AND species LIKE %s"
+        species = ""
+
+    query = """SELECT * FROM pet 
+          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s AND species LIKE %s AND age BETWEEN %s AND %s"""
 
     query = (query + " {}").format(";" if sortOption ==
                                    "None" else f"ORDER BY {sortOption}")
 
-    if (species is None):
-        cursor.execute(
-            query, (shelter_id, f"%{breed}%", f"%{name}%")
-        )
-    else:
-        cursor.execute(
-            query, (shelter_id, f"%{breed}%", f"%{name}%", f"%{species}%")
-        )
+    cursor.execute(
+        query, (shelter_id, f"%{breed}%", f"%{name}%",
+                f"%{species}%", min_age, max_age)
+    )
 
     pets = cursor.fetchall()
 
