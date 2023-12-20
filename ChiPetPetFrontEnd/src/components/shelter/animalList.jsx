@@ -81,6 +81,7 @@ function AnimalList() {
           ...pets.filter((p) => p.pet_id !== selectedAnimal.pet_id),
           selectedAnimal,
         ]);
+        setUpdated(!updated);
         setTimedAlert("Animal saved successfully", "success", 3000);
       });
 
@@ -101,6 +102,7 @@ function AnimalList() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showExcellModal, setExcellModal] = useState(false);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
+  const [updated, setUpdated] = useState(false);
 
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
@@ -132,7 +134,7 @@ function AnimalList() {
 
   useEffect(() => {
     getAnimals();
-  }, [name, breed, sortOption, species, showExcellModal, age]);
+  }, [name, breed, sortOption, species, showExcellModal, age, updated]);
 
   const deletePetHandle = () => {
     console.log(pets);
@@ -553,7 +555,7 @@ function AnimalList() {
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() => {
-                                setSelected({
+                                setSelectedAnimal({
                                   ...selectedAnimal,
                                   species: "others",
                                 });
