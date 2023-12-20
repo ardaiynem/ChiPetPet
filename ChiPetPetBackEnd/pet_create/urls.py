@@ -19,5 +19,6 @@ urlpatterns = [
          name='get_pets_by_adopter_id'),
     path('get_pets_by_adopter_id_for_shelter/', views.get_pets_by_adopter_id_for_shelter,
          name='get_pets_by_adopter_id_for_shelter'),
-    path('delete_pet/', views.delete_pet, name='delete_pet')
+    path('delete_pet/', views.delete_pet, name='delete_pet'),
+    path('get_pet_by_veterinarian/', views.get_pet_by_veterinarian, name='get_pet_by_veterinarian')
 ]

@@ -49,6 +49,7 @@ export const GET_PETS_BY_TYPE_PATH = (type) => PET_CREATE_PATH() + "get_pets_by_
 export const GET_PET_BY_ID_PATH = (petid) => PET_CREATE_PATH() + "get_pet_by_id/?petid=" + petid;
 export const GET_PETS_BY_ADOPTER_ID_PATH = (adopter_id) => PET_CREATE_PATH() + "get_pets_by_adopter_id/?adopter_id=" + adopter_id;
 export const GET_PETS_BY_ADOPTER_ID_FOR_SHELTER_PATH = (adopter_id) => PET_CREATE_PATH() + "get_pets_by_adopter_id_for_shelter/?adopter_id=" + adopter_id;
+export const GET_PETS_BY_VETERINARIAN_PATH = (vetid) => PET_CREATE_PATH() + "get_pet_by_veterinarian/?user_id=" + vetid;
 
 // login register
 export const LOGIN_REGISTER_PATH = () => COMMON_PATH + "login_register/";
