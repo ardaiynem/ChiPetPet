@@ -296,6 +296,16 @@ def update_application_status(request):
 
     cursor.execute("UPDATE applies SET application_status = %s WHERE application_id = %s", [application_status, application_id])
     connection.commit()
+
+    if application_status == 'ACCEPTED':
+        cursor.execute("INSERT INTO owns (pet_id, adopter_id) VALUES (%s, %s)", [application[5], application[3]])
+        connection.commit()
+        cursor.execute("UPDATE pet SET adoption_status = 'ADOPTED' WHERE pet_id = %s", [application[5]])
+        connection.commit()
+        cursor.execute("UPDATE applies SET application_status = 'ADOPTED' WHERE application_id = %s", [application_id])
+        connection.commit()
+
+
     cursor.close()
 
     return JsonResponse({

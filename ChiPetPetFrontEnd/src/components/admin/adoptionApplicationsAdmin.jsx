@@ -208,7 +208,7 @@ function AdoptionApplicationsAdmin() {
                   onClick={acceptApplicationHandler}
                   className="btn btn-success mb-2"
                   type="button"
-                  disabled={applications[selectedRow]?.application_status !== "SHELTER_APPROVED"}
+                  disabled={(applications[selectedRow]?.application_status !== "SHELTER_APPROVED") && (applications[selectedRow]?.application_status !== "PENDING")}
                   style={{
                     backgroundColor: "green",
                     borderColor: "green",
