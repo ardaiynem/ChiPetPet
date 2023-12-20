@@ -176,20 +176,19 @@ function AnimalList() {
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "150px", marginLeft:"15px" }}
             />
 
             <FormControl
               type="text"
               value={breed}
-              placeholder="breed"
+              placeholder="Breed"
               onChange={(e) => setBreed(e.target.value)}
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "150px", marginLeft:"15px" }}
             />
 
-            <label> Age in months </label>
-            <label> Min: </label>
+            <label style={{ marginLeft: "15px" }}> Min Age (Months): </label>
             <FormControl
               type="number"
               value={age.min}
@@ -203,29 +202,32 @@ function AnimalList() {
                 })
               }
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "100px", marginLeft: "5px" }}
             />
 
-            <label> Max: </label>
+            <label style={{ marginLeft: "15px" }}> Max Age (Months): </label>
             <FormControl
               type="number"
               value={age.max}
               placeholder="Max Age(Months): "
               onChange={(e) =>
                 setAge({
-                  min: age.min + 1,
+                  min: age.min,
                   max: e.target.value,
                 })
               }
               min={age.min + 1}
               max={1200}
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ width: "100px", marginLeft: "5px" }}
             />
 
             <Dropdown>
               <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Sort By {sortOption === "None" ? "" : sortOption}
+                Sort By{" "}
+                {sortOption === "None"
+                  ? ""
+                  : sortOption.toUpperCase().replace("_", " ")}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
@@ -242,7 +244,7 @@ function AnimalList() {
             </Dropdown>
 
             <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
+              <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ marginLeft: "15px" }}>
                 Species {species === "" ? "" : ": " + species.toUpperCase()}
               </Dropdown.Toggle>
 
@@ -262,7 +264,7 @@ function AnimalList() {
                 <Dropdown.Item onClick={() => setSpecies("rabbit")}>
                   Rabbit
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => setSpecies("small&furry")}>
+                <Dropdown.Item onClick={() => setSpecies("small & furry")}>
                   Small & Furry
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => setSpecies("others")}>
@@ -488,8 +490,7 @@ function AnimalList() {
                         <Form.Label>Species</Form.Label>
                         <Dropdown>
                           <Dropdown.Toggle
-                            className="border border-primary"
-                            variant="success"
+                            variant="secondary"
                             id="dropdown-basic"
                           >
                             {selectedAnimal.species}
@@ -500,7 +501,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Cat",
+                                  species: "cat",
                                 });
                               }}
                             >
@@ -510,7 +511,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Dog",
+                                  species: "dog",
                                 });
                               }}
                             >
@@ -520,7 +521,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Bird",
+                                  species: "bird",
                                 });
                               }}
                             >
@@ -530,7 +531,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Rabbits",
+                                  species: "rabbit",
                                 });
                               }}
                             >
@@ -540,7 +541,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Small & Furry",
+                                  species: "small & furry",
                                 });
                               }}
                             >
@@ -550,7 +551,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelected({
                                   ...selectedAnimal,
-                                  species: "Others",
+                                  species: "others",
                                 });
                               }}
                             >
@@ -595,6 +596,7 @@ function AnimalList() {
                         <Form.Control
                           type="number"
                           min="1"
+                          max="1200"
                           step="1"
                           placeholder="Enter age"
                           name="age"
@@ -625,9 +627,8 @@ function AnimalList() {
                       <Form.Group controlId="formDescription">
                         <Form.Label>Health Status</Form.Label>
                         <Dropdown>
-                          <Dropdown.Toggle
-                            className="border border-primary"
-                            variant="success"
+                         <Dropdown.Toggle
+                            variant="secondary"
                             id="dropdown-basic"
                           >
                             {selectedAnimal.health_status}
@@ -642,17 +643,17 @@ function AnimalList() {
                                 });
                               }}
                             >
-                              Healthy
+                              HEALTHY
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  health_status: "ILL",
+                                  health_status: "UNHEALTHY",
                                 });
                               }}
                             >
-                              ILL
+                              UNHEALTHY
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
@@ -663,8 +664,7 @@ function AnimalList() {
                         <Form.Label>Adoption Status</Form.Label>
                         <Dropdown>
                           <Dropdown.Toggle
-                            className="border border-primary"
-                            variant="success"
+                            variant="secondary"
                             id="dropdown-basic"
                           >
                             {selectedAnimal.adoption_status}
@@ -675,7 +675,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  adoptionStatus: "WAITING",
+                                  adoption_status: "WAITING",
                                 });
                               }}
                             >
@@ -685,7 +685,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  adoptionStatus: "ADOPTED",
+                                  adoption_status: "ADOPTED",
                                 });
                               }}
                             >

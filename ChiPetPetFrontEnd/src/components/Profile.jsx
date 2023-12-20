@@ -164,6 +164,7 @@ const Profile = (props) => {
     changeAddressAndContact(data)
       .then((res) => {
         console.log(res);
+        setTimedAlert("Address and contact changed", "success", 3000);
       })
       .catch((err) => {
         console.log(err);

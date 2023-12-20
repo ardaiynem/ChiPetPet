@@ -43,6 +43,10 @@ def register(request):
 
         cursor.execute("""INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
                            VALUES (%s, % s, % s, %s, %s, %s, %s)""", (first_name, last_name, username, email, password, verified, role, ))
+        
+        cursor.execute("""INSERT INTO adopter (user_id) 
+                           VALUES (LAST_INSERT_ID())""")
+        
         connection.commit()
         # register successfull
         return JsonResponse({'status': 'Registration successful'}, status=201)

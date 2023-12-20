@@ -22,8 +22,8 @@ function AddNewAnimal() {
     breed: "",
     gender: "",
     age: 1,
-    healthStatus: "Healthy",
-    adoptionStatus: "WAITING",
+    health_status: "HEALTHY",
+    adoption_status: "WAITING",
     description: "",
     photo: "",
   });
@@ -114,8 +114,7 @@ function AddNewAnimal() {
               <Form.Label>Species</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle
-                  className="border border-primary"
-                  variant="success"
+                  variant="secondary"
                   id="dropdown-basic"
                 >
                   {formData.species}
@@ -124,42 +123,42 @@ function AddNewAnimal() {
                 <Dropdown.Menu>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, species: "Cat" });
+                      setFormData({ ...formData, species: "cat" });
                     }}
                   >
                     Cat
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, species: "Dog" });
+                      setFormData({ ...formData, species: "dog" });
                     }}
                   >
                     Dog
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, species: "Bird" });
+                      setFormData({ ...formData, species: "bird" });
                     }}
                   >
                     Bird
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, species: "Rabbits" });
+                      setFormData({ ...formData, species: "rabbit" });
                     }}
                   >
                     Rabbit
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, species: "Small & Furry" });
+                      setFormData({ ...formData, species: "small & furry" });
                     }}
                   >
                     Small & Furry
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, species: "Others" });
+                      setFormData({ ...formData, species: "others" });
                     }}
                   >
                     Others
@@ -203,6 +202,7 @@ function AddNewAnimal() {
               <Form.Control
                 type="number"
                 min="1"
+                max="1200"
                 step="1"
                 placeholder="Enter age"
                 name="age"
@@ -234,27 +234,26 @@ function AddNewAnimal() {
               <Form.Label>Health Status</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle
-                  className="border border-primary"
-                  variant="success"
+                  variant="secondary"
                   id="dropdown-basic"
                 >
-                  {formData.healthStatus}
+                  {formData.health_status}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, healthStatus: "HEALTHY" });
+                      setFormData({ ...formData, health_status: "HEALTHY" });
                     }}
                   >
-                    Healthy
+                    HEALTHY
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, healthStatus: "ILL" });
+                      setFormData({ ...formData, health_status: "UNHEALTHY" });
                     }}
                   >
-                    ILL
+                    UNHEALTHY
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -265,24 +264,23 @@ function AddNewAnimal() {
               <Form.Label>Adoption Status</Form.Label>
               <Dropdown>
                 <Dropdown.Toggle
-                  className="border border-primary"
-                  variant="success"
+                  variant="secondary"
                   id="dropdown-basic"
                 >
-                  {formData.adoptionStatus}
+                  {formData.adoption_status}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, adoptionStatus: "WAITING" });
+                      setFormData({ ...formData, adoption_status: "WAITING" });
                     }}
                   >
                     WAITING
                   </Dropdown.Item>
                   <Dropdown.Item
                     onClick={() => {
-                      setFormData({ ...formData, adoptionStatus: "ADOPTED" });
+                      setFormData({ ...formData, adoption_status: "ADOPTED" });
                     }}
                   >
                     ADOPTED
