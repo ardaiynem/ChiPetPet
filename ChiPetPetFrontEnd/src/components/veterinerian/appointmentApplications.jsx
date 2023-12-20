@@ -149,7 +149,7 @@ function AppointmentList() {
       date_and_time: formattedDate,
       location: appointments[selectedRow].location,
       appointment_text: appointmentText,
-      user_id: userDetails.user_id,
+      user_id: appointments[selectedRow].user_id,
       veterinarian_id: appointments[selectedRow].veterinarian_id,
       pet_id: appointments[selectedRow].pet_id,
     };
