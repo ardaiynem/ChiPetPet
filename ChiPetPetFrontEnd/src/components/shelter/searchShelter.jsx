@@ -9,7 +9,6 @@ import {
   Modal,
   Form,
 } from "react-bootstrap";
-import catImg from "../../assets/cat1.jpeg";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
 import { getAllShelters } from "../../apiHelper/backendHelper";

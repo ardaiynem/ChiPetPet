@@ -1,8 +1,13 @@
-import { Button, Dropdown, FormControl, Modal, Form } from 'react-bootstrap';
-import catImg from "../../assets/cat1.jpeg";
+import { Button, Dropdown, FormControl, Modal, Form } from "react-bootstrap";
+import emptyImg from "../../assets/empty.png";
 import { PanelContext } from "../../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
-import { getAppointmentByUser, deleteAppointment, updateAppointment, getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
+import {
+  getAppointmentByUser,
+  deleteAppointment,
+  updateAppointment,
+  getVeterinarianAppointmentDates,
+} from "../../apiHelper/backendHelper";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
 
@@ -125,7 +130,6 @@ function UserAppointments() {
   };
 
   const handleRescheduleAppointment = () => {
-
     if (selectedRow === null) {
       setTimedAlert("Please select an appointment", "error", 3000);
       return;
@@ -146,14 +150,14 @@ function UserAppointments() {
     console.log("formattedDate", formattedDate);
 
     const data = {
-      "appointment_id": appointments[selectedRow].appointment_id,
-      "date_and_time": formattedDate,
-      "location": appointments[selectedRow].location,
-      "appointment_text": appointmentText,
-      "user_id": userDetails.user_id,
-      "veterinarian_id": appointments[selectedRow].veterinarian_id,
-      "pet_id": appointments[selectedRow].pet_id,
-    }
+      appointment_id: appointments[selectedRow].appointment_id,
+      date_and_time: formattedDate,
+      location: appointments[selectedRow].location,
+      appointment_text: appointmentText,
+      user_id: userDetails.user_id,
+      veterinarian_id: appointments[selectedRow].veterinarian_id,
+      pet_id: appointments[selectedRow].pet_id,
+    };
 
     updateAppointment(data)
       .then((res) => {
@@ -187,10 +191,12 @@ function UserAppointments() {
       });
   };
 
-
   return (
     <div className="p-0" style={{ width: "100%" }}>
-      <Button className="position-relative top-2 start-2 mb-2" onClick={() => setCurrentPanel("back")}>
+      <Button
+        className="position-relative top-2 start-2 mb-2"
+        onClick={() => setCurrentPanel("back")}
+      >
         Back
       </Button>
 
@@ -245,14 +251,37 @@ function UserAppointments() {
         </div>
 
         {selectedRow !== null && (
-          <div className="d-flex flex-column align-items-end" style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}>
+          <div
+            className="d-flex flex-column align-items-end"
+            style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}
+          >
             <div className="card mb-3" style={{ width: "100%" }}>
               <div className="d-flex p-3 justify-content-center">
-                <img src={appointments[selectedRow].photo ? appointments[selectedRow].photo : catImg} className="card-img-top" alt="Cat" style={{ width: "200px", marginRight: "20px" }} />
-                <h5 className="card-title" style={{ marginRight: "50px" }}>{appointments[selectedRow]?.name}</h5>
+                <img
+                  src={
+                    appointments[selectedRow].photo
+                      ? appointments[selectedRow].photo
+                      : emptyImg
+                  }
+                  className="card-img-top"
+                  alt="Cat"
+                  style={{ width: "200px", marginRight: "20px" }}
+                />
+                <h5 className="card-title" style={{ marginRight: "50px" }}>
+                  {appointments[selectedRow]?.name}
+                </h5>
                 <div className="d-flex flex-column align-items-start">
-                  <button className="btn btn-primary" onClick={() => setShowModalMsg(true)}
-                    type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", width: "100px" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setShowModalMsg(true)}
+                    type="button"
+                    style={{
+                      backgroundColor: "blue",
+                      borderColor: "blue",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
                     Contact
                   </button>
                   <button
@@ -286,14 +315,18 @@ function UserAppointments() {
 
               <div className="card-body">
                 <h5 className="card-title">Appointment</h5>
-                <p className="card-text">Appointment Note: {appointments[selectedRow]?.appointment_text}</p>
-
+                <p className="card-text">
+                  Appointment Note:{" "}
+                  {appointments[selectedRow]?.appointment_text}
+                </p>
               </div>
               <div className="d-flex flex-row">
-                <div className="d-flex p-3 justify-content-center">
-                </div>
+                <div className="d-flex p-3 justify-content-center"></div>
                 <div>
-                  <table className="table table-striped" style={{ width: "300px", marginLeft: "10px" }}>
+                  <table
+                    className="table table-striped"
+                    style={{ width: "300px", marginLeft: "10px" }}
+                  >
                     <thead>
                       <tr>
                         <th scope="col">Species</th>
@@ -365,7 +398,9 @@ function UserAppointments() {
       {/* Modal for contacting */}
       <Modal show={showModalMsg} onHide={() => setShowModalMsg(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Send Message to {appointments[selectedRow]?.veterinarian_id}</Modal.Title>
+          <Modal.Title>
+            Send Message to {appointments[selectedRow]?.veterinarian_id}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-floating">

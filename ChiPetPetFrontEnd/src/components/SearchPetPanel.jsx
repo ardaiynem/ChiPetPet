@@ -8,7 +8,7 @@ import {
   Dropdown,
   Stack,
 } from "react-bootstrap";
-import catImg from "../assets/cat1.jpeg";
+import emptyImg from "../assets/empty.png";
 
 import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
@@ -248,7 +248,11 @@ function SearchPetPanel(props) {
               <Row className="no-gutters">
                 <Col xs={4} className="d-flex">
                   <Card.Img
-                    src={`data:image/png;base64, ${pet.photo}`}
+                    src={
+                      pet.photo === null
+                        ? emptyImg
+                        : `data:image/png;base64, ${pet.photo}`
+                    }
                     style={{ objectFit: "cover" }}
                   />
                 </Col>

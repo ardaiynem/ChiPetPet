@@ -181,7 +181,7 @@ function AdoptionApplicationsAdmin() {
           <div className="card mb-3" style={{ width: "100%" }}>
             <div className="d-flex p-3 justify-content-center">
               <img
-                src={catImg}
+                src={applications[selectedRow]?.pet_photo || catImg}
                 className="card-img-top"
                 alt="Cat"
                 style={{ width: "200px", marginRight: "20px" }}
@@ -208,7 +208,7 @@ function AdoptionApplicationsAdmin() {
                   onClick={acceptApplicationHandler}
                   className="btn btn-success mb-2"
                   type="button"
-                  disabled={applications[selectedRow]?.application_status !== "SHELTER_APPROVED"}
+                  disabled={(applications[selectedRow]?.application_status !== "SHELTER_APPROVED") && (applications[selectedRow]?.application_status !== "PENDING")}
                   style={{
                     backgroundColor: "green",
                     borderColor: "green",
