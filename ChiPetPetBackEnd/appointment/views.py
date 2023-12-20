@@ -77,7 +77,7 @@ def get_appointment_by_user(request):
         'age': row[21],
         'health_status': row[22],
         'description': row[23],
-        'photo': row[24],
+        'photo': row[24].decode('utf-8') if row[24] else None,
         'adoption_status': row[25]
     } for row in appointments]}, status=200)
 
@@ -124,7 +124,7 @@ def get_appointment_by_veterinarian(request):
         'age': row[21],
         'health_status': row[22],
         'description': row[23],
-        'photo': row[24],
+        'photo': row[24].decode('utf-8') if row[24] else None,
         'adoption_status': row[25]
     } for row in appointments]}, status=200)
 

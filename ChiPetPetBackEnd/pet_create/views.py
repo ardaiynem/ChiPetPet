@@ -291,7 +291,7 @@ def get_pets_by_adopter_id(request):
         'age': row[6],
         'health_status': row[7],
         'description': row[8],
-        'photo': row[9],
+        'photo': row[9].decode('utf-8') if row[9] else None,
         'adoption_status': row[10]
     } for row in pets]}, status=200)
 
@@ -325,7 +325,7 @@ def get_pets_by_adopter_id_for_shelter(request):
         'age': row[6],
         'health_status': row[7],
         'description': row[8],
-        'photo': row[9],
+        'photo': row[9].decode('utf-8') if row[9] else None,
         'adoption_status': row[10]
     } for row in pets]}, status=200)
 
