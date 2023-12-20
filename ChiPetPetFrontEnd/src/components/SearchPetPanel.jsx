@@ -4,10 +4,11 @@ import {
   Row,
   Col,
   Pagination,
+  FormControl,
   Dropdown,
   Stack,
 } from "react-bootstrap";
-import catImg from "../assets/cat1.jpeg";
+import emptyImg from "../assets/empty.png";
 
 import { PanelContext } from "../contexts/panelContext";
 import { useState, useEffect, useContext } from "react";
@@ -25,6 +26,13 @@ function SearchPetPanel(props) {
   const [page, setPage] = useState(1);
   const [pets, setPets] = useState([]);
 
+  const [species, setSpecies] = useState("");
+
+  const [age, setAge] = useState({
+    min: 0,
+    max: 1200,
+  });
+
   const [sortOption, setSortOption] = useState("None");
   const [name, setName] = useState("");
   const [breed, setBreed] = useState("");
@@ -41,7 +49,9 @@ function SearchPetPanel(props) {
               name: name,
               breed: breed,
               sortOption: sortOption,
-              type: animalType,
+              species: animalType,
+              max_age: age.max,
+              min_age: age.min,
             },
           }
         )
@@ -53,7 +63,7 @@ function SearchPetPanel(props) {
           setTimedAlert("Error retrieving animals", "error", 3000);
           console.log(err);
         });
-    }, [name, breed, sortOption]);
+    }, [name, breed, sortOption, age]);
   } else if (shelterid) {
     useEffect(() => {
       axios
@@ -63,8 +73,11 @@ function SearchPetPanel(props) {
             params: {
               name: name,
               breed: breed,
+              species: species,
               sortOption: sortOption,
               user_id: shelterid,
+              max_age: age.max,
+              min_age: age.min,
             },
           }
         )
@@ -75,7 +88,7 @@ function SearchPetPanel(props) {
         .catch((err) => {
           setTimedAlert("Error retrieving animals", "error", 3000);
         });
-    }, [name, breed, sortOption]);
+    }, [name, breed, sortOption, age]);
   }
 
   let items = [];
@@ -126,6 +139,73 @@ function SearchPetPanel(props) {
                 setBreed(e.target.value);
               }}
             />
+
+            <label> Age in months </label>
+            <label> Min: </label>
+            <FormControl
+              type="number"
+              value={age.min}
+              min={0}
+              max={age.max - 1}
+              placeholder="Min Age(Months): "
+              onChange={(e) =>
+                setAge({
+                  min: e.target.value,
+                  max: age.max,
+                })
+              }
+              className="mr-sm-2"
+              style={{ maxWidth: "400px" }}
+            />
+
+            <label> Max: </label>
+            <FormControl
+              type="number"
+              value={age.max}
+              placeholder="Max Age(Months): "
+              onChange={(e) =>
+                setAge({
+                  min: age.min + 1,
+                  max: e.target.value,
+                })
+              }
+              min={age.min + 1}
+              max={1200}
+              className="mr-sm-2"
+              style={{ maxWidth: "400px" }}
+            />
+
+            {shelterid && (
+              <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                  Species {species === "" ? "" : ": " + species.toUpperCase()}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item onClick={() => setSpecies("")}>
+                    All
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setSpecies("cat")}>
+                    Cat
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setSpecies("dog")}>
+                    Dog
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setSpecies("bird")}>
+                    Bird
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setSpecies("rabbit")}>
+                    Rabbit
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setSpecies("small&furry")}>
+                    Small & Furry
+                  </Dropdown.Item>
+                  <Dropdown.Item onClick={() => setSpecies("others")}>
+                    Others
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            )}
           </div>
 
           <Dropdown>
@@ -168,7 +248,11 @@ function SearchPetPanel(props) {
               <Row className="no-gutters">
                 <Col xs={4} className="d-flex">
                   <Card.Img
-                    src={`data:image/png;base64, ${pet.photo}`}
+                    src={
+                      pet.photo === null
+                        ? emptyImg
+                        : `data:image/png;base64, ${pet.photo}`
+                    }
                     style={{ objectFit: "cover" }}
                   />
                 </Col>

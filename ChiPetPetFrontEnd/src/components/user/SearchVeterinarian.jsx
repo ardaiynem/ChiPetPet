@@ -1,14 +1,21 @@
 import { Card, Button, Dropdown, Modal, Form } from "react-bootstrap";
-import catImg from "../../assets/cat1.jpeg";
 import { useState, useEffect, useContext } from "react";
 import { PanelContext } from "../../contexts/panelContext";
-import { getAllVeterinarians, getPetsByAdopterId, createAppointment, getPetsByAdopterIdForShelter,
-  getVeterinarianAppointmentDates } from "../../apiHelper/backendHelper";
+import {
+  getAllVeterinarians,
+  getPetsByAdopterId,
+  createAppointment,
+  getPetsByAdopterIdForShelter,
+  getVeterinarianAppointmentDates,
+} from "../../apiHelper/backendHelper";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import { useAlert } from "../../AlertContext";
+import { useProfiles } from "../../ProfilesContext";
 
 function SearchVeterinarian() {
+  const { getProfile } = useProfiles();
+
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
   const [veterinarians, setVeterinarians] = useState([]);
   const [selectedVet, setSelectedVet] = useState(null);
@@ -16,13 +23,12 @@ function SearchVeterinarian() {
   const [showModalMsg, setShowModalMsg] = useState(false);
   const [existingAppointments, setExistingAppointments] = useState([]);
   const [appointmentText, setAppointmentText] = useState("");
-  
+
   const { userDetails } = useAuth();
   const { setTimedAlert } = useAlert();
 
   const [userPets, setUserPets] = useState([]);
   const [selectedPetApt, setSelectedPetApt] = useState(null);
-
 
   const [selectedTime, setSelectedTime] = useState(null);
 
@@ -53,23 +59,22 @@ function SearchVeterinarian() {
   }, [name, address, expertise, sortOption]);
 
   useEffect(() => {
-
     if (userDetails.role.toUpperCase() === "ANIMAL_SHELTER") {
       getPetsByAdopterIdForShelter(userDetails.user_id)
-      .then((res) => {
-        setUserPets(res.data.pets);
-      })
-      .catch((err) => {
-        setTimedAlert("Error getting pets", "error", 3000);
-      });
+        .then((res) => {
+          setUserPets(res.data.pets);
+        })
+        .catch((err) => {
+          setTimedAlert("Error getting pets", "error", 3000);
+        });
     } else {
       getPetsByAdopterId(userDetails.user_id)
-      .then((res) => {
-        setUserPets(res.data.pets);
-      })
-      .catch((err) => {
-        setTimedAlert("Error getting pets", "error", 3000);
-      });
+        .then((res) => {
+          setUserPets(res.data.pets);
+        })
+        .catch((err) => {
+          setTimedAlert("Error getting pets", "error", 3000);
+        });
     }
   }, []);
 
@@ -91,10 +96,8 @@ function SearchVeterinarian() {
         setTimedAlert("Error getting appointments", "error", 3000);
       });
   };
-    
 
   const handleMakeAppointment = () => {
-
     if (!selectedPetApt) {
       setTimedAlert("Please select a pet", "error", 3000);
       return;
@@ -102,7 +105,7 @@ function SearchVeterinarian() {
 
     console.log(selectedTime);
 
-    if(selectedTime === ""){
+    if (selectedTime === "") {
       setTimedAlert("Select valid time", "error", 3000);
       return;
     }
@@ -110,15 +113,15 @@ function SearchVeterinarian() {
     // create date and time string
     const formattedDate = `${selectedDate} ${selectedTime}`;
     console.log("formattedDate", formattedDate);
-    
+
     const data = {
-      "date_and_time": formattedDate,
-      "location": selectedVet.address,
-      "appointment_text": appointmentText,
-      "user_id": userDetails.user_id,
-      "veterinarian_id": selectedVet.user_id,
-      "pet_id": selectedPetApt.pet_id
-    }
+      date_and_time: formattedDate,
+      location: selectedVet.address,
+      appointment_text: appointmentText,
+      user_id: userDetails.user_id,
+      veterinarian_id: selectedVet.user_id,
+      pet_id: selectedPetApt.pet_id,
+    };
 
     createAppointment(data)
       .then((res) => {
@@ -300,7 +303,11 @@ function SearchVeterinarian() {
             }}
           >
             <div className="d-flex p-3 justify-content-center">
-              <img src={catImg} className="card-img-top" alt="Veterinarian" />
+              <img
+                src={getProfile(selectedVet?.user_id)}
+                className="card-img-top"
+                alt="Veterinarian"
+              />
             </div>
             <div className="card-body">
               <h5 className="card-title">{selectedVet?.username}</h5>
@@ -342,23 +349,19 @@ function SearchVeterinarian() {
           <div class="mb-3 mt-3">
             <Dropdown>
               <Dropdown.Toggle variant="success" id="dropdown-basic">
-                {
-                  selectedPetApt ? selectedPetApt.pet_name : "Select Pet"
-                }
+                {selectedPetApt ? selectedPetApt.pet_name : "Select Pet"}
               </Dropdown.Toggle>
 
-              {
-                userPets &&
-
+              {userPets && (
                 <Dropdown.Menu>
                   {userPets.map((pet) => (
-                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>{pet.pet_name}</Dropdown.Item>
+                    <Dropdown.Item onClick={() => setSelectedPetApt(pet)}>
+                      {pet.pet_name}
+                    </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
-
-              }
+              )}
             </Dropdown>
-
           </div>
           <Form.Group controlId="appointmentTime">
             <Form.Label>Select Time:</Form.Label>

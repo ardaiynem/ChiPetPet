@@ -10,7 +10,7 @@ import {
   Col,
   Form,
 } from "react-bootstrap";
-import catImg from "../../assets/cat1.jpeg";
+import emptyImg from "../../assets/empty.png";
 import HealthRecords from "../healthRecords";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
@@ -23,6 +23,10 @@ function AnimalList() {
   const [name, setName] = useState("");
   const [species, setSpecies] = useState("");
   const [breed, setBreed] = useState("");
+  const [age, setAge] = useState({
+    min: 0,
+    max: 1200,
+  });
   const [sortOption, setSortOption] = useState("None");
 
   const [pets, setPets] = useState([]);
@@ -46,7 +50,6 @@ function AnimalList() {
         console.log(res.data);
         setTimedAlert("Excel file uploaded successfully", "success", 3000);
         setExcellModal(false);
-        getAnimals();
       })
       .catch((err) => {
         console.log(err);
@@ -54,26 +57,44 @@ function AnimalList() {
       });
   };
 
-  const [formData, setFormData] = useState({
-    name: "",
-    species: "Cat",
-    breed: "",
-    gender: "",
-    age: 1,
-    healthStatus: "Healthy",
-    adoptionStatus: "PENDING",
-    description: "",
-    photo: "",
-  });
+  const handleEditSubmit = () => {
+    const data = new FormData();
+    data.append("photo", selectedAnimal.photo);
+    data.append("shelter_id", userDetails.user_id);
+
+    Object.keys(selectedAnimal).forEach((key) => {
+      if (key !== "photo") {
+        data.append(key, selectedAnimal[key]);
+      }
+    });
+
+    console.log(data.get("shelter_id"));
+
+    axios
+      .post("http://127.0.0.1:8000/pet_create/update_pet/", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        setPets([
+          ...pets.filter((p) => p.pet_id !== selectedAnimal.pet_id),
+          selectedAnimal,
+        ]);
+        setTimedAlert("Animal saved successfully", "success", 3000);
+      });
+
+    console.log("Submit the edited here and trigger useEffect");
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "photo") {
-      setFormData({ ...formData, photo: e.target.files[0] });
+      selectedAnimal({ ...selectedAnimal, photo: e.target.files[0] });
       return;
     }
 
-    setFormData({ ...formData, [name]: value });
+    setSelectedAnimal({ ...selectedAnimal, [name]: value });
   };
   const [selectedRows, setSelectedRows] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -94,6 +115,8 @@ function AnimalList() {
             species: species,
             sortOption: sortOption,
             user_id: userDetails.user_id,
+            max_age: age.max,
+            min_age: age.min,
           },
         }
       )
@@ -108,8 +131,7 @@ function AnimalList() {
 
   useEffect(() => {
     getAnimals();
-    
-  }, [name, breed, sortOption, species]);
+  }, [name, breed, sortOption, species, showExcellModal, age]);
 
   const deletePetHandle = () => {
     console.log(pets);
@@ -161,6 +183,41 @@ function AnimalList() {
               value={breed}
               placeholder="breed"
               onChange={(e) => setBreed(e.target.value)}
+              className="mr-sm-2"
+              style={{ maxWidth: "400px" }}
+            />
+
+            <label> Age in months </label>
+            <label> Min: </label>
+            <FormControl
+              type="number"
+              value={age.min}
+              min={0}
+              max={age.max - 1}
+              placeholder="Min Age(Months): "
+              onChange={(e) =>
+                setAge({
+                  min: e.target.value,
+                  max: age.max,
+                })
+              }
+              className="mr-sm-2"
+              style={{ maxWidth: "400px" }}
+            />
+
+            <label> Max: </label>
+            <FormControl
+              type="number"
+              value={age.max}
+              placeholder="Max Age(Months): "
+              onChange={(e) =>
+                setAge({
+                  min: age.min + 1,
+                  max: e.target.value,
+                })
+              }
+              min={age.min + 1}
+              max={1200}
               className="mr-sm-2"
               style={{ maxWidth: "400px" }}
             />
@@ -262,7 +319,7 @@ function AnimalList() {
                 <img
                   src={
                     selectedAnimal.photo === null
-                      ? catImg
+                      ? emptyImg
                       : `data:image/png;base64, ${selectedAnimal.photo}`
                   }
                   className="card-img-top"
@@ -327,7 +384,9 @@ function AnimalList() {
                         color: "white",
                         maxWidth: "170px",
                       }}
-                      onClick={() => setShowEditModal(true)}
+                      onClick={() => {
+                        setShowEditModal(true);
+                      }}
                     >
                       Edit Pet Information
                     </button>
@@ -385,253 +444,284 @@ function AnimalList() {
           </Modal.Footer>
         </Modal>
 
-        <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-          <Modal.Header>
-            <Modal.Title>Edit Pet</Modal.Title>
-          </Modal.Header>
-          <ModalBody>
-            <div className="p-4">
-              <Form>
-                <Row className="mb-3">
-                  <Col>
-                    <label className="form-label" htmlFor="customFile">
-                      Upload Image
-                    </label>
-                    <input
-                      type="file"
-                      name="photo"
-                      onChange={handleInputChange}
-                      className="form-control"
-                      id="customFile"
-                    />
-                  </Col>
-
-                  <Col>
-                    <Form.Group controlId="formName">
-                      <Form.Label>Name</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter name"
-                        name="name"
-                        value={formData.name}
+        {showEditModal && (
+          <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+            <Modal.Header>
+              <Modal.Title>Edit Pet</Modal.Title>
+            </Modal.Header>
+            <ModalBody>
+              <div className="p-4">
+                <Form>
+                  <Row className="mb-3">
+                    <Col>
+                      <label className="form-label" htmlFor="customFile">
+                        Upload Image
+                      </label>
+                      <input
+                        type="file"
+                        name="photo"
+                        value={selectedAnimal.photo}
                         onChange={handleInputChange}
+                        className="form-control"
+                        id="customFile"
                       />
-                    </Form.Group>
-                  </Col>
-                </Row>
+                    </Col>
 
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Group controlId="formSpecies">
-                      <Form.Label>Species</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          className="border border-primary"
-                          variant="success"
-                          id="dropdown-basic"
-                        >
-                          {formData.species}
-                        </Dropdown.Toggle>
+                    <Col>
+                      <Form.Group controlId="formName">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter name"
+                          name="name"
+                          value={selectedAnimal.name}
+                          onChange={handleInputChange}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({ ...formData, species: "Cat" });
-                            }}
+                  <Row className="mb-3">
+                    <Col>
+                      <Form.Group controlId="formSpecies">
+                        <Form.Label>Species</Form.Label>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            className="border border-primary"
+                            variant="success"
+                            id="dropdown-basic"
                           >
-                            Cat
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({ ...formData, species: "Dog" });
-                            }}
-                          >
-                            Dog
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({ ...formData, species: "Bird" });
-                            }}
-                          >
-                            Bird
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({ ...formData, species: "Rabbits" });
-                            }}
-                          >
-                            Rabbit
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({
-                                ...formData,
-                                species: "Small & Furry",
-                              });
-                            }}
-                          >
-                            Small & Furry
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({ ...formData, species: "Others" });
-                            }}
-                          >
-                            Others
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
+                            {selectedAnimal.species}
+                          </Dropdown.Toggle>
 
-                  <Col>
-                    <Form.Group controlId="formBreed">
-                      <Form.Label>Breed</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter breed"
-                        name="breed"
-                        value={formData.breed}
-                        onChange={handleInputChange}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  species: "Cat",
+                                });
+                              }}
+                            >
+                              Cat
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  species: "Dog",
+                                });
+                              }}
+                            >
+                              Dog
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  species: "Bird",
+                                });
+                              }}
+                            >
+                              Bird
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  species: "Rabbits",
+                                });
+                              }}
+                            >
+                              Rabbit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  species: "Small & Furry",
+                                });
+                              }}
+                            >
+                              Small & Furry
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelected({
+                                  ...selectedAnimal,
+                                  species: "Others",
+                                });
+                              }}
+                            >
+                              Others
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Form.Group>
+                    </Col>
 
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Group controlId="formGender">
-                      <Form.Label>Gender</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter gender"
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleInputChange}
-                      />
-                    </Form.Group>
-                  </Col>
+                    <Col>
+                      <Form.Group controlId="formBreed">
+                        <Form.Label>Breed</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter breed"
+                          name="breed"
+                          value={selectedAnimal.breed}
+                          onChange={handleInputChange}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-                  <Col>
-                    <Form.Group controlId="formAge">
-                      <Form.Label>Age in months</Form.Label>
-                      <Form.Control
-                        type="number"
-                        min="1"
-                        step="1"
-                        placeholder="Enter age"
-                        name="age"
-                        value={formData.age}
-                        onChange={handleInputChange}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
+                  <Row className="mb-3">
+                    <Col>
+                      <Form.Group controlId="formGender">
+                        <Form.Label>Gender</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="Enter gender"
+                          name="gender"
+                          value={selectedAnimal.gender}
+                          onChange={handleInputChange}
+                        />
+                      </Form.Group>
+                    </Col>
 
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Group controlId="formDescription">
-                      <Form.Label>Description</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={4}
-                        placeholder="Enter description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                      />
-                    </Form.Group>
-                  </Col>
-                </Row>
-                <Row className="mb-3">
-                  <Col>
-                    <Form.Group controlId="formDescription">
-                      <Form.Label>Health Status</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          className="border border-primary"
-                          variant="success"
-                          id="dropdown-basic"
-                        >
-                          {formData.healthStatus}
-                        </Dropdown.Toggle>
+                    <Col>
+                      <Form.Group controlId="formAge">
+                        <Form.Label>Age in months</Form.Label>
+                        <Form.Control
+                          type="number"
+                          min="1"
+                          step="1"
+                          placeholder="Enter age"
+                          name="age"
+                          value={selectedAnimal.age}
+                          onChange={handleInputChange}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
 
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({
-                                ...formData,
-                                healthStatus: "HEALTHY",
-                              });
-                            }}
+                  <Row className="mb-3">
+                    <Col>
+                      <Form.Group controlId="formDescription">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={4}
+                          placeholder="Enter description"
+                          name="description"
+                          value={selectedAnimal.description}
+                          onChange={handleInputChange}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col>
+                      <Form.Group controlId="formDescription">
+                        <Form.Label>Health Status</Form.Label>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            className="border border-primary"
+                            variant="success"
+                            id="dropdown-basic"
                           >
-                            Healthy
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({ ...formData, healthStatus: "ILL" });
-                            }}
-                          >
-                            ILL
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
-                  <Col>
-                    <Form.Group controlId="formDescription">
-                      <Form.Label>Adoption Status</Form.Label>
-                      <Dropdown>
-                        <Dropdown.Toggle
-                          className="border border-primary"
-                          variant="success"
-                          id="dropdown-basic"
-                        >
-                          {formData.adoptionStatus}
-                        </Dropdown.Toggle>
+                            {selectedAnimal.health_status}
+                          </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({
-                                ...formData,
-                                adoptionStatus: "WAITING",
-                              });
-                            }}
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  health_status: "HEALTHY",
+                                });
+                              }}
+                            >
+                              Healthy
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  health_status: "ILL",
+                                });
+                              }}
+                            >
+                              ILL
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group controlId="formDescription">
+                        <Form.Label>Adoption Status</Form.Label>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            className="border border-primary"
+                            variant="success"
+                            id="dropdown-basic"
                           >
-                            WAITING
-                          </Dropdown.Item>
-                          <Dropdown.Item
-                            onClick={() => {
-                              setFormData({
-                                ...formData,
-                                adoptionStatus: "ADOPTED",
-                              });
-                            }}
-                          >
-                            ADOPTED
-                          </Dropdown.Item>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </Form.Group>
-                  </Col>
-                </Row>
+                            {selectedAnimal.adoption_status}
+                          </Dropdown.Toggle>
 
-                <Button variant="primary" type="submit">
-                  Submit
-                </Button>
-              </Form>
-            </div>
-          </ModalBody>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-              Close
-            </Button>
-            <Button variant="success" onClick={() => setShowEditModal(false)}>
-              Submit
-            </Button>
-          </Modal.Footer>
-        </Modal>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  adoptionStatus: "WAITING",
+                                });
+                              }}
+                            >
+                              WAITING
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setSelectedAnimal({
+                                  ...selectedAnimal,
+                                  adoptionStatus: "ADOPTED",
+                                });
+                              }}
+                            >
+                              ADOPTED
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Form>
+              </div>
+            </ModalBody>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setSelectedAnimal(null);
+                  setShowEditModal(false);
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                variant="success"
+                onClick={() => {
+                  console.log("clicking");
+                  handleEditSubmit();
+                  setSelectedAnimal(null);
+                  setShowEditModal(false);
+                }}
+              >
+                Submit
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        )}
 
         <Modal show={showExcellModal} onHide={() => setExcellModal(false)}>
           <Modal.Header>
