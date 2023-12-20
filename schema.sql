@@ -305,6 +305,21 @@ VALUES (6, '2023-01-05 18:00:00', 'Application Status', 'You have a new adoption
 INSERT INTO veterinarian (user_id, address, contact, verification_documents, expertise)
 VALUES (7, 'Notthingham Forest', '359034-21309', NULL, 'Birds');
 
+DELIMITER $$
+
+CREATE TRIGGER reject_awaitings AFTER UPDATE ON pet
+FOR EACH ROW
+BEGIN
+    IF NEW.adoption_status = 'ADOPTED' THEN
+        UPDATE applies
+        SET application_status = 'REJECTED'
+        WHERE pet_id = NEW.pet_id AND (application_status = 'PENDING' OR application_status = 'SHELTER_APPROVED');
+    END IF;
+END$$    
+
+DELIMITER ;
+
+
 
 
 

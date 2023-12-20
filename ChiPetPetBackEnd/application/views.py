@@ -302,8 +302,6 @@ def update_application_status(request):
         connection.commit()
         cursor.execute("UPDATE pet SET adoption_status = 'ADOPTED' WHERE pet_id = %s", [application[5]])
         connection.commit()
-        cursor.execute("UPDATE applies SET application_status = 'ADOPTED' WHERE application_id = %s", [application_id])
-        connection.commit()
 
 
     cursor.close()
