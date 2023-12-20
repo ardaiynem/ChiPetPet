@@ -43,30 +43,13 @@ function VetAnimalList(){
             </Button>
             <div className="d-flex">
         <div className="" style={{ flex: "1 1 0" }}>
-          <div className="d-flex justify-content-between mb-5 mt-4">
-            <FormControl
-              type="text"
-              placeholder="Search..."
-              className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
-            />
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Type
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
+          
           <table className="table table-striped">
             <thead>
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Species</th>
-                <th scope="col">Adoption Status</th>
+                <th scope="col">Date</th>
               </tr>
             </thead>
             <tbody>
@@ -74,7 +57,7 @@ function VetAnimalList(){
                 <tr key={index} onClick={() => handleRowClick(index)}>
                   <td>{animal.name}</td>
                   <td>{animal.species}</td>
-                  <td>{animal.adoption_status}</td>
+                  <td>{animal.date_and_time.replace("T", " ").slice(0, -3)}</td>
                 </tr>
               ))}
             </tbody>

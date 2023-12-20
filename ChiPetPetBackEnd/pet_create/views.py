@@ -179,9 +179,10 @@ def get_pet_by_veterinarian(request):
             with connection.cursor() as cursor:
                 cursor.execute(
                     """
-                    SELECT pet_id, pet.name, species, breed, gender, age, health_status, description, photo, adoption_status
+                    SELECT pet_id, pet.name, species, breed, gender, age, health_status, description, photo, adoption_status, date_and_time
                     FROM pet NATURAL JOIN appointment JOIN user on appointment.veterinarian_id = user.user_id
                     WHERE appointment.veterinarian_id = %s
+                    ORDER BY date_and_time DESC
                     """, (vetId, )
                 )
                 pets = cursor.fetchall()
@@ -201,6 +202,7 @@ def get_pet_by_veterinarian(request):
                        # Decode photo from bytes to string
                        'photo': pet[8].decode('utf-8') if pet[8] else None,
                        'adoption_status': pet[9],
+                       'date_and_time': pet[10],
                    }    for pet in pets
                    ]}
 
