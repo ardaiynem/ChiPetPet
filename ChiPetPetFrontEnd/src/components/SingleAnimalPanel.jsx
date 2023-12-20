@@ -27,6 +27,7 @@ function SingleAnimalPanel(props) {
     getPetById(petid)
       .then((res) => {
         setPet(res.data.pet);
+        console.log(res.data.pet);
       })
       .catch((err) => {
         setTimedAlert("Error retrieving animals", "error", 3000);
@@ -76,6 +77,7 @@ function SingleAnimalPanel(props) {
           <Button
             variant="primary"
             className="me-2"
+            disabled={pet.adoption_status === "ADOPTED"}
             style={{ borderWidth: "3px", color: "white", borderRadius: "20px" }}
             onClick={() =>
               setCurrentPanel(

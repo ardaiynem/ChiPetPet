@@ -169,6 +169,49 @@ def get_pet_by_id(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+@csrf_exempt
+def get_pet_by_veterinarian(request):
+    if request.method == 'GET':
+        try:
+            vetId = request.GET.get('user_id')
+
+            # Retrieve all pets from the pet table
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT pet_id, pet.name, species, breed, gender, age, health_status, description, photo, adoption_status, date_and_time
+                    FROM pet NATURAL JOIN appointment JOIN user on appointment.veterinarian_id = user.user_id
+                    WHERE appointment.veterinarian_id = %s
+                    ORDER BY date_and_time DESC
+                    """, (vetId, )
+                )
+                pets = cursor.fetchall()
+
+            # Convert the results to a list of dictionaries
+            petsList = {"pets":
+                   [
+                                          {
+                       'pet_id': pet[0],
+                       'name': pet[1],
+                       'species': pet[2],
+                       'breed': pet[3],
+                       'gender': pet[4],
+                       'age': pet[5],
+                       'health_status': pet[6],
+                       'description': pet[7],
+                       # Decode photo from bytes to string
+                       'photo': pet[8].decode('utf-8') if pet[8] else None,
+                       'adoption_status': pet[9],
+                       'date_and_time': pet[10],
+                   }    for pet in pets
+                   ]}
+
+            return JsonResponse(petsList, status = 200)
+
+        except Exception as e:
+            return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 @csrf_exempt
 def get_pets_by_type(request):
@@ -291,7 +334,7 @@ def get_pets_by_adopter_id(request):
         'age': row[6],
         'health_status': row[7],
         'description': row[8],
-        'photo': row[9],
+        'photo': row[9].decode('utf-8') if row[9] else None,
         'adoption_status': row[10]
     } for row in pets]}, status=200)
 
@@ -325,7 +368,7 @@ def get_pets_by_adopter_id_for_shelter(request):
         'age': row[6],
         'health_status': row[7],
         'description': row[8],
-        'photo': row[9],
+        'photo': row[9].decode('utf-8') if row[9] else None,
         'adoption_status': row[10]
     } for row in pets]}, status=200)
 
@@ -485,6 +528,62 @@ def get_pets_by_shelter_with_attributes(request):
 
     return JsonResponse(pets_list, status=200)
 
+@require_http_methods(["GET"])
+@csrf_exempt
+def get_pets_by_shelter_with_attributes(request):
+
+    shelter_id = request.GET.get('user_id')
+    name = request.GET.get('name')
+    breed = request.GET.get('breed')
+    sortOption = request.GET.get('sortOption')
+    species = request.GET.get('species')
+    min_age = request.GET.get('min_age')
+    max_age = request.GET.get('max_age')
+
+    cursor = connection.cursor()
+
+    if (min_age is None or max_age is None):
+        min_age = 0
+        max_age = 1200
+
+    if (species is None):
+        species = ""
+
+    query = """SELECT * FROM pet 
+          WHERE shelter_id = %s AND breed LIKE %s AND name LIKE %s AND species LIKE %s AND age BETWEEN %s AND %s"""
+
+    query = (query + " {}").format(";" if sortOption ==
+                                   "None" else f"ORDER BY {sortOption}")
+
+    cursor.execute(
+        query, (shelter_id, f"%{breed}%", f"%{name}%",
+                f"%{species}%", min_age, max_age)
+    )
+
+    pets = cursor.fetchall()
+
+    pets_list = {"pets": [
+        {
+            'pet_id': pet[0],
+            'shelter_id': pet[1],
+            'name': pet[2],
+            'species': pet[3],
+            'breed': pet[4],
+            'gender': pet[5],
+            'age': pet[6],
+            'health_status': pet[7],
+            'description': pet[8],
+            'photo': pet[9].decode('utf-8') if pet[9] else None,
+            'adoption_status': pet[10]
+        }
+        for pet in pets
+    ],
+    }
+
+    cursor.close()
+
+    return JsonResponse(pets_list, status=200)
+    
 
 @csrf_exempt
 @require_http_methods(["DELETE"])
