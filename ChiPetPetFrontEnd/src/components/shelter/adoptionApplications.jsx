@@ -8,6 +8,7 @@ import {
   getApplicationByShelter,
   updateApplicationStatus,
 } from "../../apiHelper/backendHelper";
+import emptyImg from "../../assets/empty.png";
 
 /**
  * remove selection when clicked outside
@@ -25,6 +26,7 @@ function ApplicationsList() {
     getApplicationByShelter(userDetails.user_id)
       .then((res) => {
         setApplications(res.data.applications);
+        console.log(res.data.applications)
       })
       .catch((err) => {
         setTimedAlert("Error getting applications", "error", 3000);
@@ -163,7 +165,9 @@ function ApplicationsList() {
             <div className="card mb-3" style={{ width: "100%" }}>
               <div className="d-flex p-3 justify-content-center">
                 <img
-                  src={applications[selectedRow]?.pet_image || catImg}
+                  src={applications[selectedRow]?.pet_photo === null
+                      ? emptyImg
+                      : `data:image/png;base64, ${applications[selectedRow]?.pet_photo}`}
                   className="card-img-top"
                   alt="Cat"
                   style={{ width: "200px", marginRight: "20px" }}

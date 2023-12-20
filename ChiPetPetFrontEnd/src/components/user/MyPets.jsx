@@ -110,9 +110,15 @@ function MyPets() {
                 <div className="d-flex justify-content-end" style={{ flex: "1 1 0" }}>
                     <div className="card" style={{ width: "600px", visibility: selectedPet ? "visible" : "hidden" }}>
                         <div className="d-flex p-3 gap-3 justify-content-between">
+<<<<<<< HEAD
                             <img src={selectedPet?.photo === null
                         ? emptyImg
                         : `data:image/png;base64, ${selectedPet?.photo}`} className="card-img-top" style={{width:"300px"}}/>
+=======
+                            <img src={ selectedPet?.photo === null
+                                ? emptyImg
+                                : `data:image/png;base64, ${selectedPet?.photo}`} className="card-img-top" style={{width:"300px"}}/>
+>>>>>>> 2cebbb38b92a48defaa322cfa638d1161cb2ac19
                             <table className="table table-striped" >
                                 <tbody>
                                     <tr>

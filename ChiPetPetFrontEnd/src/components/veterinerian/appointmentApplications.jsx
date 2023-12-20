@@ -235,9 +235,9 @@ function AppointmentList() {
               <div className="d-flex p-3 justify-content-center">
                 <img
                   src={
-                    appointments[selectedRow].photo
-                      ? appointments[selectedRow].photo
-                      : emptyImg
+                    appointments[selectedRow]?.photo === null
+                    ? emptyImg
+                    : `data:image/png;base64, ${appointments[selectedRow]?.photo}`
                   }
                   className="card-img-top"
                   alt="Cat"

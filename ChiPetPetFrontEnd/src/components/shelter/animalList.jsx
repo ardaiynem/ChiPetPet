@@ -90,7 +90,7 @@ function AnimalList() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "photo") {
-      selectedAnimal({ ...selectedAnimal, photo: e.target.files[0] });
+      setSelectedAnimal({ ...selectedAnimal, photo: e.target.files[0] });
       return;
     }
 
@@ -176,7 +176,7 @@ function AnimalList() {
               placeholder="Name"
               onChange={(e) => setName(e.target.value)}
               className="mr-sm-2"
-              style={{ width: "150px", marginLeft:"15px" }}
+              style={{ width: "150px", marginLeft: "15px" }}
             />
 
             <FormControl
@@ -185,7 +185,7 @@ function AnimalList() {
               placeholder="Breed"
               onChange={(e) => setBreed(e.target.value)}
               className="mr-sm-2"
-              style={{ width: "150px", marginLeft:"15px" }}
+              style={{ width: "150px", marginLeft: "15px" }}
             />
 
             <label style={{ marginLeft: "15px" }}> Min Age (Months): </label>
@@ -244,7 +244,11 @@ function AnimalList() {
             </Dropdown>
 
             <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ marginLeft: "15px" }}>
+              <Dropdown.Toggle
+                variant="success"
+                id="dropdown-basic"
+                style={{ marginLeft: "15px" }}
+              >
                 Species {species === "" ? "" : ": " + species.toUpperCase()}
               </Dropdown.Toggle>
 
@@ -389,6 +393,7 @@ function AnimalList() {
                       }}
                       onClick={() => {
                         setShowEditModal(true);
+                        console.log("selected animal", selectedAnimal);
                       }}
                     >
                       Edit Pet Information
@@ -463,7 +468,6 @@ function AnimalList() {
                       <input
                         type="file"
                         name="photo"
-                        value={selectedAnimal.photo}
                         onChange={handleInputChange}
                         className="form-control"
                         id="customFile"
@@ -627,7 +631,7 @@ function AnimalList() {
                       <Form.Group controlId="formDescription">
                         <Form.Label>Health Status</Form.Label>
                         <Dropdown>
-                         <Dropdown.Toggle
+                          <Dropdown.Toggle
                             variant="secondary"
                             id="dropdown-basic"
                           >

@@ -18,7 +18,7 @@ import { useAlert } from "../../AlertContext";
 function AddNewAnimal() {
   const [formData, setFormData] = useState({
     name: "",
-    species: "Cat",
+    species: "cat",
     breed: "",
     gender: "",
     age: 1,
@@ -56,7 +56,7 @@ function AddNewAnimal() {
       }
     });
 
-    console.log(data.get("shelter_id"));
+    console.log(formData);
 
     axios
       .post("http://127.0.0.1:8000/pet_create/insert_pet/", data, {
@@ -113,11 +113,9 @@ function AddNewAnimal() {
             <Form.Group controlId="formSpecies">
               <Form.Label>Species</Form.Label>
               <Dropdown>
-                <Dropdown.Toggle
-                  variant="secondary"
-                  id="dropdown-basic"
-                >
-                  {formData.species}
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                  {formData.species.charAt(0).toUpperCase() +
+                    formData.species.slice(1)}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
@@ -233,10 +231,7 @@ function AddNewAnimal() {
             <Form.Group controlId="formDescription">
               <Form.Label>Health Status</Form.Label>
               <Dropdown>
-                <Dropdown.Toggle
-                  variant="secondary"
-                  id="dropdown-basic"
-                >
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                   {formData.health_status}
                 </Dropdown.Toggle>
 
@@ -263,10 +258,7 @@ function AddNewAnimal() {
             <Form.Group controlId="formDescription">
               <Form.Label>Adoption Status</Form.Label>
               <Dropdown>
-                <Dropdown.Toggle
-                  variant="secondary"
-                  id="dropdown-basic"
-                >
+                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
                   {formData.adoption_status}
                 </Dropdown.Toggle>
 
