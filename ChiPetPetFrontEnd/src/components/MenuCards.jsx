@@ -85,7 +85,6 @@ function MenuCards() {
 
   let cardHeadersVeterinarian = [
     ,
-    { name: "Upload Health Records", element: <UploadHealthRecord /> },
     { name: "Appointments", element: <AppointmentList /> },
     { name: "Messages", element: <MessagePage /> },
     { name: "Profile", element: <Profile role={role} /> },
