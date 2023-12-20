@@ -130,7 +130,7 @@ function SearchPetPanel(props) {
               }}
             />
             <input
-              style={{ marginLeft: "5px" }}
+              style={{ marginLeft: "15px" }}
               className="form-control"
               type="text"
               placeholder={breed === "" ? "Breed" : ""}
@@ -140,14 +140,13 @@ function SearchPetPanel(props) {
               }}
             />
 
-            <label> Age in months </label>
-            <label> Min: </label>
+            <label style={{ marginLeft: "15px" }}> Min Age (Months): </label>
             <FormControl
               type="number"
+              placeholder="Min Age(Months): "
               value={age.min}
               min={0}
               max={age.max - 1}
-              placeholder="Min Age(Months): "
               onChange={(e) =>
                 setAge({
                   min: e.target.value,
@@ -155,24 +154,24 @@ function SearchPetPanel(props) {
                 })
               }
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ maxWidth: "100px", marginLeft: "5px" }}
             />
 
-            <label> Max: </label>
+            <label style={{ marginLeft: "15px" }}> Max Age (Months): </label>
             <FormControl
               type="number"
               value={age.max}
               placeholder="Max Age(Months): "
               onChange={(e) =>
                 setAge({
-                  min: age.min + 1,
+                  min: age.min,
                   max: e.target.value,
                 })
               }
               min={age.min + 1}
               max={1200}
               className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
+              style={{ maxWidth: "100px", marginLeft: "5px" }}
             />
 
             {shelterid && (
@@ -209,7 +208,7 @@ function SearchPetPanel(props) {
           </div>
 
           <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown.Toggle variant="success" id="dropdown-basic" style={{ marginLeft: "15px" }}>
               Sort By{" "}
               {sortOption === "None"
                 ? ""
