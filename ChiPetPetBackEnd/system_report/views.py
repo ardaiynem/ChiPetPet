@@ -95,9 +95,9 @@ def get_most_adopted_breed(request):
     if request.method == 'GET':
         try:
             cursor = connection.cursor()
-            cursor.execute("""SELECT pet.breed, count(*) as breed_count
+            cursor.execute("""SELECT LOWER(pet.breed) as lowercase_breed, count(*) as breed_count
                            FROM pet NATURAL JOIN owns
-                           GROUP BY pet.breed
+                           GROUP BY LOWER(pet.breed)
                            ORDER BY breed_count DESC
                             
             """)
