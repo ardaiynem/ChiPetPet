@@ -549,7 +549,7 @@ function AnimalList() {
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() => {
-                                setSelected({
+                                setSelectedAnimal({
                                   ...selectedAnimal,
                                   species: "others",
                                 });
