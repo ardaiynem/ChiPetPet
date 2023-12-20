@@ -23,6 +23,10 @@ function AnimalList() {
   const [name, setName] = useState("");
   const [species, setSpecies] = useState("");
   const [breed, setBreed] = useState("");
+  const [age, setAge] = useState({
+    min: 0,
+    max: 1200,
+  });
   const [sortOption, setSortOption] = useState("None");
 
   const [pets, setPets] = useState([]);
@@ -111,6 +115,8 @@ function AnimalList() {
             species: species,
             sortOption: sortOption,
             user_id: userDetails.user_id,
+            max_age: age.max,
+            min_age: age.min,
           },
         }
       )
@@ -125,7 +131,7 @@ function AnimalList() {
 
   useEffect(() => {
     getAnimals();
-  }, [name, breed, sortOption, species, showExcellModal]);
+  }, [name, breed, sortOption, species, showExcellModal, age]);
 
   const deletePetHandle = () => {
     console.log(pets);
@@ -177,6 +183,41 @@ function AnimalList() {
               value={breed}
               placeholder="breed"
               onChange={(e) => setBreed(e.target.value)}
+              className="mr-sm-2"
+              style={{ maxWidth: "400px" }}
+            />
+
+            <label> Age in months </label>
+            <label> Min: </label>
+            <FormControl
+              type="number"
+              value={age.min}
+              min={0}
+              max={age.max - 1}
+              placeholder="Min Age(Months): "
+              onChange={(e) =>
+                setAge({
+                  min: e.target.value,
+                  max: age.max,
+                })
+              }
+              className="mr-sm-2"
+              style={{ maxWidth: "400px" }}
+            />
+
+            <label> Max: </label>
+            <FormControl
+              type="number"
+              value={age.max}
+              placeholder="Max Age(Months): "
+              onChange={(e) =>
+                setAge({
+                  min: age.min + 1,
+                  max: e.target.value,
+                })
+              }
+              min={age.min + 1}
+              max={1200}
               className="mr-sm-2"
               style={{ maxWidth: "400px" }}
             />
