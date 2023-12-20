@@ -1,14 +1,32 @@
 import { PanelContext } from "../../contexts/panelContext";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Button, Dropdown, FormControl, Modal, ModalBody, Row, Col, Form } from 'react-bootstrap';
 import HealthRecords from "../healthRecords";
 import catImg from "../../assets/cat1.jpeg";
 import UploadHealthRecord from "./uploadPage";
+import { getPetsByVeterinarian } from "../../apiHelper/backendHelper";
+import { useAuth } from "../../AuthContext";
+import { useAlert } from "../../AlertContext";
 
 function VetAnimalList(){
+  const { setTimedAlert } = useAlert();
+  const { userDetails } = useAuth();
+
     const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
-    const [selectedRows, setSelectedRows] = useState([]);
+    const [animalData, setAnimalData] = useState([]);
+
+    useEffect(() => {
+      getPetsByVeterinarian(userDetails.user_id)
+        .then((res) => {
+          setAnimalData(res.data.pets);
+          console.log(res.data.pets);
+        })
+        .catch((err) => {
+          setTimedAlert("Error retrieving animals", "error", 3000);
+        });
+    }, []);
+
     const [selectedAnimal, setSelectedAnimal] = useState(null);
     
     const handleRowClick = (index) => {
@@ -16,11 +34,7 @@ function VetAnimalList(){
         setSelectedAnimal(clickedRow);
       };
 
-    const animalData = [
-        { name: "Tüylü Laik", species: "Dog", Adoption: "Not Adopted", age: 3, breed: "Labrador", gender: "Male" },
-        { name: "El Gato", species: "Cat", Adoption: "Not Adopted", age: 2, breed: "Siamese", gender: "Female" },
-        { name: "Papağan Papağanoğlu", species: "Parrot", Adoption: "Adoption Pending", age: 1, breed: "Ara", gender: "Unknown" },
-    ];
+
 
     return(
         <div className="p-0" style={{ width: "100%" }}>
@@ -60,7 +74,7 @@ function VetAnimalList(){
                 <tr key={index} onClick={() => handleRowClick(index)}>
                   <td>{animal.name}</td>
                   <td>{animal.species}</td>
-                  <td>{animal.Adoption}</td>
+                  <td>{animal.adoption_status}</td>
                 </tr>
               ))}
             </tbody>
@@ -76,31 +90,30 @@ function VetAnimalList(){
                   <tbody>
                     <tr>
                       <th scope="row">Species</th>
-                      <td>{selectedAnimal.species}</td>
+                      <td>{selectedAnimal?.species}</td>
                     </tr>
                     <tr>
                       <th scope="row">Breed</th>
-                      <td>{selectedAnimal.breed}</td>
+                      <td>{selectedAnimal?.breed}</td>
                     </tr>
                     <tr>
                       <th scope="row">Age</th>
-                      <td>{selectedAnimal.age}</td>
+                      <td>{selectedAnimal?.age}</td>
                     </tr>
                     <tr>
                       <th scope="row">Gender</th>
-                      <td>{selectedAnimal.gender}</td>
+                      <td>{selectedAnimal?.gender}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <div className="card-body">
-                <h5 className="card-title">Card title</h5>
-                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <p className="card-text">{selectedAnimal?.description}</p>
                   <div className="d-flex flex-column gap-2" style={{ marginLeft: "170px" }}>
-                    <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", maxWidth: "230px" }} onClick={()=> setCurrentPanel(<HealthRecords petid = {1} petname = {"pet.name"}/>)}>
+                    <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", maxWidth: "230px" }} onClick={()=> setCurrentPanel(<HealthRecords petid = {selectedAnimal?.pet_id} petname = {selectedAnimal?.name}/>)}>
                       See Health Records
                     </button>
-                    <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", maxWidth: "230px" }} onClick={()=> setCurrentPanel(<UploadHealthRecord petid = {1}/>)}>
+                    <button className="btn btn-primary" type="button" style={{ backgroundColor: "blue", borderColor: "blue", color: "white", maxWidth: "230px" }} onClick={()=> setCurrentPanel(<UploadHealthRecord petid = {selectedAnimal?.pet_id}/>)}>
                       Upload Health Record
                     </button>
                   </div>

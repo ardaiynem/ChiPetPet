@@ -8,6 +8,7 @@ function HealthRecords(props) {
     const {setTimedAlert} = useAlert();
 
     let {petid, petname} = props;
+    console.log(petid)
     const [healthRecords, setHealthRecords] = useState([]);
 
 
@@ -22,6 +23,7 @@ function HealthRecords(props) {
         getHealthRecordsByPet(petid)
         .then((res) => {
             setHealthRecords(res.data.health_records);
+            console.log(res.data.health_records)
         })
         .catch((err) => {
             setTimedAlert("Error retrieving animals", "error", 3000);

@@ -24,10 +24,10 @@ function UploadHealthRecord(props) {
     setCurrentDate(formattedDate);
   }, []);
 
-  // CHANGE THIS INTO PETID
+ 
   const handleSubmit = () => {
     const data = {
-      pet_id: 1,                                                      // CHANGE THIS INTO PETID
+      pet_id: petid,                                                     
       date: currentDate,
       fertility: fertility,
       health_report: healthRecordText

@@ -201,10 +201,8 @@ def get_pet_by_veterinarian(request):
                        # Decode photo from bytes to string
                        'photo': pet[8].decode('utf-8') if pet[8] else None,
                        'adoption_status': pet[9],
-                   }
-                   ]    for pet in pets
-
-                   }
+                   }    for pet in pets
+                   ]}
 
             return JsonResponse(petsList, status = 200)
 
