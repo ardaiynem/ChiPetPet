@@ -163,7 +163,7 @@ function ApplicationsList() {
             <div className="card mb-3" style={{ width: "100%" }}>
               <div className="d-flex p-3 justify-content-center">
                 <img
-                  src={catImg}
+                  src={applications[selectedRow]?.pet_image || catImg}
                   className="card-img-top"
                   alt="Cat"
                   style={{ width: "200px", marginRight: "20px" }}

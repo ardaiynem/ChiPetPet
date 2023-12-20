@@ -117,6 +117,7 @@ function AnimalList() {
             user_id: userDetails.user_id,
             max_age: age.max,
             min_age: age.min,
+            adoption_status: "ALL",
           },
         }
       )
