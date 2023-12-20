@@ -246,6 +246,7 @@ const Profile = (props) => {
       .then((res) => {
         console.log(res.data); // Handle the response as needed
         setSubmitStatus(1);
+        setTimedAlert("Verification document uploaded", "success", 3000);
       })
       .catch((err) => {
         console.log(err);

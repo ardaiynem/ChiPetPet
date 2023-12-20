@@ -99,7 +99,7 @@ function LoginPage() {
                   onSubmit={handleRegister}
                   style={{ boxShadow: "10px grey" }}
                 >
-                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Group className="mb-3" controlId="formname">
                     <Form.Label>First name</Form.Label>
                     <Form.Control
                       type="text"
@@ -108,7 +108,7 @@ function LoginPage() {
                     />
                   </Form.Group>
 
-                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Group className="mb-3" controlId="formlastname">
                     <Form.Label> Last name</Form.Label>
                     <Form.Control
                       type="text"
@@ -117,7 +117,7 @@ function LoginPage() {
                     />
                   </Form.Group>
 
-                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Group className="mb-3" controlId="formusername">
                     <Form.Label> Username</Form.Label>
                     <Form.Control
                       type="text"

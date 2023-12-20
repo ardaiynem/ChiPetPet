@@ -243,7 +243,7 @@ function UserAppointments() {
                   <td>{appointment.username}</td>
                   <td>{appointment.name}</td>
                   <td>{appointment.health_status}</td>
-                  <td>{appointment.date}</td>
+                  <td>{appointment.date.replace('T', ' ').slice(0, -3)}</td>
                 </tr>
               ))}
             </tbody>
