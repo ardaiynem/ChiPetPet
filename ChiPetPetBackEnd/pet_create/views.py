@@ -59,17 +59,11 @@ def update_pet(request):
     photo = request.FILES.get('photo')
     adoption_status = request.POST.get('adoption_status')
 
-    # Convert base64-encoded photo to bytes
-    if photo:
-        # Read the photo file content and convert it to base64
-        photo_content = base64.b64encode(photo.read()).decode('utf-8')
-    else:
-        photo_content = None
-
-    # Insert into the pet table
     cursor = connection.cursor()
 
-    cursor.execute("""UPDATE pet SET
+    if photo:
+        photo_content = base64.b64encode(photo.read()).decode('utf-8')
+        cursor.execute("""UPDATE pet SET
                     name = %s, 
                    species = %s, 
                    breed = %s, 
@@ -80,8 +74,21 @@ def update_pet(request):
                    photo = %s, 
                    adoption_status = %s
                      WHERE pet_id = %s""",
-                   (name, species, breed, gender, age, health_status,
-                    description, photo_content, adoption_status, pet_id))
+                       (name, species, breed, gender, age, health_status,
+                        description, photo_content, adoption_status, pet_id))
+    else:
+        cursor.execute("""UPDATE pet SET
+                    name = %s, 
+                   species = %s, 
+                   breed = %s, 
+                   gender = %s, 
+                   age = %s,
+                 health_status = %s,
+                description = %s, 
+                   adoption_status = %s
+                     WHERE pet_id = %s""",
+                       (name, species, breed, gender, age, health_status,
+                        description, adoption_status, pet_id))
 
     return JsonResponse({'status': 'Pet updated successfully', 'petid': pet_id}, status=201)
 
@@ -169,6 +176,7 @@ def get_pet_by_id(request):
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
+
 @csrf_exempt
 def get_pet_by_veterinarian(request):
     if request.method == 'GET':
@@ -189,29 +197,30 @@ def get_pet_by_veterinarian(request):
 
             # Convert the results to a list of dictionaries
             petsList = {"pets":
-                   [
-                                          {
-                       'pet_id': pet[0],
-                       'name': pet[1],
-                       'species': pet[2],
-                       'breed': pet[3],
-                       'gender': pet[4],
-                       'age': pet[5],
-                       'health_status': pet[6],
-                       'description': pet[7],
-                       # Decode photo from bytes to string
-                       'photo': pet[8].decode('utf-8') if pet[8] else None,
-                       'adoption_status': pet[9],
-                       'date_and_time': pet[10],
-                   }    for pet in pets
-                   ]}
+                        [
+                            {
+                                'pet_id': pet[0],
+                                'name': pet[1],
+                                'species': pet[2],
+                                'breed': pet[3],
+                                'gender': pet[4],
+                                'age': pet[5],
+                                'health_status': pet[6],
+                                'description': pet[7],
+                                # Decode photo from bytes to string
+                                'photo': pet[8].decode('utf-8') if pet[8] else None,
+                                'adoption_status': pet[9],
+                                'date_and_time': pet[10],
+                            } for pet in pets
+                        ]}
 
-            return JsonResponse(petsList, status = 200)
+            return JsonResponse(petsList, status=200)
 
         except Exception as e:
             return JsonResponse({'error': 'Internal server error: {}'.format(str(e))}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 
 @csrf_exempt
 def get_pets_by_type(request):
@@ -528,6 +537,7 @@ def get_pets_by_shelter_with_attributes(request):
 
     return JsonResponse(pets_list, status=200)
 
+
 @require_http_methods(["GET"])
 @csrf_exempt
 def get_pets_by_shelter_with_attributes(request):
@@ -583,7 +593,7 @@ def get_pets_by_shelter_with_attributes(request):
     cursor.close()
 
     return JsonResponse(pets_list, status=200)
-    
+
 
 @csrf_exempt
 @require_http_methods(["DELETE"])

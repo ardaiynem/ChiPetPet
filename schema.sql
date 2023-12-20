@@ -116,18 +116,18 @@ CREATE TABLE applies(
     FOREIGN KEY (pet_id) REFERENCES pet(pet_id)
 );
 
-CREATE TABLE appointment (
-    appointment_id INT PRIMARY KEY AUTO_INCREMENT,
-    date_and_time DATETIME,
-    location VARCHAR(255),
-    appointment_text VARCHAR(255),
-    user_id INT,
-    veterinarian_id INT,
-    pet_id INT,
-    FOREIGN KEY (user_id) REFERENCES user(user_id),
-    FOREIGN KEY (veterinarian_id) REFERENCES user(user_id),
-    FOREIGN KEY (pet_id) REFERENCES pet(pet_id)
-);
+    CREATE TABLE appointment (
+        appointment_id INT PRIMARY KEY AUTO_INCREMENT,
+        date_and_time DATETIME,
+        location VARCHAR(255),
+        appointment_text VARCHAR(255),
+        user_id INT,
+        veterinarian_id INT,
+        pet_id INT,
+        FOREIGN KEY (user_id) REFERENCES user(user_id),
+        FOREIGN KEY (veterinarian_id) REFERENCES user(user_id),
+        FOREIGN KEY (pet_id) REFERENCES pet(pet_id)
+    );
 
 CREATE TABLE message (
     date_and_time DATETIME,

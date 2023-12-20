@@ -166,7 +166,7 @@ function MessagePage() {
                   date={
                     chats[i].messages[0] === undefined
                       ? "Now"
-                      : chats[i].messages[0].date
+                      : chats[i].messages[chats[i].messages.length - 1].date
                   }
                   role={c.role.toUpperCase().replace("_", " ")}
                 />
