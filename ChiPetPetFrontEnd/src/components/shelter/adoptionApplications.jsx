@@ -179,12 +179,12 @@ function ApplicationsList() {
                     disabled={
                       applications[selectedRow].application_status !== "PENDING"
                     }
-                    style={{
-                      backgroundColor: "red",
-                      borderColor: "red",
-                      color: "white",
-                      width: "100px",
-                    }}
+                      style={{
+                        backgroundColor: "red",
+                        borderColor: "red",
+                        color: "white",
+                        width: "100px",
+                      }}
                   >
                     Reject
                   </button>

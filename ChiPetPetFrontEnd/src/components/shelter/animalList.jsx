@@ -45,6 +45,8 @@ function AnimalList() {
       .then((res) => {
         console.log(res.data);
         setTimedAlert("Excel file uploaded successfully", "success", 3000);
+        setExcellModal(false);
+        getAnimals();
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +61,7 @@ function AnimalList() {
     gender: "",
     age: 1,
     healthStatus: "Healthy",
-    adoptionStatus: "WAITING",
+    adoptionStatus: "PENDING",
     description: "",
     photo: "",
   });
@@ -81,7 +83,7 @@ function AnimalList() {
 
   const { currentPanel, setCurrentPanel } = useContext(PanelContext);
 
-  useEffect(() => {
+  const getAnimals = () => {
     axios
       .get(
         "http://127.0.0.1:8000/pet_create/get_pets_by_shelter_with_attributes/",
@@ -102,6 +104,11 @@ function AnimalList() {
       .catch((err) => {
         setTimedAlert("Error retrieving animals", "error", 3000);
       });
+  };
+
+  useEffect(() => {
+    getAnimals();
+    
   }, [name, breed, sortOption, species]);
 
   const deletePetHandle = () => {
@@ -116,6 +123,7 @@ function AnimalList() {
       .then((res) => {
         setPets(pets.filter((p) => selectedAnimal.pet_id !== p.pet_id));
         setSelectedAnimal(null);
+        getAnimals();
       })
       .catch((err) => {
         setTimedAlert("Error deleting animal", "error", 3000);

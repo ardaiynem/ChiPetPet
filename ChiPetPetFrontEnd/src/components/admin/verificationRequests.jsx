@@ -69,6 +69,8 @@ function VerificationRequests() {
                 prevRequests.filter(request => request.user_id !== id)
             );
             setTimedAlert("The user is verified", "success", 3000);
+
+            setSelectedRow(null);
         })
         .catch((err) => {
             console.log(err);
@@ -93,6 +95,8 @@ function VerificationRequests() {
                 prevRequests.filter(request => request.user_id !== id)
             );
             setTimedAlert("The user is rejected", "success", 3000);
+
+            setSelectedRow(null);
         })
         .catch((err) => {
             console.log(err);
@@ -195,10 +199,24 @@ function VerificationRequests() {
                                 </a>
 
 
-                            <button className="btn btn-primary w-100" type="button" onClick={() => handleVerifyButton(selectedRow?.user_id)}>
+                            <button variant='success' className="btn btn-success w-100" type="button" 
+                            style={{
+                                backgroundColor: "green",
+                                borderColor: "green",
+                                color: "white",
+                                width: "100px",
+                              }}
+                            onClick={() => handleVerifyButton(selectedRow?.user_id)}>
                                 Verify
                             </button>
-                            <button className="btn btn-primary w-100" type="button" onClick={() => handleRejectButton(selectedRow?.user_id)}>
+                            <button variant='danger' className="btn btn-danger w-100" type="button" 
+                            style={{
+                                backgroundColor: "red",
+                                borderColor: "red",
+                                color: "white",
+                                width: "100px",
+                              }}
+                            onClick={() => handleRejectButton(selectedRow?.user_id)}>
                                 Reject
                             </button>
 
