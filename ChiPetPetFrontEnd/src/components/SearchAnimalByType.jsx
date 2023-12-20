@@ -76,7 +76,7 @@ function SearchAnimalByType() {
                 </div>
                 <div className="col-md-2 mt-2 text-center">
                     <div className="d-flex flex-column align-items-center">
-                        <button className="btn btn-primary btn-circle" onClick={() => setCurrentPanel(<SearchPetPanel animalType="rat" />)}>
+                        <button className="btn btn-primary btn-circle" onClick={() => setCurrentPanel(<SearchPetPanel animalType="small & furry" />)}>
                             <img
                                 src={ratIcn}
                                 alt="Image 2"

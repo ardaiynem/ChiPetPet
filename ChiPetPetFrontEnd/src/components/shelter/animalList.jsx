@@ -225,7 +225,10 @@ function AnimalList() {
 
             <Dropdown>
               <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Sort By {sortOption === "None" ? "" : sortOption}
+                Sort By{" "}
+                {sortOption === "None"
+                  ? ""
+                  : sortOption.toUpperCase().replace("_", " ")}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
@@ -262,7 +265,7 @@ function AnimalList() {
                 <Dropdown.Item onClick={() => setSpecies("rabbit")}>
                   Rabbit
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => setSpecies("small&furry")}>
+                <Dropdown.Item onClick={() => setSpecies("small & furry")}>
                   Small & Furry
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => setSpecies("others")}>
@@ -500,7 +503,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Cat",
+                                  species: "cat",
                                 });
                               }}
                             >
@@ -510,7 +513,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Dog",
+                                  species: "dog",
                                 });
                               }}
                             >
@@ -520,7 +523,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Bird",
+                                  species: "bird",
                                 });
                               }}
                             >
@@ -530,7 +533,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Rabbits",
+                                  species: "rabbit",
                                 });
                               }}
                             >
@@ -540,7 +543,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  species: "Small & Furry",
+                                  species: "small & furry",
                                 });
                               }}
                             >
@@ -550,7 +553,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelected({
                                   ...selectedAnimal,
-                                  species: "Others",
+                                  species: "others",
                                 });
                               }}
                             >
@@ -642,17 +645,17 @@ function AnimalList() {
                                 });
                               }}
                             >
-                              Healthy
+                              HEALTHY
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  health_status: "ILL",
+                                  health_status: "UNHEALTHY",
                                 });
                               }}
                             >
-                              ILL
+                              UNHEALTHY
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
@@ -675,7 +678,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  adoptionStatus: "WAITING",
+                                  adoption_status: "WAITING",
                                 });
                               }}
                             >
@@ -685,7 +688,7 @@ function AnimalList() {
                               onClick={() => {
                                 setSelectedAnimal({
                                   ...selectedAnimal,
-                                  adoptionStatus: "ADOPTED",
+                                  adoption_status: "ADOPTED",
                                 });
                               }}
                             >
