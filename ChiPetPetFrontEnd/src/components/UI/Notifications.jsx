@@ -11,50 +11,57 @@ import notification_img from "../../assets/notification.png";
  */
 
 const Notifications = () => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const { userDetails } = useAuth();
+  const { setTimedAlert } = useAlert();
 
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [notifications, setNotifications] = useState([]);
-    const { userDetails } = useAuth();
-    const { setTimedAlert } = useAlert();
+  const toggleNotifications = () => {
+    setShowNotifications((prevState) => !prevState);
+  };
 
-    const toggleNotifications = () => {
-        setShowNotifications(prevState => !prevState);
-    };
-
-    useEffect(() => {
-        setInterval(() => {
-            getNotifications(userDetails.user_id)
-            .then((res) => {
-                setNotifications(res.data.notifications);
-            })
-            .catch((err) => {
-                setTimedAlert("Error retrieving notifications", "error", 3000);
-            });
-        }, 10000);
-    }, []);
-
-    const deleteNotificationHandler = (user_id, date_and_time) => {
-        setNotifications((prevNotifications) => { 
-            return prevNotifications.filter(notification => notification.date_and_time !== date_and_time);
+  useEffect(() => {
+    setInterval(() => {
+      getNotifications(userDetails.user_id)
+        .then((res) => {
+          setNotifications(res.data.notifications);
+        })
+        .catch((err) => {
+          setTimedAlert("Error retrieving notifications", "error", 3000);
         });
-    };
+    }, 100000);
+  }, []);
 
-    return (
-        <div>
-            <img src={notification_img} alt="notifications-icon" className="notificationIcon" onClick={toggleNotifications}/>
-            {showNotifications && 
-            <ul className="notificationContainer">
-                <h3>Notifications</h3>
-                {notifications.map((notification, index) => (
-                    <Notification
-                        key={index}
-                        notification={notification}
-                        onDeleteNotification={deleteNotificationHandler}
-                    />
-                ))}
-            </ul>}
-        </div>
-    );    
+  const deleteNotificationHandler = (user_id, date_and_time) => {
+    setNotifications((prevNotifications) => {
+      return prevNotifications.filter(
+        (notification) => notification.date_and_time !== date_and_time
+      );
+    });
+  };
+
+  return (
+    <div>
+      <img
+        src={notification_img}
+        alt="notifications-icon"
+        className="notificationIcon"
+        onClick={toggleNotifications}
+      />
+      {showNotifications && (
+        <ul className="notificationContainer">
+          <h3>Notifications</h3>
+          {notifications.map((notification, index) => (
+            <Notification
+              key={index}
+              notification={notification}
+              onDeleteNotification={deleteNotificationHandler}
+            />
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 export default Notifications;

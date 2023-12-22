@@ -101,27 +101,11 @@ function ApplicationsList() {
       </Button>
 
       <div className="d-flex">
-        <div className="" style={{ flex: "1 1 0", maxWidth: "70%" }} onClick={() => setSelectedRow(null)}>
-          <div className="d-flex justify-content-between mb-5 mt-4">
-            <FormControl
-              type="text"
-              placeholder="Search..."
-              className="mr-sm-2"
-              style={{ maxWidth: "400px" }}
-            />
-
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                Type
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
+        <div
+          className=""
+          style={{ flex: "1 1 0", maxWidth: "70%" }}
+          onClick={() => setSelectedRow(null)}
+        >
 
           <table class="table table-striped">
             <thead>
@@ -154,58 +138,65 @@ function ApplicationsList() {
           className="d-flex flex-column align-items-end"
           style={{ flex: "1 1 0", marginLeft: "20px", marginRight: "20px" }}
         >
-        {selectedRow !== null && (
-          <div className="card mb-3" style={{ width: "100%" }}>
-            <div className="d-flex p-3 justify-content-center">
-              <img
-                src={applications[selectedRow]?.pet_photo === null
-                  ? emptyImg
-                  : `data:image/png;base64, ${applications[selectedRow]?.pet_photo}`}
-                className="card-img-top"
-                alt="Cat"
-                style={{ width: "200px", marginRight: "20px" }}
-              />
-              <h5 className="card-title" style={{ marginRight: "50px" }}>
-                {applications[selectedRow].adopter_username}
-              </h5>
-              <div className="d-flex flex-column align-items-start">
-                <button
-                  onClick={cancelApplicationHandler}
-                  className="btn btn-danger mb-2"
-                  type="button"
-                  disabled={(applications[selectedRow].application_status === "ACCEPTED") || (applications[selectedRow].application_status === "REJECTED")}
-                  style={{
-                    backgroundColor: "red",
-                    borderColor: "red",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Cancel
-                </button>
-                
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setShowModalMsg(true)}
-                  type="button"
-                  style={{
-                    backgroundColor: "blue",
-                    borderColor: "blue",
-                    color: "white",
-                    width: "100px",
-                  }}
-                >
-                  Contact
-                </button>
+          {selectedRow !== null && (
+            <div className="card mb-3" style={{ width: "100%" }}>
+              <div className="d-flex p-3 justify-content-center">
+                <img
+                  src={
+                    applications[selectedRow]?.pet_photo === null
+                      ? emptyImg
+                      : `data:image/png;base64, ${applications[selectedRow]?.pet_photo}`
+                  }
+                  className="card-img-top"
+                  alt="Cat"
+                  style={{ width: "200px", marginRight: "20px" }}
+                />
+                <h5 className="card-title" style={{ marginRight: "50px" }}>
+                  {applications[selectedRow].adopter_username}
+                </h5>
+                <div className="d-flex flex-column align-items-start">
+                  <button
+                    onClick={cancelApplicationHandler}
+                    className="btn btn-danger mb-2"
+                    type="button"
+                    disabled={
+                      applications[selectedRow].application_status ===
+                        "ACCEPTED" ||
+                      applications[selectedRow].application_status ===
+                        "REJECTED"
+                    }
+                    style={{
+                      backgroundColor: "red",
+                      borderColor: "red",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setShowModalMsg(true)}
+                    type="button"
+                    style={{
+                      backgroundColor: "blue",
+                      borderColor: "blue",
+                      color: "white",
+                      width: "100px",
+                    }}
+                  >
+                    Contact
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="card-body">
-              <h5 className="card-title">Application</h5>
-              <p className="card-text">
-                {applications[selectedRow].application_text}
-              </p>
-            </div>
-            <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
+              <div className="card-body">
+                <h5 className="card-title">Application</h5>
+                <p className="card-text">
+                  {applications[selectedRow].application_text}
+                </p>
+              </div>
+              <div className="d-flex gap-3" style={{ flex: "1 1 0" }}>
                 <div style={{ flex: "1 1 0" }}>
                   <table class="table table-striped">
                     <thead>
@@ -217,24 +208,26 @@ function ApplicationsList() {
                       </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                          <td> {applications[selectedRow].pet_species} </td>
-                          <td> {applications[selectedRow].pet_breed} </td>
-                          <td> {applications[selectedRow].pet_gender} </td>
-                          <td> {applications[selectedRow].pet_age} </td>
-                        </tr>
+                      <tr>
+                        <td> {applications[selectedRow].pet_species} </td>
+                        <td> {applications[selectedRow].pet_breed} </td>
+                        <td> {applications[selectedRow].pet_gender} </td>
+                        <td> {applications[selectedRow].pet_age} </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
+              </div>
             </div>
-          </div>
           )}
         </div>
       </div>
       {/* Modal for contacting */}
       <Modal show={showModalMsg} onHide={() => setShowModalMsg(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Send Message to {applications[selectedRow]?.veterinarian_id}</Modal.Title>
+          <Modal.Title>
+            Send Message to {applications[selectedRow]?.veterinarian_id}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-floating">

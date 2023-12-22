@@ -221,4 +221,4 @@ VALUES ('a', 'a', 'a', 'a@email.com', 'pbkdf2_sha256$260000$A7zHVyUC5F6duUTGeD4I
 
 
 INSERT INTO admin (user_id, verification_documents)
-VALUES (8, NULL);
+VALUES (1, NULL);
