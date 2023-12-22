@@ -285,6 +285,21 @@ END;
 DELIMITER ;
 
 DELIMITER //
+CREATE TRIGGER after_update_pet
+AFTER UPDATE
+ON pet FOR EACH ROW
+
+BEGIN
+    IF NEW.adoption_status = 'ADOPTED' AND OLD.adoption_status != 'ADOPTED' THEN
+        UPDATE applies
+        SET application_status = 'REJECTED'
+        WHERE pet_id = NEW.pet_id AND application_status != 'ACCEPTED';
+    END IF;
+END;
+//
+DELIMITER ;
+
+DELIMITER //
 CREATE TRIGGER application_response_notification_trigger
 BEFORE UPDATE ON applies
 FOR EACH ROW

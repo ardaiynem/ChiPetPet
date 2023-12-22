@@ -399,7 +399,7 @@ def insert_pets_from_excel(request):
 
             # Validate that the required columns are present in the Excel file
             required_columns = ['name', 'species', 'breed', 'gender', 'age',
-                                'health_status', 'description', 'photo', 'adoption_status']
+                                'health_status', 'description', 'adoption_status']
             if not set(required_columns).issubset(df.columns):
                 return JsonResponse({'error': 'The Excel file is missing required columns'}, status=400)
 
@@ -409,11 +409,13 @@ def insert_pets_from_excel(request):
             # Convert DataFrame to list of dictionaries
             pets_data = df.to_dict(orient='records')
 
+
             # Insert pets into the pet table
             with connection.cursor() as cursor:
                 for pet_data in pets_data:
                     # Add shelter_id to each row before inserting
                     pet_data['shelter_id'] = shelter_id
+                    pet_data['photo'] = None
                     cursor.execute(
                         """
                         INSERT INTO pet (shelter_id, name, species, breed, gender, age, health_status, description, photo, adoption_status)
