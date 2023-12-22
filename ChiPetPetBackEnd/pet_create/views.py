@@ -603,10 +603,6 @@ def delete_pet(request):
 
     cursor = connection.cursor()
 
-    cursor.execute("DELETE FROM owns WHERE pet_id = %s",
-                   (pet_id, ))
-
-    connection.commit()
     cursor.execute("DELETE FROM pet WHERE pet_id = %s",
                    (pet_id, ))
     connection.commit()

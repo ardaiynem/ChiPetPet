@@ -115,7 +115,7 @@ const BlogPage = ({ post_id }) => {
                 <h5>
                   {blog.username}
                   <span className="ms-3 badge rounded-pill bg-primary">
-                    {blog.role}
+                    {blog.role.toUpperCase().replace("_", " ")}
                   </span>
                   <h5>
                     <b>{blog.topic}</b>
