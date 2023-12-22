@@ -417,7 +417,10 @@ function AnimalList() {
                       }}
                       onClick={() =>
                         setCurrentPanel(
-                          <HealthRecords petid={1} petname={"pet.name"} />
+                          <HealthRecords
+                            petid={selectedAnimal.pet_id}
+                            petname={selectedAnimal.name}
+                          />
                         )
                       }
                     >

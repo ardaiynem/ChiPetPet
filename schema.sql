@@ -152,40 +152,6 @@ SELECT *
 FROM pet 
 WHERE adoption_status != 'ADOPTED';
 
-
-/* 
-///////////////////////////////////////
-TODO TODO TODO TODOT TODO TODOT 
-////////////////////////////////////////
-CREATE TRIGGER delete_health_records
-AFTER DELETE ON pet
-FOR EACH ROW
-BEGIN
-DELETE FROM health_record
-WHERE pet_id = OLD.pet_id;
-END;
-
-///////////////////////////////////////
-TODO TODO TODO TODOT TODO TODOT 
-////////////////////////////////////////
-CREATE TRIGGER delete_notifications AFTER DELETE ON user
-FOR EACH ROW
-BEGIN
-DELETE FROM notification WHERE user_id = OLD.user_id;
-END;
-
-///////////////////////////////////////
-TODO TODO TODO TODOT TODO TODOT 
-////////////////////////////////////////
-CREATE TRIGGER delete_health_records
-AFTER DELETE ON pet
-FOR EACH ROW
-BEGIN
-DELETE FROM health_record
-WHERE pet_id = OLD.pet_id;
-END;
-*/
-
 INSERT INTO user (first_name, last_name, username, email, password, verified, role) 
 VALUES ('John', 'Doe', 'johndoe', 'john@email.com', 'password', 'yes', 'animal_shelter');
 
@@ -306,22 +272,53 @@ INSERT INTO veterinarian (user_id, address, contact, verification_documents, exp
 VALUES (7, 'Notthingham Forest', '359034-21309', NULL, 'Birds');
 
 DELIMITER //
+CREATE TRIGGER pet_delete_trigger
+BEFORE DELETE ON pet
+FOR EACH ROW
+BEGIN
+    DELETE FROM applies WHERE applies.pet_id = OLD.pet_id;
+    DELETE FROM appointment WHERE appointment.pet_id = OLD.pet_id;
+    DELETE FROM owns WHERE owns.pet_id = OLD.pet_id;
+    DELETE FROM health_record WHERE health_record.pet_id = OLD.pet_id;
+END;
+//
+DELIMITER ;
 
+DELIMITER //
 CREATE TRIGGER after_update_pet
 AFTER UPDATE
 ON pet FOR EACH ROW
 
 BEGIN
-    -- Check if the adoption_status is updated to 'ADOPTED'
     IF NEW.adoption_status = 'ADOPTED' AND OLD.adoption_status != 'ADOPTED' THEN
-        -- Update applications for the adopted pet to 'REJECTED'
         UPDATE applies
         SET application_status = 'REJECTED'
         WHERE pet_id = NEW.pet_id AND application_status != 'ACCEPTED';
     END IF;
 END;
 //
+DELIMITER ;
 
+DELIMITER //
+CREATE TRIGGER application_response_notification_trigger
+BEFORE UPDATE ON applies
+FOR EACH ROW
+BEGIN
+    INSERT INTO notification (user_id, date_and_time, topic, description)
+VALUES (OLD.adopter_id, NOW(), 'Application Status', 'Your adoption application has an update');
+END;
+//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER blog_comment_trigger
+BEFORE INSERT ON comment
+FOR EACH ROW
+BEGIN
+    INSERT INTO notification (user_id, date_and_time, topic, description)
+VALUES ((SELECT user_id FROM blog_post WHERE post_id = NEW.post_id), NOW(), 'Your blogpost', 'Your blogpost has a new comment');
+END;
+//
 DELIMITER ;
 
 
