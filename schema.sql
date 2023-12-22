@@ -216,6 +216,9 @@ DELIMITER ;
 
 
 
+INSERT INTO user (first_name, last_name, username, email, password, verified, role)
+VALUES ('a', 'a', 'a', 'a@email.com', 'pbkdf2_sha256$260000$A7zHVyUC5F6duUTGeD4IT5$ROaskyhQVBHZt91eUQWKm8oMCd0pGxhX3qeKTVyZb10=', 'True', 'admin');
+
 
 INSERT INTO admin (user_id, verification_documents)
 VALUES (8, NULL);
