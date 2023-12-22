@@ -57,7 +57,7 @@ function VetAnimalList(){
             {animalData.map((animal, index) => (
                 <tr key={index} onClick={() => handleRowClick(index)}>
                   <td>{animal.name}</td>
-                  <td>{animal.species}</td>
+                  <td>{animal.species.toUpperCase()}</td>
                   <td>{animal.date_and_time.replace("T", " ").slice(0, -3)}</td>
                 </tr>
               ))}

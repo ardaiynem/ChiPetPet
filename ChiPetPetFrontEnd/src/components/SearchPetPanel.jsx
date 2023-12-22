@@ -67,6 +67,7 @@ function SearchPetPanel(props) {
     }, [name, breed, sortOption, age]);
   } else if (shelterid) {
     useEffect(() => {
+      console.log(species)
       axios
         .get(
           "http://127.0.0.1:8000/pet_create/get_pets_by_shelter_with_attributes/",
@@ -90,7 +91,7 @@ function SearchPetPanel(props) {
         .catch((err) => {
           setTimedAlert("Error retrieving animals", "error", 3000);
         });
-    }, [name, breed, sortOption, age]);
+    }, [name, breed, sortOption, age, species]);
   }
 
   let items = [];
@@ -198,7 +199,7 @@ function SearchPetPanel(props) {
                   <Dropdown.Item onClick={() => setSpecies("rabbit")}>
                     Rabbit
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setSpecies("small&furry")}>
+                  <Dropdown.Item onClick={() => setSpecies("small & furry")}>
                     Small & Furry
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => setSpecies("others")}>

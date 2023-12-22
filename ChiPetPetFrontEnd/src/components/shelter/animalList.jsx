@@ -292,7 +292,7 @@ function AnimalList() {
               {pets.map((pet, index) => (
                 <tr key={index} onClick={() => handleRowClick(index)}>
                   <td>{pet.name}</td>
-                  <td>{pet.species}</td>
+                  <td>{pet.species.toUpperCase()}</td>
                   <td>{pet.adoption_status}</td>
                 </tr>
               ))}
@@ -348,7 +348,7 @@ function AnimalList() {
                   <tbody>
                     <tr>
                       <th scope="row">Species</th>
-                      <td>{selectedAnimal.species}</td>
+                      <td>{selectedAnimal.species.toUpperCase()}</td>
                     </tr>
                     <tr>
                       <th scope="row">Breed</th>
