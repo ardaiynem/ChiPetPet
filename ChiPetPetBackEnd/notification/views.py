@@ -20,7 +20,7 @@ def get_notifications(request):
     # user_id = data.get('user_id')
     user_id = request.GET.get('user_id')
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM notification WHERE user_id = %s", [user_id])
+    cursor.execute("SELECT * FROM notification WHERE user_id = %s ORDER BY date_and_time DESC", [user_id])
     notifications = cursor.fetchall()
 
     if notifications is None:

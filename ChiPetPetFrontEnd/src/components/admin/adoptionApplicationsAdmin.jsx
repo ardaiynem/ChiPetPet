@@ -19,7 +19,7 @@ function AdoptionApplicationsAdmin() {
   const { setTimedAlert } = useAlert();
   const { userDetails } = useAuth();
 
-  useEffect(() => {
+  const getApplicationsAdminHandler = async () => {
     getApplicationsAdmin()
       .then((res) => {
         setApplications(res.data.applications);
@@ -27,6 +27,10 @@ function AdoptionApplicationsAdmin() {
       .catch((err) => {
         setTimedAlert("Error getting applications", "error", 3000);
       });
+  };
+
+  useEffect(() => {
+    getApplicationsAdminHandler();
   }, []);
 
   const toggleRowSelection = (rowNumber) => {
@@ -61,6 +65,8 @@ function AdoptionApplicationsAdmin() {
           )
         );
 
+        getApplicationsAdminHandler();
+
         setSelectedRow(null);
       })
       .catch((err) => {
@@ -91,6 +97,8 @@ function AdoptionApplicationsAdmin() {
             (a) => applications[selectedRow].application_id !== a.application_id
           )
         );
+
+        getApplicationsAdminHandler();
 
         setSelectedRow(null);
       })
