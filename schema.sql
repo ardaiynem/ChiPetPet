@@ -321,6 +321,18 @@ END;
 //
 DELIMITER ;
 
+DELIMITER //
+CREATE TRIGGER appointment_reschedule_trigger
+BEFORE UPDATE ON appointment 
+FOR EACH ROW
+BEGIN
+    INSERT INTO notification (user_id, date_and_time, topic, description)
+    VALUES (NEW.user_id, NOW(), 'Appointment Rescheduled', 'Your appointment has been rescheduled.');
+END;
+//
+DELIMITER ;
+
+
 
 
 

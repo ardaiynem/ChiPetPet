@@ -37,15 +37,18 @@ function UserAppointments() {
     }
   };
 
-  useEffect(() => {
-    getAppointmentByUser(userDetails.user_id)
+  const getAppointments = (user_id) => {
+    getAppointmentByUser(user_id)
       .then((res) => {
         setAppointments(res.data.appointments);
-        console.log(res.data.appointments);
       })
       .catch((err) => {
         setTimedAlert("Error getting appointments", "error", 3000);
       });
+  };
+
+  useEffect(() => {
+    getAppointments(userDetails.user_id);
   }, []);
 
   const cancelAppointmentHandler = () => {
@@ -164,6 +167,7 @@ function UserAppointments() {
         setShowModal(false);
         setAppointmentText("");
         getExistingAppointments(appointments[selectedRow].veterinarian_id);
+        getAppointments(userDetails.user_id);
         setSelectedRow(null);
         setTimedAlert("Appointment successfully rescheduled", "success", 3000);
       })
