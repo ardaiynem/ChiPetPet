@@ -23,16 +23,16 @@ ChiPetPet hosts a public blogging system that serves as a knowledge-sharing plat
 The system can be deployed through the use of Docker and Docker-Compose. All necessary Docker and Docker-compose files are already given in the project folder. So there is no need to add any other configuration files.  The "schema.sql" file in the root directory can be used to initialize a system with some data. It is necessary to initialize an admin account through this file because the system needs at least one admin account to verify accounts(including other admins) and manage adoption applications. 
 
 After installing Docker and Docker-Compose and launching the Docker Daemon. Backend and Frontend images should be built with the following commands in a terminal opened in the root directory.
-For frontend image:
+- For frontend image:
 docker build -t chipetpetfrontend ChiPetPetFrontEnd/
 
-For backend image:
+- For backend image:
 docker build -t chipetpetbackend ChiPetPetBackEnd/
 
-After that, all services, including the MySQL service can be deployed with Docker-Compose:
+- After that, all services, including the MySQL service can be deployed with Docker-Compose:
 docker-compose up -d
 
 Then the system is ready to be used at address http://localhost:5173
 
-If you want to stop the execution of the system, you can use the following command: 
+- If you want to stop the execution of the system, you can use the following command: 
 docker-compose down (“-v” option to reset the database content)
